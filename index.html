@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Human Bug Wire</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- MENU -->
+<div class="menu">
+  <button onclick="show('home')">HOME</button>
+  <button onclick="show('courses')">COURSES</button>
+  <button onclick="show('mycourses')">MY COURSES</button>
+  <button onclick="show('payment')">PAYMENT</button>
+  <button onclick="show('login')">LOGIN</button>
+  <button onclick="show('signup')">SIGNUP</button>
+</div>
+
+<!-- HOME -->
+<section id="home" class="page active">
+  <h1>WELCOME TO HUMAN BUG WIRE</h1>
+  <p>Start your journey into Automotive Tech</p>
+  <button onclick="show('courses')">ENROLL NOW</button>
+</section>
+
+<!-- COURSES -->
+<section id="courses" class="page">
+  <h2>COURSES</h2>
+  <div id="courseList"></div>
+</section>
+
+<!-- LOGIN -->
+<section id="login" class="page">
+  <h2>LOGIN</h2>
+  <input id="loginUser" placeholder="Username">
+  <input id="loginPass" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup" class="page">
+  <h2>SIGN UP</h2>
+  <input id="suName" placeholder="Name">
+  <input id="suUser" placeholder="Username">
+  <input id="suPass" type="password" placeholder="Password">
+  <button onclick="signup()">Signup</button>
+</section>
+
+<!-- MY COURSES -->
+<section id="mycourses" class="page">
+  <h2>MY COURSES</h2>
+  <div id="myCourseList"></div>
+</section>
+
+<!-- PAYMENT -->
+<section id="payment" class="page">
+  <h2>PAYMENT HISTORY</h2>
+  <div id="paymentList"></div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
