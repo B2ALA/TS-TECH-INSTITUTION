@@ -1,0 +1,42 @@
+body{
+  font-family: Arial;
+  margin:0;
+  background:#0f172a;
+  color:white;
+}
+
+.menu{
+  background:#111827;
+  padding:10px;
+}
+
+.menu button{
+  margin:5px;
+  padding:10px;
+  background:#2563eb;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+
+.page{
+  display:none;
+  padding:20px;
+}
+
+.active{
+  display:block;
+}
+
+button{
+  padding:10px;
+  margin-top:10px;
+  cursor:pointer;
+}
+
+.course-card{
+  background:#1e293b;
+  padding:10px;
+  margin:10px;
+  border-radius:10px;
+}
