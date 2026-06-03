@@ -1,6 +1,6 @@
 body{
-  font-family: Arial;
   margin:0;
+  font-family: Arial;
   background:#0f172a;
   color:white;
 }
@@ -28,15 +28,12 @@ body{
   display:block;
 }
 
-button{
-  padding:10px;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.course-card{
-  background:#1e293b;
-  padding:10px;
+.box{
+  width:200px;
+  height:200px;
+  border:1px solid white;
+  display:inline-block;
   margin:10px;
-  border-radius:10px;
+  text-align:center;
+  line-height:200px;
 }
