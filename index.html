@@ -2,62 +2,109 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Human Bug Wire</title>
+<title>TS TECH PARK SCHOOL</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- MENU -->
+<!-- MENU BAR -->
 <div class="menu">
-  <button onclick="show('home')">HOME</button>
-  <button onclick="show('courses')">COURSES</button>
-  <button onclick="show('mycourses')">MY COURSES</button>
-  <button onclick="show('payment')">PAYMENT</button>
-  <button onclick="show('login')">LOGIN</button>
-  <button onclick="show('signup')">SIGNUP</button>
+  <button onclick="show('HOME')">HOME</button>
+  <button onclick="show('COURSES')">COURSES OFFERED</button>
+  <button onclick="show('TRAINERS')">TRAINERS</button>
+  <button onclick="show('GALLERY')">GALLERY</button>
+  <button onclick="show('CONTACT')">CONTACT</button>
+  <button onclick="show('LOGIN')">LOGIN</button>
+  <button onclick="show('SIGNUP')">SIGNUP</button>
+  <button onclick="show('MYCOURSES')">MY COURSES</button>
+  <button onclick="show('PAYMENT')">PAYMENT HISTORY</button>
 </div>
 
-<!-- HOME -->
-<section id="home" class="page active">
+<!-- ================= HOME ================= -->
+<section id="HOME" class="page active">
   <h1>WELCOME TO HUMAN BUG WIRE</h1>
-  <p>Start your journey into Automotive Tech</p>
-  <button onclick="show('courses')">ENROLL NOW</button>
+  <h3>START YOUR JOURNEY INTO AUTOMOTIVE TECH</h3>
+  <button onclick="enrollNow()">ENROLL NOW</button>
 </section>
 
-<!-- COURSES -->
-<section id="courses" class="page">
-  <h2>COURSES</h2>
-  <div id="courseList"></div>
+<!-- ================= COURSES ================= -->
+<section id="COURSES" class="page">
+  <h2>COURSES OFFERED</h2>
+  <div id="courseContainer"></div>
 </section>
 
-<!-- LOGIN -->
-<section id="login" class="page">
+<!-- ================= TRAINERS ================= -->
+<section id="TRAINERS" class="page">
+  <h2>OUR TRAINERS</h2>
+  <img src="trainer.jpg" width="200">
+  <p>Mr. VIJAY – Embedded Systems Trainer</p>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section id="GALLERY" class="page">
+  <h2>GALLERY</h2>
+  <div class="box">Image 1</div>
+  <div class="box">Image 2</div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="CONTACT" class="page">
+  <h2>CONTACT US</h2>
+  <input placeholder="Name">
+  <input placeholder="Email">
+  <input placeholder="Phone">
+  <input type="password" placeholder="Password">
+  <textarea placeholder="Queries"></textarea>
+  <button>SEND</button>
+</section>
+
+<!-- ================= LOGIN ================= -->
+<section id="LOGIN" class="page">
   <h2>LOGIN</h2>
   <input id="loginUser" placeholder="Username">
   <input id="loginPass" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
+  <button onclick="login()">LOGIN</button>
 </section>
 
-<!-- SIGNUP -->
-<section id="signup" class="page">
+<!-- ================= SIGNUP ================= -->
+<section id="SIGNUP" class="page">
   <h2>SIGN UP</h2>
   <input id="suName" placeholder="Name">
+  <input id="suEmail" placeholder="Email">
+  <input id="suPhone" placeholder="Phone">
   <input id="suUser" placeholder="Username">
   <input id="suPass" type="password" placeholder="Password">
-  <button onclick="signup()">Signup</button>
+  <button onclick="signup()">SIGN UP</button>
 </section>
 
-<!-- MY COURSES -->
-<section id="mycourses" class="page">
+<!-- ================= MY COURSES ================= -->
+<section id="MYCOURSES" class="page">
   <h2>MY COURSES</h2>
-  <div id="myCourseList"></div>
+  <table border="1">
+    <thead>
+      <tr><th>S.No</th><th>Course</th><th>Mode</th></tr>
+    </thead>
+    <tbody id="myCoursesTable"></tbody>
+  </table>
+  <button onclick="loadMyCourses()">REFRESH</button>
 </section>
 
-<!-- PAYMENT -->
-<section id="payment" class="page">
+<!-- ================= PAYMENT ================= -->
+<section id="PAYMENT" class="page">
   <h2>PAYMENT HISTORY</h2>
-  <div id="paymentList"></div>
+  <table border="1">
+    <thead>
+      <tr><th>Course</th><th>Amount</th><th>Mode</th></tr>
+    </thead>
+    <tbody id="paymentTable"></tbody>
+  </table>
+  <button onclick="loadPayments()">REFRESH</button>
+</section>
+
+<!-- ================= COURSE HISTORY ================= -->
+<section id="COURSEHISTORY" class="page">
+  <h2>COURSE HISTORY</h2>
 </section>
 
 <script src="script.js"></script>
