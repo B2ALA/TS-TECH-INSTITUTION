@@ -1,109 +1,149 @@
-let currentUser = localStorage.getItem("user") || null;
+let loggedInUserId = 0;
+let loggedInUsername = "";
 
-// ===== NAVIGATION =====
-function show(id){
+// ===== CARD LAYOUT =====
+function show(page){
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  document.getElementById(page).classList.add("active");
 }
 
-// ===== COURSES =====
-const courses = [
-  {name:"C Programming", price:"100000"},
-  {name:"Python", price:"15000"},
-  {name:"Java", price:"18000"},
-  {name:"AI", price:"50000"},
-  {name:"IoT & Robotics", price:"55000"}
-];
+// ===== COURSES (same as Java HashMap) =====
+const coursesMap = {
+  "C Programming": {price:"1000000", hours:40, mode:"English/Tamil"},
+  "Python": {price:"15000", hours:50, mode:"English/Tamil"},
+  "Java": {price:"18000", hours:60, mode:"English"},
+  "AI": {price:"50000", hours:100, mode:"English"}
+};
 
 function loadCourses(){
-  let div = document.getElementById("courseList");
-  div.innerHTML = "";
+  let container = document.getElementById("courseContainer");
+  container.innerHTML = "";
 
-  courses.forEach(c=>{
-    let box = document.createElement("div");
-    box.className = "course-card";
-    box.innerHTML = `
-      <h3>${c.name}</h3>
+  for(let name in coursesMap){
+    let c = coursesMap[name];
+
+    let div = document.createElement("div");
+    div.innerHTML = `
+      <h3>${name}</h3>
       <p>Price: ₹${c.price}</p>
-      <button onclick="enroll('${c.name}', '${c.price}')">Enroll</button>
+      <button onclick="showCourse('${name}')">VIEW</button>
     `;
-    div.appendChild(box);
-  });
+    container.appendChild(div);
+  }
 }
-
 loadCourses();
 
-// ===== SIGNUP =====
-function signup(){
-  let user = {
-    name: suName.value,
-    username: suUser.value,
-    password: suPass.value
-  };
+// ===== COURSE DETAILS (Java JOptionPane replacement) =====
+function showCourse(name){
+  if(loggedInUserId == 0){
+    alert("You must login first!");
+    show("LOGIN");
+    return;
+  }
 
-  localStorage.setItem("userData", JSON.stringify(user));
-  alert("Signup successful!");
-  show("login");
+  let c = coursesMap[name];
+
+  let mode = prompt("Select Payment Mode (UPI/Card/Cash/Online)");
+
+  if(!mode) return;
+
+  // store like DB
+  let reg = JSON.parse(localStorage.getItem("registered") || "[]");
+  reg.push({user:loggedInUsername, course:name, mode});
+  localStorage.setItem("registered", JSON.stringify(reg));
+
+  let pay = JSON.parse(localStorage.getItem("payments") || "[]");
+  pay.push({user:loggedInUsername, course:name, amount:c.price, mode});
+  localStorage.setItem("payments", JSON.stringify(pay));
+
+  alert("Successfully Registered for " + name);
+}
+
+// ===== HOME ENROLL BUTTON =====
+function enrollNow(){
+  if(loggedInUserId == 0){
+    let choice = confirm("Login required. OK = Login, Cancel = Signup");
+    if(choice) show("LOGIN");
+    else show("SIGNUP");
+  } else {
+    show("COURSES");
+  }
 }
 
 // ===== LOGIN =====
 function login(){
-  let data = JSON.parse(localStorage.getItem("userData"));
+  let u = loginUser.value;
+  let p = loginPass.value;
 
-  if(data && data.username === loginUser.value && data.password === loginPass.value){
-    currentUser = data.username;
-    localStorage.setItem("user", currentUser);
-    alert("Login success");
-    show("home");
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+  let found = users.find(x => x.username === u && x.password === p);
+
+  if(found){
+    loggedInUserId = found.id;
+    loggedInUsername = found.username;
+    alert("Login Successful");
+    show("HOME");
   } else {
-    alert("Invalid login");
+    alert("Invalid Login");
   }
 }
 
-// ===== ENROLL =====
-function enroll(name, price){
-  if(!currentUser){
-    alert("Please login first");
-    show("login");
-    return;
-  }
+// ===== SIGNUP =====
+function signup(){
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
 
-  let courses = JSON.parse(localStorage.getItem("myCourses") || "[]");
-  courses.push({name, price});
-  localStorage.setItem("myCourses", JSON.stringify(courses));
+  let newUser = {
+    id: users.length + 1,
+    name: suName.value,
+    email: suEmail.value,
+    phone: suPhone.value,
+    username: suUser.value,
+    password: suPass.value
+  };
 
-  let payments = JSON.parse(localStorage.getItem("payments") || "[]");
-  payments.push({name, amount:price});
-  localStorage.setItem("payments", JSON.stringify(payments));
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
 
-  alert("Enrolled successfully!");
+  alert("Signup Successful");
+  show("LOGIN");
 }
 
 // ===== MY COURSES =====
 function loadMyCourses(){
-  let data = JSON.parse(localStorage.getItem("myCourses") || "[]");
-  let div = document.getElementById("myCourseList");
-  div.innerHTML = "";
+  let data = JSON.parse(localStorage.getItem("registered") || "[]");
+  let table = document.getElementById("myCoursesTable");
 
-  data.forEach(c=>{
-    div.innerHTML += `<div class="course-card">${c.name}</div>`;
-  });
+  table.innerHTML = "";
+
+  let count = 1;
+  data.filter(x => x.user === loggedInUsername)
+      .forEach(x => {
+        table.innerHTML += `
+          <tr>
+            <td>${count++}</td>
+            <td>${x.course}</td>
+            <td>${x.mode}</td>
+          </tr>
+        `;
+      });
 }
 
 // ===== PAYMENT =====
 function loadPayments(){
   let data = JSON.parse(localStorage.getItem("payments") || "[]");
-  let div = document.getElementById("paymentList");
-  div.innerHTML = "";
+  let table = document.getElementById("paymentTable");
 
-  data.forEach(p=>{
-    div.innerHTML += `<div class="course-card">${p.name} - ₹${p.amount}</div>`;
-  });
+  table.innerHTML = "";
+
+  data.filter(x => x.user === loggedInUsername)
+      .forEach(x => {
+        table.innerHTML += `
+          <tr>
+            <td>${x.course}</td>
+            <td>${x.amount}</td>
+            <td>${x.mode}</td>
+          </tr>
+        `;
+      });
 }
-
-// auto refresh when opening pages
-document.querySelector("[onclick=\"show('mycourses')\"]")
-.addEventListener("click", loadMyCourses);
-
-document.querySelector("[onclick=\"show('payment')\"]")
-.addEventListener("click", loadPayments);
