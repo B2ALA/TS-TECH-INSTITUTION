@@ -1,112 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>TS TECH PARK SCHOOL</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TS TECH PARK  - Learning Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<body class="light-theme">
 
-<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-microchip"></i> HBW
+        </div>
+        <ul class="nav-links">
+            <li class="active" data-target="home"><i class="fa-solid fa-house"></i> Home</li>
+            <li data-target="courses"><i class="fa-solid fa-book"></i> Courses Offered</li>
+            <li data-target="trainers"><i class="fa-solid fa-chalkboard-user"></i> Trainers</li>
+            <li data-target="gallery"><i class="fa-solid fa-images"></i> Gallery</li>
+            <li data-target="contact"><i class="fa-solid fa-envelope"></i> Contact</li>
+            <li data-target="mycourses" class="auth-only"><i class="fa-solid fa-graduation-cap"></i> My Courses</li>
+            <li data-target="payment" class="auth-only"><i class="fa-solid fa-credit-card"></i> Payments</li>
+        </ul>
+        <div class="nav-right">
+            <div id="date-time-display"></div>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+            <div class="auth-buttons">
+                <button class="btn-login" id="nav-login-btn" data-target="login">Login</button>
+                <button class="btn-signup" id="nav-signup-btn" data-target="signup">Sign Up</button>
+                <span id="user-profile" class="hidden">
+                    <i class="fa-solid fa-user-circle"></i> <span id="username-span"></span>
+                    <button class="btn-logout" id="logout-btn">Logout</button>
+                </span>
+            </div>
+        </div>
+    </nav>
 
-<!-- MENU BAR -->
-<div class="menu">
-  <button onclick="show('HOME')">HOME</button>
-  <button onclick="show('COURSES')">COURSES OFFERED</button>
-  <button onclick="show('TRAINERS')">TRAINERS</button>
-  <button onclick="show('GALLERY')">GALLERY</button>
-  <button onclick="show('CONTACT')">CONTACT</button>
-  <button onclick="show('LOGIN')">LOGIN</button>
-  <button onclick="show('SIGNUP')">SIGNUP</button>
-  <button onclick="show('MYCOURSES')">MY COURSES</button>
-  <button onclick="show('PAYMENT')">PAYMENT HISTORY</button>
-</div>
+    <main class="main-container">
+        
+        <section id="home-panel" class="panel active">
+            <div class="hero">
+                <h1>WELCOME TO HUMAN BUG WIRE</h1>
+                <p>Start your professional journey into cutting edge Automotive & Embedded Technologies.</p>
+                <button class="btn-primary" id="hero-enroll-btn">ENROLL NOW <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <h3>15,000+</h3>
+                    <p>Students Trained</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <h3>35+</h3>
+                    <p>Technical Modules</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-award"></i>
+                    <h3>98%</h3>
+                    <p>Placement Success</p>
+                </div>
+            </div>
+        </section>
 
-<!-- ================= HOME ================= -->
-<section id="HOME" class="page active">
-  <h1>WELCOME TO HUMAN BUG WIRE</h1>
-  <h3>START YOUR JOURNEY INTO AUTOMOTIVE TECH</h3>
-  <button onclick="enrollNow()">ENROLL NOW</button>
-</section>
+        <section id="courses-panel" class="panel">
+            <div class="panel-header">
+                <h2>COURSES OFFERED</h2>
+                <div class="search-filter-box">
+                    <input type="text" id="course-search" placeholder="Search courses...">
+                    <select id="course-filter">
+                        <option value="all">All Modules</option>
+                        <option value="embedded">Embedded/Automotive</option>
+                        <option value="software">Software/Data</option>
+                    </select>
+                </div>
+            </div>
+            <div class="courses-grid" id="courses-grid-container">
+                </div>
+        </section>
 
-<!-- ================= COURSES ================= -->
-<section id="COURSES" class="page">
-  <h2>COURSES OFFERED</h2>
-  <div id="courseContainer"></div>
-</section>
+        <section id="trainers-panel" class="panel">
+            <h2>OUR EXPERT TRAINERS</h2>
+            <div class="trainers-grid">
+                <div class="trainer-card">
+                    <div class="trainer-img-placeholder">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3>Mr. Vijay</h3>
+                    <p class="role">Lead Embedded Systems Architect</p>
+                    <p class="bio">Ex-Automotive Tech Consultant with 12+ years of structural firmware design deployment experience.</p>
+                </div>
+                <div class="trainer-card">
+                    <div class="trainer-img-placeholder">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <h3>Dr. Aruna</h3>
+                    <p class="role">AI & Edge Compute Specialist</p>
+                    <p class="bio">Research specialist focused on localized machine learning workflows for robotic arrays.</p>
+                </div>
+            </div>
+        </section>
 
-<!-- ================= TRAINERS ================= -->
-<section id="TRAINERS" class="page">
-  <h2>OUR TRAINERS</h2>
-  <img src="trainer.jpg" width="200">
-  <p>Mr. VIJAY – Embedded Systems Trainer</p>
-</section>
+        <section id="gallery-panel" class="panel">
+            <h2>CAMPUS GALLERY</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><i class="fa-solid fa-microchip"></i><p>R&D Lab Array</p></div>
+                <div class="gallery-item"><i class="fa-solid fa-network-wired"></i><p>Server Infrastructures</p></div>
+                <div class="gallery-item"><i class="fa-solid fa-graduation-cap"></i><p>Interactive Classrooms</p></div>
+            </div>
+        </section>
 
-<!-- ================= GALLERY ================= -->
-<section id="GALLERY" class="page">
-  <h2>GALLERY</h2>
-  <div class="box">Image 1</div>
-  <div class="box">Image 2</div>
-</section>
+        <section id="contact-panel" class="panel">
+            <div class="form-container">
+                <h2>CONTACT US / ENQUIRE</h2>
+                <form id="contact-form">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" required placeholder="John Doe">
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" required placeholder="john@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="tel" required placeholder="+91 XXXXX XXXXX">
+                    </div>
+                    <div class="input-group">
+                        <label>Queries / Message</label>
+                        <textarea rows="4" required placeholder="Write your context here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Submit Enquiry</button>
+                </form>
+            </div>
+        </section>
 
-<!-- ================= CONTACT ================= -->
-<section id="CONTACT" class="page">
-  <h2>CONTACT US</h2>
-  <input placeholder="Name">
-  <input placeholder="Email">
-  <input placeholder="Phone">
-  <input type="password" placeholder="Password">
-  <textarea placeholder="Queries"></textarea>
-  <button>SEND</button>
-</section>
+        <section id="login-panel" class="panel">
+            <div class="form-container">
+                <h2>LOGIN TO ACCOUNT</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="login-username" required autocomplete="username">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn-submit">Login</button>
+                </form>
+            </div>
+        </section>
 
-<!-- ================= LOGIN ================= -->
-<section id="LOGIN" class="page">
-  <h2>LOGIN</h2>
-  <input id="loginUser" placeholder="Username">
-  <input id="loginPass" type="password" placeholder="Password">
-  <button onclick="login()">LOGIN</button>
-</section>
+        <section id="signup-panel" class="panel">
+            <div class="form-container">
+                <h2>CREATE STUDENT ACCOUNT</h2>
+                <form id="signup-form">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signup-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="signup-phone" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="signup-username" required autocomplete="username">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signup-password" required autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn-submit">Sign Up</button>
+                </form>
+            </div>
+        </section>
 
-<!-- ================= SIGNUP ================= -->
-<section id="SIGNUP" class="page">
-  <h2>SIGN UP</h2>
-  <input id="suName" placeholder="Name">
-  <input id="suEmail" placeholder="Email">
-  <input id="suPhone" placeholder="Phone">
-  <input id="suUser" placeholder="Username">
-  <input id="suPass" type="password" placeholder="Password">
-  <button onclick="signup()">SIGN UP</button>
-</section>
+        <section id="mycourses-panel" class="panel">
+            <div class="panel-header">
+                <h2>MY REGISTERED MODULES</h2>
+                <span class="badge" id="course-count-badge">0 Modules</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Course Name</th>
+                            <th>Mode of Instruction</th>
+                            <th>Status Flag</th>
+                        </tr>
+                    </thead>
+                    <tbody id="my-courses-tbody">
+                        </tbody>
+                </table>
+            </div>
+        </section>
 
-<!-- ================= MY COURSES ================= -->
-<section id="MYCOURSES" class="page">
-  <h2>MY COURSES</h2>
-  <table border="1">
-    <thead>
-      <tr><th>S.No</th><th>Course</th><th>Mode</th></tr>
-    </thead>
-    <tbody id="myCoursesTable"></tbody>
-  </table>
-  <button onclick="loadMyCourses()">REFRESH</button>
-</section>
+        <section id="payment-panel" class="panel">
+            <h2>TRANSACTION HISTORY</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Base + Processing Amount</th>
+                            <th>Payment Gateway Option</th>
+                            <th>Receipt Verification ID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payments-tbody">
+                        </tbody>
+                </table>
+            </div>
+        </section>
 
-<!-- ================= PAYMENT ================= -->
-<section id="PAYMENT" class="page">
-  <h2>PAYMENT HISTORY</h2>
-  <table border="1">
-    <thead>
-      <tr><th>Course</th><th>Amount</th><th>Mode</th></tr>
-    </thead>
-    <tbody id="paymentTable"></tbody>
-  </table>
-  <button onclick="loadPayments()">REFRESH</button>
-</section>
+    </main>
 
-<!-- ================= COURSE HISTORY ================= -->
-<section id="COURSEHISTORY" class="page">
-  <h2>COURSE HISTORY</h2>
-</section>
+    <div class="modal" id="course-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-course-name">Course Details</h3>
+                <span class="close-modal" id="close-modal-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="detail-item"><strong>Base Cost Structure:</strong> <span id="modal-course-price"></span></div>
+                <div class="detail-item"><strong>Allotted Duration:</strong> <span id="modal-course-hours"></span> Hours</div>
+                <div class="detail-item"><strong>Instruction Languages:</strong> <span id="modal-course-mode"></span></div>
+                
+                <hr>
+                <div class="checkout-breakdown">
+                    <div class="breakdown-row"><span>Estimated processing rate (Incl. Tax if applicable):</span> <span id="modal-calc-tax"></span></div>
+                    <div class="breakdown-row final"><strong>Total charge:</strong> <span id="modal-calc-total"></span></div>
+                </div>
 
-<script src="script.js"></script>
+                <div class="input-group">
+                    <label for="modal-payment-select">Select Gateway Method:</label>
+                    <select id="modal-payment-select">
+                        <option value="UPI">UPI Interface Transfer</option>
+                        <option value="Card">Credit/Debit Gateway</option>
+                        <option value="Cash">Direct Cash Submission</option>
+                        <option value="Online">NetBanking Protocol</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="modal-enroll-confirm">Confirm Registration & Pay</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
