@@ -3,436 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TS TECH PARK</title>
+    <title>Human Bug Wire | Automotive Tech Platform</title>
     <style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --background: #f8fafc;
-            --surface: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --bg-main: #0b0f19;
+            --bg-surface: #131a2c;
+            --bg-card: #1c253c;
+            --accent: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #2e3c5a;
+            --success: #10b981;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--background);
+            background-color: var(--bg-main);
             color: var(--text-main);
             display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            overflow: hidden;
         }
 
-        /* Equivalent to Java JFrame sizing and setup */
-        #jframe {
-            width: 1300px;
-            height: 800px;
-            background: var(--surface);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        /* Modern Sidebar Navigation */
+        #sidebar {
+            width: 280px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border: 1px solid var(--border);
+            padding: 25px;
+            flex-shrink: 0;
         }
 
-        /* JMenuBar implementation */
-        #jmenubar {
-            background: #ffffff;
-            border-bottom: 2px solid var(--border);
+        .brand {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            margin-bottom: 40px;
             display: flex;
             align-items: center;
-            padding: 0 20px;
-            height: 60px;
-            flex-shrink: 0;
+            gap: 10px;
+        }
+
+        .brand span {
+            color: var(--accent);
         }
 
         .menu-items {
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .menu-item {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
             cursor: pointer;
-            padding: 10px 12px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            text-transform: uppercase;
+            padding: 14px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
 
         .menu-item:hover, .menu-item.active {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        /* Main Workspace Wrapper */
+        #contentWrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Modern Header Bar */
+        #headerBar {
+            height: 75px;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 40px;
         }
 
         #dateTimeLabel {
-            margin-left: auto; /* Box.createHorizontalGlue() */
-            font-size: 16px;
+            font-size: 15px;
+            font-family: monospace;
             font-weight: bold;
-            color: var(--primary-color);
+            color: var(--text-muted);
+            background: var(--bg-main);
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
         }
 
-        /* mainPanel CardLayout structure */
+        /* View Main Display Panel (CardLayout Concept) */
         #mainPanel {
             flex-grow: 1;
             overflow-y: auto;
-            position: relative;
-            background: #fafafa;
+            padding: 40px;
         }
 
         .panel-card {
             display: none;
-            padding: 40px;
-            width: 100%;
-            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
         }
 
         .panel-card.active-card {
             display: block;
         }
 
-        /* HOME PANEL STYLE */
-        .home-panel {
-            text-align: center;
-            padding-top: 150px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .home-panel h1 { font-size: 36px; margin-bottom: 20px; color: #1e293b; }
-        .home-panel h3 { font-size: 20px; margin-bottom: 40px; color: var(--text-muted); }
+
+        /* Modern Web Components Layout Elements */
+        .panel-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        /* HOME HERO DESIGN */
+        .hero-section {
+            text-align: center;
+            padding: 120px 20px;
+            background: radial-gradient(circle at center, rgba(37,99,235,0.15) 0%, transparent 60%);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        .hero-section h1 { font-size: 48px; font-weight: 900; margin-bottom: 15px; letter-spacing: -1px;}
+        .hero-section p { font-size: 20px; color: var(--text-muted); margin-bottom: 40px; }
         
-        /* Base Button styling equivalent to JButton */
-        .jbutton {
-            background: var(--primary-color);
+        .web-btn {
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 14px 32px;
             font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .jbutton:hover { background: var(--secondary-color); }
-
-        /* NEW FEATURE: Course Filter System Styles */
-        .filter-container {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            align-items: center;
-            background: #fff;
-            padding: 15px;
+            font-weight: 700;
             border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-        .search-input {
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            width: 250px;
-            font-size: 14px;
-        }
-        .filter-btn {
-            background: #f1f5f9;
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px var(--accent-glow);
         }
-        .filter-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+        .web-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
         }
 
-        /* COURSES GRID LAYOUT (Dynamic creation of buttons) */
+        /* SEARCH & SEARCH FILTER BAR TOOLKIT */
+        .filter-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: var(--bg-surface);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            align-items: center;
+        }
+        .search-field {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            min-width: 280px;
+            font-size: 14px;
+            transition: border 0.2s;
+        }
+        .search-field:focus { outline: none; border-color: var(--accent); }
+        .filter-tabs { display: flex; gap: 8px; }
+        .tab-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active, .tab-btn:hover {
+            background: rgba(37, 99, 235, 0.2);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* WEB CARD GRID LAYOUT MODULE */
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
-            padding-bottom: 40px;
         }
-
-        .course-btn {
-            background: white;
+        .course-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            padding: 25px 15px;
-            border-radius: 8px;
-            text-align: center;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .course-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border-color: var(--primary-color);
+        .course-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 15px var(--accent-glow);
         }
-        .course-btn h4 { font-size: 16px; margin-bottom: 10px; color: var(--text-main); }
-        .course-btn p { font-size: 14px; color: var(--primary-color); font-weight: bold; }
+        .course-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #ffffff; line-height: 1.4; }
+        .course-card .price-tag { font-size: 15px; color: var(--success); font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 6px; width: fit-content; }
 
-        /* MODAL STYLING (Equivalent to JDialog/JOptionPane) */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-        }
-        .modal-box h3 { margin-bottom: 20px; font-size: 20px; }
-        .modal-field { margin-bottom: 15px; font-size: 16px; font-weight: bold;}
-        .modal-field span { font-weight: normal; color: var(--text-muted); }
-        .modal-select {
-            width: 100%; padding: 10px; margin-top: 5px;
-            border-radius: 6px; border: 1px solid var(--border); font-size: 16px;
-        }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-
-        /* GENERIC FORM PANEL STYLES (Contact, Login, Signup) */
-        .form-panel {
-            max-width: 500px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
+        /* AUTH & CONTACT FORMS DESIGN */
+        .form-layout {
+            max-width: 520px;
+            margin: 20px auto;
+            background: var(--bg-surface);
+            padding: 40px;
+            border-radius: 16px;
             border: 1px solid var(--border);
         }
-        .form-panel h2 { text-align: center; margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .form-group { margin-bottom: 22px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: var(--text-muted); }
         .form-group input, .form-group textarea {
-            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 15px;
+            width: 100%; padding: 12px 16px; background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 15px;
         }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
 
-        /* JTABLE REPLICATION STYLES */
-        .jtable-container {
-            background: white;
-            border-radius: 8px;
+        /* DATATABLE/JTABLE MODERNIZATION */
+        .table-scroller {
+            background: var(--bg-surface);
+            border-radius: 12px;
             border: 1px solid var(--border);
             overflow: hidden;
             margin-top: 20px;
         }
-        .jtable {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-        .jtable th {
-            background: #f1f5f9;
-            padding: 15px;
-            font-weight: bold;
-            font-size: 16px;
-            border-bottom: 2px solid var(--border);
-        }
-        .jtable td {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            font-size: 15px;
-        }
+        .web-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .web-table th { background: rgba(255,255,255,0.02); padding: 18px; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .web-table td { padding: 18px; border-bottom: 1px solid var(--border); font-size: 15px; color: var(--text-main); }
+        .web-table tr:last-child td { border-bottom: none; }
 
-        /* TRAINERS & GALLERY PANELS */
-        .trainer-card {
-            text-align: center;
-            margin-top: 50px;
+        /* TRAINERS & GALLERY COMPONENT SLICKS */
+        .trainer-wrapper { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; text-align: center; max-width: 400px; margin: 40px auto; }
+        .avatar-placeholder { width: 140px; height: 140px; border-radius: 50%; border: 3px solid var(--accent); margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; background: var(--bg-card); font-weight: bold; font-size: 32px; color: var(--accent); }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+        .gallery-item { background: var(--bg-surface); height: 260px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-muted); font-size: 18px; }
+
+        /* WEB MODAL DIALOG COMPONENT */
+        .modal-mask {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 10, 19, 0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 2000;
         }
-        .trainer-img-box {
-            width: 250px;
-            height: 250px;
-            border: 2px solid var(--text-main);
-            margin: 0 auto 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #e2e8f0;
-            font-weight: bold;
+        .modal-body {
+            background: var(--bg-surface); border: 1px solid var(--border); padding: 35px; border-radius: 16px; width: 440px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
-        .gallery-container {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 50px;
-        }
-        .gallery-box {
-            width: 200px;
-            height: 200px;
-            border: 1px solid black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fff;
-            font-weight: bold;
-        }
+        .modal-body h3 { font-size: 24px; margin-bottom: 20px; font-weight: 800; }
+        .detail-line { margin-bottom: 14px; font-size: 15px; color: var(--text-muted); }
+        .detail-line strong { color: var(--text-main); }
+        .modal-dropdown { width: 100%; padding: 12px; background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 15px; margin-top: 8px; }
+        .modal-foot { display: flex; justify-content: flex-end; gap: 12px; margin-top: 30px; }
     </style>
 </head>
 <body>
 
-    <div id="jframe">
-        <div id="jmenubar">
-            <div class="menu-items">
-                <div class="menu-item active" onclick="switchCard('HOME')">Home</div>
-                <div class="menu-item" onclick="switchCard('COURSES')">Courses Offered</div>
-                <div class="menu-item" onclick="switchCard('TRAINERS')">Trainers</div>
-                <div class="menu-item" onclick="switchCard('GALLERY')">Gallery</div>
-                <div class="menu-item" onclick="switchCard('CONTACT')">Contact</div>
-                <div class="menu-item" onclick="switchCard('LOGIN')">Login</div>
-                <div class="menu-item" onclick="switchCard('SIGNUP')">Signup</div>
-                <div class="menu-item" onclick="switchCard('MYCOURSES')">My Courses</div>
-                <div class="menu-item" onclick="switchCard('PAYMENT')">Payment History</div>
-                <div class="menu-item" onclick="switchCard('COURSEHISTORY')">Course History</div>
-            </div>
-            <div id="dateTimeLabel"></div>
+    <!-- Sidebar Layout Design Template Frame -->
+    <div id="sidebar">
+        <div class="brand">HUMAN<span>BUGWIRE</span></div>
+        <div class="menu-items">
+            <div class="menu-item active" onclick="switchView('HOME')">Home</div>
+            <div class="menu-item" onclick="switchView('COURSES')">Courses Offered</div>
+            <div class="menu-item" onclick="switchView('TRAINERS')">Trainers</div>
+            <div class="menu-item" onclick="switchView('GALLERY')">Gallery</div>
+            <div class="menu-item" onclick="switchView('CONTACT')">Contact Us</div>
+            <div class="menu-item" onclick="switchView('LOGIN')">Login</div>
+            <div class="menu-item" onclick="switchView('SIGNUP')">Signup</div>
+            <div class="menu-item" onclick="switchView('MYCOURSES')">My Courses</div>
+            <div class="menu-item" onclick="switchView('PAYMENT')">Payment History</div>
+            <div class="menu-item" onclick="switchView('COURSEHISTORY')">Course History</div>
+        </div>
+    </div>
+
+    <!-- Right Workspace Framework -->
+    <div id="contentWrapper">
+        <div id="headerBar">
+            <div id="dateTimeLabel">--:--:--</div>
         </div>
 
         <div id="mainPanel">
             
-            <div id="panel-HOME" class="panel-card active-card home-panel">
-                <h1>WELCOME TO HUMAN BUG WIRE</h1>
-                <h3>START YOUR JOURNEY INTO AUTOMOTIVE TECH</h3>
-                <button class="jbutton" onclick="handleEnrollNow()">ENROLL NOW</button>
+            <!-- HOME VIEW -->
+            <div id="view-HOME" class="panel-card active-card">
+                <div class="hero-section">
+                    <h1>WELCOME TO HUMAN BUG WIRE</h1>
+                    <p>START YOUR JOURNEY INTO AUTOMOTIVE TECH</p>
+                    <button class="web-btn" onclick="initiateEnrollment()">ENROLL NOW</button>
+                </div>
             </div>
 
-            <div id="panel-COURSES" class="panel-card">
-                <h2 style="text-align: center; margin-bottom: 20px;">COURSES OFFERED</h2>
+            <!-- COURSES VIEW -->
+            <div id="view-COURSES" class="panel-card">
+                <h2 class="panel-title">Courses Offered</h2>
                 
-                <div class="filter-container">
-                    <input type="text" id="courseSearch" class="search-input" placeholder="Search course title..." oninput="filterCourses()">
-                    <button class="filter-btn active" id="btn-all" onclick="setInstructionFilter('All')">All Inst. Modes</button>
-                    <button class="filter-btn" id="btn-english" onclick="setInstructionFilter('English')">English Only</button>
-                    <button class="filter-btn" id="btn-tamil" onclick="setInstructionFilter('English/Tamil')">English/Tamil</button>
+                <!-- FILTER UTILITY BAR -->
+                <div class="filter-wrapper">
+                    <input type="text" id="courseInput" class="search-field" placeholder="Search course name..." oninput="handleFiltering()">
+                    <div class="filter-tabs">
+                        <button class="tab-btn active" id="tab-All" onclick="updateLanguageFilter('All')">All Configurations</button>
+                        <button class="tab-btn" id="tab-English" onclick="updateLanguageFilter('English')">English Only</button>
+                        <button class="tab-btn" id="tab-Tamil" onclick="updateLanguageFilter('English/Tamil')">English/Tamil</button>
+                    </div>
                 </div>
 
-                <div class="courses-grid" id="coursesGrid"></div>
+                <div class="courses-grid" id="coursesRoot"></div>
             </div>
 
-            <div id="panel-TRAINERS" class="panel-card">
-                <h2 style="text-align: center;">OUR TRAINERS</h2>
-                <div class="trainer-card">
-                    <div class="trainer-img-box">Vijay Portrait Photo</div>
-                    <h3>Mr. VIJAY – Embedded Systems Trainer</h3>
-                </div>
-            </div>
-
-            <div id="panel-GALLERY" class="panel-card">
-                <h2 style="text-align: center;">GALLERY</h2>
-                <div class="gallery-container">
-                    <div class="gallery-box">Image 1</div>
-                    <div class="gallery-box">Image 2</div>
+            <!-- TRAINERS VIEW -->
+            <div id="view-TRAINERS" class="panel-card">
+                <h2 class="panel-title" style="text-align: center;">Our Lead Instruction Team</h2>
+                <div class="trainer-wrapper">
+                    <div class="avatar-placeholder">V</div>
+                    <h3>Mr. VIJAY</h3>
+                    <p style="color: var(--text-muted); margin-top: 6px;">Embedded Systems Technical Trainer</p>
                 </div>
             </div>
 
-            <div id="panel-CONTACT" class="panel-card">
-                <div class="form-panel">
-                    <h2>CONTACT US</h2>
+            <!-- GALLERY VIEW -->
+            <div id="view-GALLERY" class="panel-card">
+                <h2 class="panel-title">Media Gallery</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item">Image Asset Container 1</div>
+                    <div class="gallery-item">Image Asset Container 2</div>
+                </div>
+            </div>
+
+            <!-- CONTACT VIEW -->
+            <div id="view-CONTACT" class="panel-card">
+                <div class="form-layout">
+                    <h2 style="margin-bottom: 25px;">Contact Request Desk</h2>
                     <div class="form-group"><label>Name</label><input type="text"></div>
-                    <div class="form-group"><label>Email</label><input type="email"></div>
-                    <div class="form-group"><label>Phone</label><input type="text"></div>
+                    <div class="form-group"><label>Email Address</label><input type="email"></div>
+                    <div class="form-group"><label>Phone Number</label><input type="text"></div>
                     <div class="form-group"><label>Password</label><input type="password"></div>
-                    <div class="form-group"><label>Queries</label><textarea rows="3"></textarea></div>
-                    <button class="jbutton" style="width:100%">SEND</button>
+                    <div class="form-group"><label>Queries / Message</label><textarea rows="4"></textarea></div>
+                    <button class="web-btn" style="width:100%">SEND QUERY</button>
                 </div>
             </div>
 
-            <div id="panel-LOGIN" class="panel-card">
-                <div class="form-panel">
-                    <h2>LOGIN</h2>
-                    <div class="form-group"><label>Username</label><input type="text" id="loginUser"></div>
-                    <div class="form-group"><label>Password</label><input type="password" id="loginPass"></div>
-                    <button class="jbutton" style="width:100%" onclick="executeLogin()">LOGIN</button>
+            <!-- LOGIN VIEW -->
+            <div id="view-LOGIN" class="panel-card">
+                <div class="form-layout">
+                    <h2 style="margin-bottom: 25px;">Account Login</h2>
+                    <div class="form-group"><label>Username</label><input type="text" id="uLoginName"></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="uLoginPass"></div>
+                    <button class="web-btn" style="width:100%" onclick="processLogin()">LOGIN</button>
                 </div>
             </div>
 
-            <div id="panel-SIGNUP" class="panel-card">
-                <div class="form-panel">
-                    <h2>SIGN UP</h2>
-                    <div class="form-group"><label>Name</label><input type="text" id="signName"></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="signEmail"></div>
-                    <div class="form-group"><label>Phone</label><input type="text" id="signPhone"></div>
-                    <div class="form-group"><label>Username</label><input type="text" id="signUser"></div>
-                    <div class="form-group"><label>Password</label><input type="password" id="signPass"></div>
-                    <button class="jbutton" style="width:100%" onclick="executeSignup()">SIGN UP</button>
+            <!-- SIGNUP VIEW -->
+            <div id="view-SIGNUP" class="panel-card">
+                <div class="form-layout">
+                    <h2 style="margin-bottom: 25px;">Create Secure Account</h2>
+                    <div class="form-group"><label>Full Name</label><input type="text" id="uSignName"></div>
+                    <div class="form-group"><label>Email Address</label><input type="email" id="uSignEmail"></div>
+                    <div class="form-group"><label>Phone Number</label><input type="text" id="uSignPhone"></div>
+                    <div class="form-group"><label>Desired Username</label><input type="text" id="uSignUser"></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="uSignPass"></div>
+                    <button class="web-btn" style="width:100%" onclick="processSignup()">SIGN UP</button>
                 </div>
             </div>
 
-            <div id="panel-MYCOURSES" class="panel-card">
-                <h2 style="text-align: center;">MY COURSES</h2>
-                <div class="jtable-container">
-                    <table class="jtable">
+            <!-- MY COURSES VIEW -->
+            <div id="view-MYCOURSES" class="panel-card">
+                <h2 class="panel-title">My Registered Dashboard</h2>
+                <div class="table-scroller">
+                    <table class="web-table">
                         <thead>
-                            <tr><th>S.No</th><th>Course Name</th><th>Mode</th></tr>
+                            <tr><th>S.No</th><th>Course Matrix Identification</th><th>Instruction Mode</th></tr>
                         </thead>
-                        <tbody id="myCoursesTableBody"></tbody>
+                        <tbody id="myCoursesList"></tbody>
                     </table>
                 </div>
-                <button class="jbutton" style="margin-top:20px;" onclick="refreshMyCourses()">REFRESH</button>
+                <button class="web-btn" style="margin-top:25px;" onclick="loadUserCourses()">REFRESH DASHBOARD</button>
             </div>
 
-            <div id="panel-PAYMENT" class="panel-card">
-                <h2 style="text-align: center;">PAYMENT HISTORY</h2>
-                <div class="jtable-container">
-                    <table class="jtable">
+            <!-- PAYMENT HISTORY VIEW -->
+            <div id="view-PAYMENT" class="panel-card">
+                <h2 class="panel-title">Receipt Tracking Logs</h2>
+                <div class="table-scroller">
+                    <table class="web-table">
                         <thead>
-                            <tr><th>Course Name</th><th>Amount</th><th>Payment Mode</th></tr>
+                            <tr><th>Purchased Course Title</th><th>Invoice Amount</th><th>Selected Channel</th></tr>
                         </thead>
-                        <tbody id="paymentTableBody"></tbody>
+                        <tbody id="paymentHistoryList"></tbody>
                     </table>
                 </div>
-                <button class="jbutton" style="margin-top:20px;" onclick="refreshPayments()">REFRESH</button>
+                <button class="web-btn" style="margin-top:25px;" onclick="loadPaymentLogs()">REFRESH HISTORY</button>
             </div>
 
-            <div id="panel-COURSEHISTORY" class="panel-card">
-                <h2 style="text-align: center; color: var(--text-muted); margin-top: 100px;">Course History Container (Optional Grid)</h2>
+            <!-- COURSE HISTORY VIEW -->
+            <div id="view-COURSEHISTORY" class="panel-card">
+                <h2 class="panel-title">Historical Records Container</h2>
+                <p style="color: var(--text-muted)">Optional grid data structure frame parameters.</p>
             </div>
 
         </div>
     </div>
 
-    <div class="modal-overlay" id="courseModal">
-        <div class="modal-box">
-            <h3 id="modalCourseName">Course Details</h3>
-            <div class="modal-field">Price: <span id="modalPrice"></span></div>
-            <div class="modal-field">Learning Hours: <span id="modalHours"></span></div>
-            <div class="modal-field">Mode of Instruction: <span id="modalMode"></span></div>
-            <div class="modal-field">
-                <label for="modalPaymentMode">Select Payment Mode:</label>
-                <select id="modalPaymentMode" class="modal-select">
-                    <option value="UPI">UPI</option>
-                    <option value="Card">Card</option>
-                    <option value="Cash">Cash</option>
-                    <option value="Online">Online</option>
+    <!-- MODAL POPUP FOR DETAILS (JDialog Simulation) -->
+    <div class="modal-mask" id="checkoutDialog">
+        <div class="modal-body">
+            <h3 id="targetCourseName">Course Package</h3>
+            <div class="detail-line">Rate Structure: <strong id="targetPrice"></strong></div>
+            <div class="detail-line">Total Syllabus Footprint: <strong id="targetHours"></strong> Hours</div>
+            <div class="detail-line">Instruction Delivery: <strong id="targetMode"></strong></div>
+            
+            <div style="margin-top: 20px;">
+                <label style="font-weight: 600; font-size: 14px; color: var(--text-muted);">Choose Payment Portal Gateway:</label>
+                <select id="gatewaySelector" class="modal-dropdown">
+                    <option value="UPI">UPI Payment Network</option>
+                    <option value="Card">Credit / Debit Card Processing</option>
+                    <option value="Cash">Cash Submission Desk</option>
+                    <option value="Online">Online Corporate NetBanking</option>
                 </select>
             </div>
-            <div class="modal-actions">
-                <button class="jbutton" style="background:#64748b;" onclick="closeCourseModal()">Cancel</button>
-                <button class="jbutton" id="modalConfirmBtn">OK</button>
+
+            <div class="modal-foot">
+                <button class="web-btn" style="background: #334155; box-shadow: none;" onclick="dismissCheckout()">Cancel</button>
+                <button class="web-btn" id="commitEnrollmentBtn">CONFIRM ENROLLMENT</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Data Structures directly mapped from Java Core Class properties
-        const coursesMap = {
+        // Data Structures mapped directly from your Java configurations
+        const originalCourses = {
             "C Programming": { name: "C Programming", price: "₹1000000", hours: 40, mode: "English/Tamil" },
             "Power BI": { name: "Power BI", price: "₹100 000", hours: 30, mode: "English" },
             "Python": { name: "Python", price: "₹15,000", hours: 50, mode: "English/Tamil" },
@@ -470,221 +496,214 @@
             "React JS": { name: "React JS", price: "₹18,000", hours: 45, mode: "English" }
         };
 
-        // Application State tracking
-        let loggedInUserId = 0;
-        let loggedInUsername = "";
-        let currentInstructionFilter = "All";
+        // Runtime Global State Engine Properties
+        let currentUserId = 0;
+        let currentUserName = "";
+        let selectedLangFilter = "All";
 
-        // Global Initialization Function
-        window.onload = function() {
-            startDateTimeUpdater();
-            renderCoursesGrid();
-            initMockDatabase();
-        };
+        window.addEventListener('DOMContentLoaded', () => {
+            initStorageEngine();
+            runClockScheduler();
+            renderCoursesInterface();
+        });
 
-        // Mock Database architecture utilizing LocalStorage
-        function initMockDatabase() {
+        // Simulates JDBC Database storage architecture locally
+        function initStorageEngine() {
             if(!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify([]));
             if(!localStorage.getItem('registered_courses')) localStorage.setItem('registered_courses', JSON.stringify([]));
             if(!localStorage.getItem('payments')) localStorage.setItem('payments', JSON.stringify([]));
         }
 
-        // Live Clock Feature Implementation
-        function startDateTimeUpdater() {
+        // Restored SimpleDateFormat continuous timer engine
+        function runClockScheduler() {
             setInterval(() => {
-                const now = new Date();
-                const pad = (n) => n.toString().padStart(2, '0');
-                const formatted = `${pad(now.getDate())}-${pad(now.getMonth()+1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-                document.getElementById('dateTimeLabel').innerText = formatted;
+                const dateObj = new Date();
+                const padZero = (val) => val.toString().padStart(2, '0');
+                const outputStr = `${padZero(dateObj.getDate())}-${padZero(dateObj.getMonth()+1)}-${dateObj.getFullYear()} ${padZero(dateObj.getHours())}:${padZero(dateObj.getMinutes())}:${padZero(dateObj.getSeconds())}`;
+                document.getElementById('dateTimeLabel').innerText = outputStr;
             }, 1000);
         }
 
-        // CardLayout Navigation Management 
-        function switchCard(panelName) {
+        // CardLayout Interface Emulator Router
+        function switchView(targetKey) {
             document.querySelectorAll('.panel-card').forEach(p => p.classList.remove('active-card'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             
-            const targetPanel = document.getElementById(`panel-${panelName}`);
-            if(targetPanel) targetPanel.classList.add('active-card');
+            const selectedPanel = document.getElementById(`view-${targetKey}`);
+            if(selectedPanel) selectedPanel.classList.add('active-card');
             
-            event.currentTarget.classList.add('active');
+            // Set nav active state matching key lookup
+            const currentItem = Array.from(document.querySelectorAll('.menu-item')).find(item => item.getAttribute('onclick').includes(targetKey));
+            if(currentItem) currentItem.classList.add('active');
         }
 
-        // Programmatic Course UI Generation
-        function renderCoursesGrid() {
-            const grid = document.getElementById('coursesGrid');
-            grid.innerHTML = '';
+        // Grid Builder rendering engine
+        function renderCoursesInterface() {
+            const root = document.getElementById('coursesRoot');
+            root.innerHTML = '';
             
-            for(let key in coursesMap) {
-                const course = coursesMap[key];
+            const currentSearch = document.getElementById('courseInput').value.toLowerCase();
+
+            for(let key in originalCourses) {
+                const item = originalCourses[key];
                 
-                // Search filter checks
-                const searchQuery = document.getElementById('courseSearch').value.toLowerCase();
-                if(searchQuery && !course.name.toLowerCase().includes(searchQuery)) continue;
+                if(currentSearch && !item.name.toLowerCase().includes(currentSearch)) continue;
+                if(selectedLangFilter !== "All" && item.mode !== selectedLangFilter) continue;
 
-                // Tab selection filter checks
-                if(currentInstructionFilter !== "All" && course.mode !== currentInstructionFilter) continue;
-
-                const btn = document.createElement('div');
-                btn.className = 'course-btn';
-                btn.innerHTML = `<h4>${course.name}</h4><p>Price: ${course.price}</p>`;
-                btn.onclick = () => showCourseDetails(course);
-                grid.appendChild(btn);
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `<h4>${item.name}</h4><div class="price-tag">Price: ${item.price}</div>`;
+                card.onclick = () => viewSelectedCourse(item);
+                root.appendChild(card);
             }
         }
 
-        // Filter system configuration rules
-        function setInstructionFilter(mode) {
-            currentInstructionFilter = mode;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            if(mode === 'All') document.getElementById('btn-all').classList.add('active');
-            if(mode === 'English') document.getElementById('btn-english').classList.add('active');
-            if(mode === 'English/Tamil') document.getElementById('btn-tamil').classList.add('active');
-            renderCoursesGrid();
+        // Search Filter Button actions
+        function updateLanguageFilter(modeTag) {
+            selectedLangFilter = modeTag;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${modeTag.replace('/', '')}`).classList.add('active');
+            renderCoursesInterface();
         }
 
-        function filterCourses() {
-            renderCoursesGrid();
+        function handleFiltering() {
+            renderCoursesInterface();
         }
 
-        // Enroll button validation workflow matching internal parameters
-        function handleEnrollNow() {
-            if(loggedInUserId === 0) {
-                const choice = confirm("You must login or sign up to enroll.\nClick OK to Login, Cancel to Sign Up.");
-                if(choice) switchCard('LOGIN');
-                else switchCard('SIGNUP');
+        // Action workflow checking user logging bounds
+        function initiateEnrollment() {
+            if(currentUserId === 0) {
+                const routeMode = confirm("You must login or sign up to enroll.\nClick OK to route to Login page. Click CANCEL to route to Registration.");
+                if(routeMode) switchView('LOGIN');
+                else switchView('SIGNUP');
             } else {
-                switchCard('COURSES');
+                switchView('COURSES');
             }
         }
 
-        // Dialog management handler routines
-        function showCourseDetails(course) {
-            if(loggedInUserId === 0) {
+        // Dialog handling controller rules
+        function viewSelectedCourse(course) {
+            if(currentUserId === 0) {
                 alert("You must login first!");
-                switchCard('LOGIN');
+                switchView('LOGIN');
                 return;
             }
 
-            document.getElementById('modalCourseName').innerText = "Course: " + course.name;
-            document.getElementById('modalPrice').innerText = course.price;
-            document.getElementById('modalHours').innerText = course.hours;
-            document.getElementById('modalMode').innerText = course.mode;
+            document.getElementById('targetCourseName').innerText = course.name;
+            document.getElementById('targetPrice').innerText = course.price;
+            document.getElementById('targetHours').innerText = course.hours;
+            document.getElementById('targetMode').innerText = course.mode;
             
-            const modal = document.getElementById('courseModal');
-            modal.style.display = 'flex';
-
-            document.getElementById('modalConfirmBtn').onclick = function() {
-                executeRegistration(course);
-            };
+            document.getElementById('checkoutDialog').style.display = 'flex';
+            document.getElementById('commitEnrollmentBtn').onclick = () => submitEnrollmentTransaction(course);
         }
 
-        function closeCourseModal() {
-            document.getElementById('courseModal').style.display = 'none';
+        function dismissCheckout() {
+            document.getElementById('checkoutDialog').style.display = 'none';
         }
 
-        // Course enrollment transactional database management routines
-        function executeRegistration(course) {
-            const payMode = document.getElementById('modalPaymentMode').value;
+        // Registration Transaction Execution (Matches Java SQL Insertion block)
+        function submitEnrollmentTransaction(course) {
+            const selectedGateway = document.getElementById('gatewaySelector').value;
             
-            let registered = JSON.parse(localStorage.getItem('registered_courses'));
-            registered.push({
-                user_id: loggedInUserId,
+            let regRecords = JSON.parse(localStorage.getItem('registered_courses'));
+            regRecords.push({
+                user_id: currentUserId,
                 course_name: course.name,
                 mode: course.mode,
-                payment_mode: payMode
+                payment_mode: selectedGateway
             });
-            localStorage.setItem('registered_courses', JSON.stringify(registered));
+            localStorage.setItem('registered_courses', JSON.stringify(regRecords));
 
-            let cleanPrice = course.price.replace(/[^0-9.]/g, '');
-            let payments = JSON.parse(localStorage.getItem('payments'));
-            payments.push({
-                user_id: loggedInUserId,
+            let formattedAmt = course.price.replace(/[^0-9.]/g, '');
+            let payRecords = JSON.parse(localStorage.getItem('payments'));
+            payRecords.push({
+                user_id: currentUserId,
                 course_name: course.name,
-                amount: cleanPrice,
-                payment_mode: payMode
+                amount: formattedAmt,
+                payment_mode: selectedGateway
             });
-            localStorage.setItem('payments', JSON.stringify(payments));
+            localStorage.setItem('payments', JSON.stringify(payRecords));
 
             alert("Successfully Registered for " + course.name);
-            closeCourseModal();
+            dismissCheckout();
         }
 
-        // Login authentication module logic block
-        function executeLogin() {
-            const user = document.getElementById('loginUser').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
+        // Authentication Controller Block Logic
+        function processLogin() {
+            const userText = document.getElementById('uLoginName').value.trim();
+            const passText = document.getElementById('uLoginPass').value.trim();
 
-            if(!user || !pass) {
+            if(!userText || !passText) {
                 alert("Please enter username and password");
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('users'));
-            const found = users.find(u => u.username === user && u.password === pass);
+            const dbUsers = JSON.parse(localStorage.getItem('users'));
+            const matchingRecord = dbUsers.find(u => u.username === userText && u.password === passText);
 
-            if(found) {
-                loggedInUserId = found.id;
-                loggedInUsername = user;
-                alert("Login Successful! Welcome " + user);
-                switchCard('HOME');
+            if(matchingRecord) {
+                currentUserId = matchingRecord.id;
+                currentUserName = userText;
+                alert("Login Successful! Welcome " + userText);
+                switchView('HOME');
             } else {
                 alert("Invalid Username or Password");
             }
         }
 
-        // Signup execution transactional operation logic
-        function executeSignup() {
-            const name = document.getElementById('signName').value.trim();
-            const email = document.getElementById('signEmail').value.trim();
-            const phone = document.getElementById('signPhone').value.trim();
-            const user = document.getElementById('signUser').value.trim();
-            const pass = document.getElementById('signPass').value.trim();
+        // Signup execution transactional logic engine
+        function processSignup() {
+            const name = document.getElementById('uSignName').value.trim();
+            const email = document.getElementById('uSignEmail').value.trim();
+            const phone = document.getElementById('uSignPhone').value.trim();
+            const user = document.getElementById('uSignUser').value.trim();
+            const pass = document.getElementById('uSignPass').value.trim();
 
             if(!name || !email || !user || !pass) {
                 alert("Please fill all required fields");
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem('users'));
-            const newId = users.length + 1;
+            let currentUsersList = JSON.parse(localStorage.getItem('users'));
+            const assignedId = currentUsersList.length + 1;
             
-            users.push({ id: newId, name, email, phone, username: user, password: pass });
-            localStorage.setItem('users', JSON.stringify(users));
+            currentUsersList.push({ id: assignedId, name, email, phone, username: user, password: pass });
+            localStorage.setItem('users', JSON.stringify(currentUsersList));
 
-            loggedInUserId = newId;
-            loggedInUsername = user;
+            currentUserId = assignedId;
+            currentUserName = user;
             
             alert("Signup Successful! Logged in as: " + user);
-            switchCard('HOME');
+            switchView('HOME');
         }
 
-        // Table updates parsing arrays matching table metrics structures
-        function refreshMyCourses() {
-            if(loggedInUserId === 0) { alert("Please login first!"); return; }
-            const tbody = document.getElementById('myCoursesTableBody');
-            tbody.innerHTML = '';
+        // UI Table Populator Engine Data Processors
+        function loadUserCourses() {
+            if(currentUserId === 0) { alert("Please login first!"); return; }
+            const rootTarget = document.getElementById('myCoursesList');
+            rootTarget.innerHTML = '';
 
-            const registered = JSON.parse(localStorage.getItem('registered_courses'));
-            const userCourses = registered.filter(c => c.user_id === loggedInUserId);
+            const dataArray = JSON.parse(localStorage.getItem('registered_courses'));
+            const matches = dataArray.filter(item => item.user_id === currentUserId);
 
-            userCourses.forEach((c, index) => {
-                const row = `<tr><td>${index + 1}</td><td>${c.course_name}</td><td>${c.mode}</td></tr>`;
-                tbody.innerHTML += row;
+            matches.forEach((item, idx) => {
+                const markup = `<tr><td>${idx + 1}</td><td>${item.course_name}</td><td>${item.mode}</td></tr>`;
+                rootTarget.innerHTML += markup;
             });
         }
 
-        function refreshPayments() {
-            if(loggedInUserId === 0) { alert("Please login first!"); return; }
-            const tbody = document.getElementById('paymentTableBody');
-            tbody.innerHTML = '';
+        function loadPaymentLogs() {
+            if(currentUserId === 0) { alert("Please login first!"); return; }
+            const rootTarget = document.getElementById('paymentHistoryList');
+            rootTarget.innerHTML = '';
 
-            const payments = JSON.parse(localStorage.getItem('payments'));
-            const userPayments = payments.filter(p => p.user_id === loggedInUserId);
+            const dataArray = JSON.parse(localStorage.getItem('payments'));
+            const matches = dataArray.filter(item => item.user_id === currentUserId);
 
-            userPayments.forEach(p => {
-                const row = `<tr><td>${p.course_name}</td><td>₹${p.amount}</td><td>${p.payment_mode}</td></tr>`;
-                tbody.innerHTML += row;
+            matches.forEach(item => {
+                const markup = `<tr><td>${item.course_name}</td><td style="color:var(--success); font-weight:700;">₹${item.amount}</td><td>${item.payment_mode}</td></tr>`;
+                rootTarget.innerHTML += markup;
             });
         }
     </script>
