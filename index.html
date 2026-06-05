@@ -1,567 +1,377 @@
-package hbw;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Timer;
-import java.sql.*;
-import java.util.ArrayList;
-
-public class HBW extends JFrame {
-
-    CardLayout card;
-    JPanel mainPanel;
-
-    HashMap<String, Course> coursesMap = new HashMap<>();
-
-    JLabel dateTimeLabel;
-
-    int loggedInUserId = 0;      // Currently logged-in user ID
-    String loggedInUsername = ""; // Username of logged-in user
-
-    public HBW() {
-        setTitle("Human Bug Wire");
-        setSize(1300, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        // ===== Add Courses =====
-        addCourses();
-
-        // ===== Menu Bar =====
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setFont(new Font("Arial", Font.BOLD, 20));
-
-        JMenu home = new JMenu("HOME");
-        JMenu courses = new JMenu("COURSES OFFERED");
-        JMenu trainers = new JMenu("TRAINERS");
-        JMenu gallery = new JMenu("GALLERY");
-        JMenu contact = new JMenu("CONTACT");
-        JMenu login = new JMenu("LOGIN");
-        JMenu signup = new JMenu("SIGNUP");
-        JMenu myCourses = new JMenu("MY COURSES");
-        JMenu payment = new JMenu("PAYMENT HISTORY");
-        JMenu courseHistory = new JMenu("COURSE HISTORY");
-
-        Font menuFont = new Font("Arial", Font.BOLD, 20);
-        home.setFont(menuFont);
-        courses.setFont(menuFont);
-        trainers.setFont(menuFont);
-        gallery.setFont(menuFont);
-        contact.setFont(menuFont);
-        login.setFont(menuFont);
-        signup.setFont(menuFont);
-        myCourses.setFont(menuFont);
-        payment.setFont(menuFont);
-        courseHistory.setFont(menuFont);
-
-        menuBar.add(home);
-        menuBar.add(courses);
-        menuBar.add(trainers);
-        menuBar.add(gallery);
-        menuBar.add(contact);
-        menuBar.add(login);
-        menuBar.add(signup);
-        menuBar.add(myCourses);
-        menuBar.add(payment);
-        menuBar.add(courseHistory);
-
-        // ===== Date & Time =====
-        /*dateTimeLabel = new JLabel();
-        dateTimeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        dateTimeLabel.setForeground(Color.BLUE);
-        menuBar.add(Box.createHorizontalGlue()); // pushes dateTimeLabel to the right
-        menuBar.add(dateTimeLabel);
-        //startDateTimeUpdater(); */ // updates every second
-
-        setJMenuBar(menuBar);
-
-        // ===== Main Panel =====
-        card = new CardLayout();
-        mainPanel = new JPanel(card);
-
-        mainPanel.add(homePanel(), "HOME");
-        mainPanel.add(coursesPanel(), "COURSES");
-        mainPanel.add(trainerPanel(), "TRAINERS");
-        mainPanel.add(galleryPanel(), "GALLERY");
-        mainPanel.add(contactPanel(), "CONTACT");
-        mainPanel.add(loginPanel(), "LOGIN");
-        mainPanel.add(signupPanel(), "SIGNUP");
-        mainPanel.add(myCoursesPanel(), "MYCOURSES");
-        mainPanel.add(paymentHistoryPanel(), "PAYMENT");
-        mainPanel.add(courseHistoryPanel(), "COURSEHISTORY");
-
-        add(mainPanel);
-
-        // ===== Menu Actions =====
-        home.addMenuListener(new MenuSwitch(card, mainPanel, "HOME"));
-        courses.addMenuListener(new MenuSwitch(card, mainPanel, "COURSES"));
-        trainers.addMenuListener(new MenuSwitch(card, mainPanel, "TRAINERS"));
-        gallery.addMenuListener(new MenuSwitch(card, mainPanel, "GALLERY"));
-        contact.addMenuListener(new MenuSwitch(card, mainPanel, "CONTACT"));
-        login.addMenuListener(new MenuSwitch(card, mainPanel, "LOGIN"));
-        signup.addMenuListener(new MenuSwitch(card, mainPanel, "SIGNUP"));
-        myCourses.addMenuListener(new MenuSwitch(card, mainPanel, "MYCOURSES"));
-        payment.addMenuListener(new MenuSwitch(card, mainPanel, "PAYMENT"));
-        courseHistory.addMenuListener(new MenuSwitch(card, mainPanel, "COURSEHISTORY"));
-    }
-
-    // ===== Add Courses =====
-    void addCourses() {
-        coursesMap.put("C Programming", new Course("C Programming","₹1000000",40,"English/Tamil"));
-        coursesMap.put("Power BI", new Course("Power BI","₹100 000",30,"English"));
-        coursesMap.put("Python", new Course("Python","₹15,000",50,"English/Tamil"));
-        coursesMap.put("Java", new Course("Java","₹18,000",60,"English"));
-        coursesMap.put("Embedded Systems", new Course("Embedded Systems","₹50,000 + 18% GST",120,"English/Tamil"));
-        coursesMap.put("Automotive Embedded", new Course("Automotive Embedded","₹60,000 + 18% GST",130,"English/Tamil"));
-        coursesMap.put("Edge AI", new Course("Edge AI","₹70,000 + 18% GST",100,"English"));
-        coursesMap.put("IoT & Robotics", new Course("IoT & Robotics","₹55,000 + 18% GST",110,"English/Tamil"));
-        coursesMap.put("Cloud Computing", new Course("Cloud Computing","₹25,000",50,"English"));
-        coursesMap.put("Data Science", new Course("Data Science","₹40,000",80,"English/Tamil"));
-        coursesMap.put("Machine Learning", new Course("Machine Learning","₹45,000",90,"English"));
-        coursesMap.put("AI", new Course("AI","₹50,000",100,"English"));
-        coursesMap.put("Cybersecurity", new Course("Cybersecurity","₹35,000",70,"English"));
-        coursesMap.put("Web Development", new Course("Web Development","₹20,000",60,"English/Tamil"));
-        coursesMap.put("Mobile App Development", new Course("Mobile App Development","₹30,000",70,"English"));
-        coursesMap.put("Database Management", new Course("Database Management","₹15,000",50,"English"));
-        coursesMap.put("Networking", new Course("Networking","₹20,000",60,"English/Tamil"));
-        coursesMap.put("Linux", new Course("Linux","₹10,000",40,"English"));
-        coursesMap.put("Ethical Hacking", new Course("Ethical Hacking","₹30,000",60,"English"));
-        coursesMap.put("MATLAB", new Course("MATLAB","₹25,000",50,"English/Tamil"));
-        coursesMap.put("Arduino", new Course("Arduino","₹12,000",30,"English/Tamil"));
-        coursesMap.put("Raspberry Pi", new Course("Raspberry Pi","₹15,000",40,"English/Tamil"));
-        coursesMap.put("PLC Programming", new Course("PLC Programming","₹35,000",60,"English"));
-        coursesMap.put("Industrial Automation", new Course("Industrial Automation","₹45,000",80,"English"));
-        coursesMap.put("Electronics Basics", new Course("Electronics Basics","₹10,000",30,"English/Tamil"));
-        coursesMap.put("Signal Processing", new Course("Signal Processing","₹20,000",50,"English"));
-        coursesMap.put("VLSI Design", new Course("VLSI Design","₹50,000",100,"English"));
-        coursesMap.put("Robotics Basics", new Course("Robotics Basics","₹25,000",50,"English/Tamil"));
-        coursesMap.put("UI/UX Design", new Course("UI/UX Design","₹15,000",40,"English"));
-        coursesMap.put("Tableau", new Course("Tableau","₹12,000",30,"English/Tamil"));
-        coursesMap.put("SQL", new Course("SQL","₹10,000",25,"English"));
-        coursesMap.put("Excel Advanced", new Course("Excel Advanced","₹8,000",20,"English"));
-        coursesMap.put("DevOps", new Course("DevOps","₹30,000",50,"English"));
-        coursesMap.put("JavaScript", new Course("JavaScript","₹15,000",40,"English"));
-        coursesMap.put("React JS", new Course("React JS","₹18,000",45,"English"));
-    }
-
-    // ===== HOME PANEL =====
-    JPanel homePanel() {
-        JPanel p = new JPanel(null);
-
-        JLabel title = new JLabel("WELCOME TO HUMAN BUG WIRE");
-        title.setFont(new Font("Arial", Font.BOLD, 36));
-        title.setBounds(200, 50, 900, 50);
-
-        JLabel subtitle = new JLabel("START YOUR JOURNEY INTO AUTOMOTIVE TECH");
-        subtitle.setFont(new Font("Arial", Font.BOLD, 24));
-        subtitle.setBounds(300, 120, 700, 30);
-
-        JButton enroll = new JButton("ENROLL NOW");
-        enroll.setFont(new Font("Arial", Font.BOLD, 20));
-        enroll.setBounds(520, 200, 200, 50);
-        enroll.addActionListener(e -> {
-            if(loggedInUserId == 0) {
-                String[] options = {"Login", "Sign Up"};
-                int choice = JOptionPane.showOptionDialog(this,
-                        "You must login or sign up to enroll",
-                        "Enroll Now",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE,
-                        null,
-                        options,
-                        options[0]);
-                if (choice == 0) card.show(mainPanel, "LOGIN");
-                else if (choice == 1) card.show(mainPanel, "SIGNUP");
-            }
-        });
-
-        p.add(title);
-        p.add(subtitle);
-        p.add(enroll);
-        return p;
-    }
-
-    // ===== COURSES PANEL =====
-    JPanel coursesPanel() {
-        JPanel panel = new JPanel(null);
-        panel.setPreferredSize(new Dimension(1200, 1600));
-
-        JLabel lbl = new JLabel("COURSES OFFERED");
-        lbl.setFont(new Font("Arial", Font.BOLD, 28));
-        lbl.setBounds(450, 20, 400, 40);
-        panel.add(lbl);
-
-        int x = 50, y = 100, count = 0;
-        for (String courseName : coursesMap.keySet()) {
-            Course c = coursesMap.get(courseName);
-            JButton btn = new JButton("<html><center>" + courseName + "<br/>Price: " + c.price + "</center></html>");
-            btn.setFont(new Font("Arial", Font.BOLD, 16));
-            btn.setBounds(x, y, 250, 100);
-            btn.addActionListener(e -> showCourseDetails(c));
-            panel.add(btn);
-            x += 270;
-            count++;
-            if (count % 4 == 0) { x = 50; y += 150; }
-        }
-
-        JScrollPane scroll = new JScrollPane(panel);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scroll.getVerticalScrollBar().setUnitIncrement(16);
-
-        JPanel wrapper = new JPanel(new BorderLayout());
-        wrapper.add(scroll, BorderLayout.CENTER);
-        return wrapper;
-    }
-
-    // ===== SHOW COURSE DETAILS =====
-    void showCourseDetails(Course c) {
-        if(loggedInUserId == 0) {
-            JOptionPane.showMessageDialog(this, "You must login first!");
-            card.show(mainPanel, "LOGIN");
-            return;
-        }
-
-        JPanel p = new JPanel(new GridLayout(6,1,10,10));
-        Font labelFont = new Font("Arial", Font.BOLD, 18);
-
-        JLabel courseLabel = new JLabel("Course: " + c.name);
-        courseLabel.setFont(labelFont);
-        p.add(courseLabel);
-
-        JLabel priceLabel = new JLabel("Price: " + c.price);
-        priceLabel.setFont(labelFont);
-        p.add(priceLabel);
-
-        JLabel hoursLabel = new JLabel("Learning Hours: " + c.learningHours);
-        hoursLabel.setFont(labelFont);
-        p.add(hoursLabel);
-
-        JLabel modeLabel = new JLabel("Mode of Instruction: " + c.modeOfInstruction);
-        modeLabel.setFont(labelFont);
-        p.add(modeLabel);
-
-        JLabel paymentLabel = new JLabel("Select Payment Mode:");
-        paymentLabel.setFont(labelFont);
-        p.add(paymentLabel);
-
-        String[] payments = {"UPI","Card","Cash","Online"};
-        JComboBox<String> paymentMode = new JComboBox<>(payments);
-        paymentMode.setFont(labelFont);
-        p.add(paymentMode);
-
-        JOptionPane optionPane = new JOptionPane(p, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-        JDialog dialog = optionPane.createDialog(this, "Course Details & Registration");
-        dialog.setSize(400, 400);
-        dialog.setResizable(true);
-        dialog.setVisible(true);
-
-        Object selectedValue = optionPane.getValue();
-        if (selectedValue != null && (int)selectedValue == JOptionPane.OK_OPTION) {
-            try (Connection conn = DBHelper.getConnection()) {
-                String paymentModeSelected = paymentMode.getSelectedItem().toString();
-                // Insert into registered_courses
-                String sql1 = "INSERT INTO registered_courses(user_id, course_name, mode, payment_mode) VALUES(?,?,?,?)";
-                PreparedStatement pst1 = conn.prepareStatement(sql1);
-                pst1.setInt(1, loggedInUserId);
-                pst1.setString(2, c.name);
-                pst1.setString(3, c.modeOfInstruction);
-                pst1.setString(4, paymentModeSelected);
-                pst1.executeUpdate();
-
-                // Insert into payments
-                String price = c.price.replaceAll("[^0-9.]", "");
-                String sql2 = "INSERT INTO payments(user_id, course_name, amount, payment_mode) VALUES(?,?,?,?)";
-                PreparedStatement pst2 = conn.prepareStatement(sql2);
-                pst2.setInt(1, loggedInUserId);
-                pst2.setString(2, c.name);
-                pst2.setString(3, price);
-                pst2.setString(4, paymentModeSelected);
-                pst2.executeUpdate();
-
-                JOptionPane.showMessageDialog(this, "Successfully Registered for " + c.name);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage());
-            }
-        }
-    }
-
-    // ===== TRAINERS PANEL =====
-    JPanel trainerPanel(){
-        JPanel p = new JPanel(null);
-        JLabel lbl = new JLabel("OUR TRAINERS");
-        lbl.setFont(new Font("Arial", Font.BOLD,28));
-        lbl.setBounds(500,30,400,30);
-        p.add(lbl);
-
-        JLabel trainerBox = new JLabel();
-        trainerBox.setBounds(450,100,250,250);
-        trainerBox.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-        // ===== ADD IMAGE =====
-        ImageIcon trainerImg = new ImageIcon("C:\\Users\\BALA T\\OneDrive\\Pictures\\Screenshots\\Screenshot 2026-01-08 220810.png");
-        Image img = trainerImg.getImage().getScaledInstance(trainerBox.getWidth(), trainerBox.getHeight(), Image.SCALE_SMOOTH);
-        trainerBox.setIcon(new ImageIcon(img));
-
-        JLabel name = new JLabel("Mr. VIJAY  – Embedded Systems Trainer");
-        name.setBounds(430,370,400,30);
-
-        p.add(trainerBox);
-        p.add(name);
-        return p;
-    }
-
-    
-
-    // ===== GALLERY PANEL =====
-    JPanel galleryPanel(){
-        JPanel p = new JPanel(null);
-        JLabel lbl = new JLabel("GALLERY"); lbl.setFont(new Font("Arial",Font.BOLD,28)); lbl.setBounds(520,30,300,30); p.add(lbl);
-        JLabel img1 = new JLabel("Image 1",SwingConstants.CENTER); img1.setBounds(300,120,200,200); img1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        JLabel img2 = new JLabel("Image 2",SwingConstants.CENTER); img2.setBounds(600,120,200,200); img2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        p.add(img1); p.add(img2); return p;
-    }
-
-    // ===== CONTACT PANEL =====
-    JPanel contactPanel(){
-        JPanel p = new JPanel(null);
-        JLabel lbl = new JLabel("CONTACT US"); lbl.setFont(new Font("Arial",Font.BOLD,28)); lbl.setBounds(500,30,400,30);
-
-        JTextField nameField = new JTextField(); nameField.setBounds(450,100,300,30);
-        JTextField emailField = new JTextField(); emailField.setBounds(450,140,300,30);
-        JTextField phoneField = new JTextField(); phoneField.setBounds(450,180,300,30);
-        JPasswordField passField = new JPasswordField(); passField.setBounds(450,220,300,30);
-        JTextArea queryArea = new JTextArea(); queryArea.setBounds(450,260,300,80);
-        JButton send = new JButton("SEND"); send.setBounds(550,360,100,30);
-
-        p.add(lbl);
-        p.add(new JLabel("Name")).setBounds(350,100,100,30); p.add(nameField);
-        p.add(new JLabel("Email")).setBounds(350,140,100,30); p.add(emailField);
-        p.add(new JLabel("Phone")).setBounds(350,180,100,30); p.add(phoneField);
-        p.add(new JLabel("Password")).setBounds(350,220,100,30); p.add(passField);
-        p.add(new JLabel("Queries")).setBounds(350,260,100,30); p.add(queryArea);
-        p.add(send);
-
-        return p;
-    }
-
-    // ===== LOGIN PANEL =====
-    JPanel loginPanel(){
-        JPanel p = new JPanel(null);
-        JLabel lbl = new JLabel("LOGIN"); lbl.setFont(new Font("Arial",Font.BOLD,28)); lbl.setBounds(540,50,200,30);
-        JTextField usernameField = new JTextField(); usernameField.setBounds(450,120,300,30);
-        JPasswordField passField = new JPasswordField(); passField.setBounds(450,170,300,30);
-        JButton loginBtn = new JButton("LOGIN"); loginBtn.setBounds(550,220,100,30);
-
-        loginBtn.addActionListener(e -> {
-            String username = usernameField.getText().trim();
-            String password = new String(passField.getPassword()).trim();
-
-            if(username.isEmpty() || password.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Please enter username and password");
-                return;
-            }
-
-            try (Connection conn = DBHelper.getConnection()) {
-                String sql = "SELECT id FROM users WHERE username=? AND password=?";
-                PreparedStatement pst = conn.prepareStatement(sql);
-                pst.setString(1, username);
-                pst.setString(2, password);
-                ResultSet rs = pst.executeQuery();
-
-                if(rs.next()){
-                    loggedInUserId = rs.getInt("id");
-                    loggedInUsername = username;
-                    JOptionPane.showMessageDialog(this, "Login Successful! Welcome " + username);
-                    card.show(mainPanel, "HOME");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Invalid Username or Password");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-            }
-        });
-
-        p.add(lbl); p.add(new JLabel("Username")).setBounds(350,120,100,30); p.add(usernameField);
-        p.add(new JLabel("Password")).setBounds(350,170,100,30); p.add(passField);
-        p.add(loginBtn);
-        return p;
-    }
-
-    // ===== SIGNUP PANEL =====
-    JPanel signupPanel(){
-        JPanel p = new JPanel(null);
-        JLabel lbl = new JLabel("SIGN UP"); lbl.setFont(new Font("Arial",Font.BOLD,28)); lbl.setBounds(520,50,200,30);
-
-        JTextField nameField = new JTextField(); nameField.setBounds(450,120,300,30);
-        JTextField emailField = new JTextField(); emailField.setBounds(450,160,300,30);
-        JTextField phoneField = new JTextField(); phoneField.setBounds(450,200,300,30);
-        JTextField usernameField = new JTextField(); usernameField.setBounds(450,240,300,30);
-        JPasswordField passField = new JPasswordField(); passField.setBounds(450,280,300,30);
-
-        JButton signupBtn = new JButton("SIGN UP"); signupBtn.setBounds(550,330,100,30);
-
-        signupBtn.addActionListener(e -> {
-            String name = nameField.getText().trim();
-            String email = emailField.getText().trim();
-            String phone = phoneField.getText().trim();
-            String username = usernameField.getText().trim();
-            String password = new String(passField.getPassword()).trim();
-
-            if(name.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Please fill all required fields");
-                return;
-            }
-
-            try (Connection conn = DBHelper.getConnection()) {
-                String sql = "INSERT INTO users(name,email,phone,username,password) VALUES(?,?,?,?,?)";
-                PreparedStatement pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                pst.setString(1, name); pst.setString(2,email); pst.setString(3,phone);
-                pst.setString(4, username); pst.setString(5,password);
-
-                int rows = pst.executeUpdate();
-                if(rows > 0) {
-                    ResultSet rs = pst.getGeneratedKeys();
-                    if(rs.next()){
-                        loggedInUserId = rs.getInt(1);
-                        loggedInUsername = username;
-                    }
-                    JOptionPane.showMessageDialog(this, "Signup Successful! Logged in as: " + username);
-                    card.show(mainPanel, "HOME");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-            }
-        });
-
-        p.add(lbl);
-        p.add(new JLabel("Name")).setBounds(350,120,100,30); p.add(nameField);
-        p.add(new JLabel("Email")).setBounds(350,160,100,30); p.add(emailField);
-        p.add(new JLabel("Phone")).setBounds(350,200,100,30); p.add(phoneField);
-        p.add(new JLabel("Username")).setBounds(350,240,100,30); p.add(usernameField);
-        p.add(new JLabel("Password")).setBounds(350,280,100,30); p.add(passField);
-        p.add(signupBtn);
-
-        return p;
-    }
-
-    // ===== MY COURSES PANEL =====
-    JPanel myCoursesPanel(){
-        JPanel p = new JPanel(new BorderLayout());
-        JLabel lbl = new JLabel("MY COURSES", SwingConstants.CENTER); lbl.setFont(new Font("Arial",Font.BOLD,28));
-        p.add(lbl, BorderLayout.NORTH);
-
-        String[] columns = {"S.No","Course Name","Mode"};
-        JTable table = new JTable(new Object[0][3], columns);
-        table.setFont(new Font("Arial",Font.BOLD,16));
-        table.getTableHeader().setFont(new Font("Arial",Font.BOLD,16));
-
-        JButton refresh = new JButton("REFRESH");
-        refresh.addActionListener(e -> {
-            if(loggedInUserId == 0) { JOptionPane.showMessageDialog(this,"Please login first!"); return; }
-            try (Connection conn = DBHelper.getConnection()) {
-                String sql = "SELECT course_name, mode FROM registered_courses WHERE user_id=?";
-                PreparedStatement pst = conn.prepareStatement(sql);
-                pst.setInt(1, loggedInUserId);
-                ResultSet rs = pst.executeQuery();
-
-                ArrayList<Object[]> rowsList = new ArrayList<>();
-                int count = 1;
-                while(rs.next()){
-                    rowsList.add(new Object[]{count++, rs.getString("course_name"), rs.getString("mode")});
-                }
-                Object[][] rows = rowsList.toArray(new Object[0][]);
-                table.setModel(new DefaultTableModel(rows, columns));
-            } catch (SQLException ex) { ex.printStackTrace(); }
-        });
-
-        p.add(new JScrollPane(table), BorderLayout.CENTER);
-        p.add(refresh, BorderLayout.SOUTH);
-        return p;
-    }
-
-    // ===== PAYMENT HISTORY PANEL =====
-    JPanel paymentHistoryPanel(){
-        JPanel p = new JPanel(new BorderLayout());
-        JLabel lbl = new JLabel("PAYMENT HISTORY", SwingConstants.CENTER); lbl.setFont(new Font("Arial",Font.BOLD,28));
-        p.add(lbl, BorderLayout.NORTH);
-
-        String[] columns = {"Course Name","Amount","Payment Mode"};
-        JTable table = new JTable(new Object[0][3], columns);
-        table.setFont(new Font("Arial",Font.BOLD,16));
-        table.getTableHeader().setFont(new Font("Arial",Font.BOLD,16));
-
-        JButton refresh = new JButton("REFRESH");
-        refresh.addActionListener(e -> {
-            if(loggedInUserId == 0) { JOptionPane.showMessageDialog(this,"Please login first!"); return; }
-            try (Connection conn = DBHelper.getConnection()) {
-                String sql = "SELECT course_name, amount, payment_mode FROM payments WHERE user_id=?";
-                PreparedStatement pst = conn.prepareStatement(sql);
-                pst.setInt(1, loggedInUserId);
-                ResultSet rs = pst.executeQuery();
-
-                ArrayList<Object[]> rowsList = new ArrayList<>();
-                while(rs.next()){
-                    rowsList.add(new Object[]{rs.getString("course_name"), rs.getString("amount"), rs.getString("payment_mode")});
-                }
-                Object[][] rows = rowsList.toArray(new Object[0][]);
-                table.setModel(new DefaultTableModel(rows, columns));
-            } catch (SQLException ex) { ex.printStackTrace(); }
-        });
-
-        p.add(new JScrollPane(table), BorderLayout.CENTER);
-        p.add(refresh, BorderLayout.SOUTH);
-        return p;
-    }
-
-    // ===== COURSE HISTORY PANEL (OPTIONAL) =====
-    JPanel courseHistoryPanel(){ return new JPanel(); }
-
-    // ===== DATE TIME UPDATER =====
-    /*void startDateTimeUpdater(){
-        Timer t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask(){
-            public void run(){
-                SwingUtilities.invokeLater(() -> {
-                    dateTimeLabel.setText(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
-                });
-            }
-        },0,1000);
-    }*/
-
-    // ===== MENU SWITCH HELPER =====
-    class MenuSwitch implements MenuListener{
-        CardLayout card; JPanel main;
-        String panel;
-        MenuSwitch(CardLayout card, JPanel main, String panel){ this.card=card; this.main=main; this.panel=panel;}
-        public void menuSelected(MenuEvent e){ card.show(main,panel);}
-        public void menuDeselected(MenuEvent e){}
-        public void menuCanceled(MenuEvent e){}
-    }
-
-    // ===== COURSE CLASS =====
-    class Course {
-        String name, price, modeOfInstruction;
-        int learningHours;
-        Course(String name,String price,int hours,String mode){ this.name=name; this.price=price; this.learningHours=hours; this.modeOfInstruction=mode; }
-    }
-
-    // ===== MAIN =====
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(() -> {
-            new HBW().setVisible(true);
-        });
-    }
-}
-
-
-dont change the exsiting feature 
-add some new feature 
-i need in html js css
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Bug Wire | Java Swing Web Terminal Translation</title>
+    <style>
+        /* SWING THEME PALETTE COLOR SCHEMES */
+        :root {
+            --bg-canvas: #060913;
+            --bg-window: #0b1120;
+            --bg-field: #1e293b;
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.35);
+            --accent-green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --border-color: #1e293b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-canvas); color: var(--text-main); display: flex; min-height: 100vh; overflow: hidden; }
+
+        /* SIDEBAR NAVIGATION RAIL (JPanel BorderLayout.WEST) */
+        #sideNavRail {
+            width: 280px; background: var(--bg-window); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; padding: 24px; flex-shrink: 0;
+        }
+        .brand-header { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 35px; letter-spacing: 1px; }
+        .brand-header span { color: var(--primary); }
+        .menu-group { display: flex; flex-direction: column; gap: 6px; }
+        
+        .menu-action {
+            font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer;
+            padding: 12px 16px; border-radius: 8px; transition: all 0.2s ease; text-transform: uppercase;
+        }
+        .menu-action:hover, .menu-action.active {
+            background-color: var(--primary); color: #ffffff; box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        /* AUTOMATIC AUTH RUNTIME HOOK VISIBILITY SYSTEM */
+        .auth-only { display: none; } /* Shown only when user logged in matches true */
+        .guest-only { display: block; } /* Hidden entirely once login/signup confirms */
+
+        /* CONTENT MONITOR CONTAINER FRAME */
+        #contentFrameContainer { flex-grow: 1; display: flex; flex-direction: column; height: 100vh; }
+        #topSystemBar { height: 70px; background: var(--bg-window); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; }
+        #dateTimeLabel { font-size: 14px; font-family: monospace; color: var(--primary); background: rgba(37, 99, 235, 0.1); padding: 6px 14px; border-radius: 6px; }
+        
+        #mainPanelCardContainer { flex-grow: 1; overflow-y: auto; padding: 40px; }
+        .view-panel-card { display: none; max-width: 1150px; margin: 0 auto; }
+        .view-panel-card.active-panel { display: block; }
+        .view-header-title { font-size: 26px; font-weight: 800; margin-bottom: 25px; }
+
+        /* UNIFIED SWING BUTTON & INPUT COMPONENT DESIGNS */
+        .jbutton { background: var(--primary); color: #ffffff; border: none; padding: 12px 28px; font-size: 14px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+        .jbutton:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--primary-glow); }
+        
+        .search-controls-bar { display: flex; gap: 15px; margin-bottom: 25px; background: var(--bg-window); padding: 16px; border-radius: 8px; }
+        .search-box-input { background: var(--bg-field); border: 1px solid var(--border-color); color: #ffffff; padding: 10px 14px; border-radius: 6px; width: 280px; }
+        .filter-tabs-row { display: flex; gap: 8px; }
+        .tab-filter-node { background: var(--bg-field); border: 1px solid var(--border-color); color: var(--text-muted); padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 700; }
+        .tab-filter-node.active { background: var(--primary); color: white; }
+
+        .courses-grid-mesh { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+        .course-item-button { background: var(--bg-window); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .course-item-button:hover { border-color: var(--primary); transform: translateY(-2px); }
+
+        .standard-form-frame { max-width: 500px; margin: 0 auto; background: var(--bg-window); padding: 35px; border-radius: 10px; }
+        .form-row-block { margin-bottom: 18px; }
+        .form-row-block label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
+        .form-row-block input, .form-row-block textarea { width: 100%; padding: 11px 14px; background: var(--bg-field); border: 1px solid var(--border-color); border-radius: 6px; color: #ffffff; }
+
+        /* JTABLE VIEWPORT SCROLLER STYLING MAPS */
+        .table-viewport-scroller { background: var(--bg-window); border-radius: 8px; overflow: hidden; margin-top: 15px; border: 1px solid var(--border-color); }
+        .jtable-replacement { width: 100%; border-collapse: collapse; text-align: left; }
+        .jtable-replacement th { background: rgba(255,255,255,0.02); padding: 16px; font-weight: 700; color: var(--text-muted); font-size: 12px; text-transform: uppercase; }
+        .jtable-replacement td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+
+        /* JOPTIONPANE DIALOG OVERLAY MASK CONTAINER */
+        .modal-dialog-blur-mask { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 3000; }
+        .modal-dialog-frame { background: var(--bg-window); padding: 30px; border-radius: 12px; width: 400px; border: 1px solid var(--border-color); }
+        .modal-select-element { width: 100%; padding: 10px; background: var(--bg-field); border: 1px solid var(--border-color); border-radius: 6px; color: #ffffff; margin-top: 6px; }
+        .modal-action-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT SIDEBAR MAPPED PANELS LINKING -->
+    <div id="sideNavRail">
+        <div class="brand-header">HUMAN <span>BUG WIRE</span></div>
+        <div class="menu-group">
+            <div class="menu-action active" id="nav-HOME" onclick="switchCardLayout('HOME')">Home</div>
+            <div class="menu-action" id="nav-COURSES" onclick="switchCardLayout('COURSES')">Courses Offered</div>
+            <div class="menu-action" id="nav-CONTACT" onclick="switchCardLayout('CONTACT')">Contact Us</div>
+            
+            <!-- Guest Panel Action Hooks -->
+            <div class="menu-action guest-only" id="nav-LOGIN" onclick="switchCardLayout('LOGIN')">Login</div>
+            <div class="menu-action guest-only" id="nav-SIGNUP" onclick="switchCardLayout('SIGNUP')">Signup</div>
+            
+            <!-- Authenticated Dashboard Menus (Hidden by default, triggered via session auth state updates) -->
+            <div class="menu-action auth-only" id="nav-MYCOURSES" onclick="switchCardLayout('MYCOURSES')">My Courses</div>
+            <div class="menu-action auth-only" id="nav-PAYMENT" onclick="switchCardLayout('PAYMENT')">Payment History</div>
+            <div class="menu-action auth-only" style="color: #ef4444;" onclick="executeSessionLogout()">Logout</div>
+        </div>
+    </div>
+
+    <!-- MAIN DISPLAY BOUNDARY FRAME WORKSPACE -->
+    <div id="contentFrameContainer">
+        <div id="topSystemBar"><div id="dateTimeLabel">---</div></div>
+        <div id="mainPanelCardContainer">
+            
+            <!-- HOME MAIN VIEW CARD -->
+            <div id="cardView-HOME" class="view-panel-card active-panel">
+                <h1 style="font-size: 42px; margin-bottom: 10px;">WELCOME TO HUMAN BUG WIRE</h1>
+                <button class="jbutton" onclick="handleEnrollTrigger()">ENROLL NOW</button>
+            </div>
+
+            <!-- COURSES CATALOG GRID MATRIX VIEW -->
+            <div id="cardView-COURSES" class="view-panel-card">
+                <h2 class="view-header-title">Courses Offered</h2>
+                <div class="search-controls-bar">
+                    <input type="text" id="liveSearchQueryField" class="search-box-input" placeholder="Search..." oninput="renderGrid()">
+                    <div class="filter-tabs-row">
+                        <button class="tab-filter-node active" id="f-All" onclick="filterLang('All')">All</button>
+                        <button class="tab-filter-node" id="f-English" onclick="filterLang('English')">English</button>
+                        <button class="tab-filter-node" id="f-Tamil" onclick="filterLang('English/Tamil')">English/Tamil</button>
+                    </div>
+                </div>
+                <div class="courses-grid-mesh" id="coursesGridSystemRoot"></div>
+            </div>
+
+            <!-- CONTACT TILES SUPPORT FIELD -->
+            <div id="cardView-CONTACT" class="view-panel-card">
+                <div class="standard-form-frame">
+                    <h2 class="view-header-title">Contact Support</h2>
+                    <div class="form-row-block"><label>Name</label><input type="text"></div>
+                    <div class="form-row-block"><label>Message</label><textarea rows="3"></textarea></div>
+                    <button class="jbutton" style="width:100%">Submit Ticket</button>
+                </div>
+            </div>
+
+            <!-- SECURE LOGIN COMPONENT FORM FIELD -->
+            <div id="cardView-LOGIN" class="view-panel-card guest-only">
+                <div class="standard-form-frame">
+                    <h2 class="view-header-title">Secure Login</h2>
+                    <div class="form-row-block"><label>Username</label><input type="text" id="loginUser"></div>
+                    <div class="form-row-block"><label>Password</label><input type="password" id="loginPass"></div>
+                    <button class="jbutton" style="width:100%" onclick="fireLogin()">Sign In</button>
+                </div>
+            </div>
+
+            <!-- ACCOUNT SIGNUP COMPONENT FORM FIELD -->
+            <div id="cardView-SIGNUP" class="view-panel-card guest-only">
+                <div class="standard-form-frame">
+                    <h2 class="view-header-title">Registration Desk</h2>
+                    <div class="form-row-block"><label>Full Name</label><input type="text" id="regName"></div>
+                    <div class="form-row-block"><label>Username</label><input type="text" id="regUser"></div>
+                    <div class="form-row-block"><label>Password</label><input type="password" id="regPass"></div>
+                    <button class="jbutton" style="width:100%" onclick="fireSignup()">Register</button>
+                </div>
+            </div>
+
+            <!-- AUTOMATED REACTIVE REGISTERED COURSES JTABLE REPLACEMENT ROW VIEWPORTS -->
+            <div id="cardView-MYCOURSES" class="view-panel-card auth-only">
+                <h2 class="view-header-title">My Enrolled Dashboard</h2>
+                <div class="table-viewport-scroller">
+                    <table class="jtable-replacement">
+                        <thead><tr><th>S.No</th><th>Course Name</th><th>Instruction Mode</th></tr></thead>
+                        <tbody id="myCoursesTableRowsMount"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- AUTOMATED REACTIVE PAYMENTS TRANSACTION JTABLE REPLACEMENT ROW VIEWPORTS -->
+            <div id="cardView-PAYMENT" class="view-panel-card auth-only">
+                <h2 class="view-header-title">Payment Audit Logs</h2>
+                <div class="table-viewport-scroller">
+                    <table class="jtable-replacement">
+                        <thead><tr><th>Course Name</th><th>Amount</th><th>Gateway Mode</th></tr></thead>
+                        <tbody id="paymentHistoryTableRowsMount"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JOPTIONPANE SUB-DIALOG OVERLAY MODAL BOX LAYER -->
+    <div class="modal-dialog-blur-mask" id="checkoutSystemOverlay">
+        <div class="modal-dialog-frame">
+            <h3 id="dialogCourseName">Registration</h3>
+            <div style="margin: 15px 0; font-size: 14px; color: var(--text-muted);" id="dialogDetails"></div>
+            <label style="font-weight: 700; font-size: 12px; color: var(--text-muted);">PAYMENT MODE:</label>
+            <select id="gatewaySelector" class="modal-select-element">
+                <option value="UPI">UPI</option>
+                <option value="Card">Credit Card</option>
+                <option value="Cash">Cash Sub Desk</option>
+            </select>
+            <div class="modal-action-row">
+                <button class="jbutton" style="background:#334155" onclick="closeOverlay()">CANCEL</button>
+                <button class="jbutton" id="submitRegBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC CONTROLLER SYSTEM INTERACTION SCHEMAS -->
+    <script>
+        let sessionUser = null; 
+        let selectedLang = "All";
+
+        // Virtual JTable Array Storage maps running locally
+        let userRegisteredCoursesDB = [];
+        let userPaymentsHistoryDB = [];
+
+        const localCatalog = {
+            "C Programming": { name: "C Programming", price: "10000", hours: 40, mode: "English/Tamil" },
+            "Power BI": { name: "Power BI", price: "12000", hours: 30, mode: "English" },
+            "Python": { name: "Python", price: "15000", hours: 50, mode: "English/Tamil" },
+            "Embedded Systems": { name: "Embedded Systems", price: "50000", hours: 120, mode: "English/Tamil" }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            applyAuthStateUI();
+            runClock();
+            renderGrid();
+        });
+
+        function runClock() {
+            setInterval(() => {
+                const d = new Date();
+                document.getElementById('dateTimeLabel').innerText = d.toLocaleTimeString();
+            }, 1000);
+        }
+
+        /* MANAGES SWING FRAME CARD LAYOUT ROUTING PANEL SWITCHING */
+        function switchCardLayout(key) {
+            document.querySelectorAll('.view-panel-card').forEach(c => c.classList.remove('active-panel'));
+            document.querySelectorAll('.menu-action').forEach(a => a.classList.remove('active'));
+            
+            const target = document.getElementById(`cardView-${key}`);
+            if(target) target.classList.add('active-panel');
+            
+            const action = document.getElementById(`nav-${key}`);
+            if(action) action.classList.add('active');
+        }
+
+        function renderGrid() {
+            const root = document.getElementById('coursesGridSystemRoot');
+            root.innerHTML = '';
+            const query = document.getElementById('liveSearchQueryField').value.toLowerCase();
+
+            Object.values(localCatalog).forEach(c => {
+                if(query && !c.name.toLowerCase().includes(query)) return;
+                if(selectedLang !== "All" && c.mode !== selectedLang) return;
+
+                const card = document.createElement('div');
+                card.className = 'course-item-button';
+                card.innerHTML = `<h4>${c.name}</h4><p style="color:var(--accent-green); margin-top:8px;">${c.price}</p>`;
+                card.onclick = () => openCheckout(c);
+                root.appendChild(card);
+            });
+        }
+
+        function filterLang(lang) {
+            selectedLang = lang;
+            document.querySelectorAll('.tab-filter-node').forEach(t => t.classList.remove('active'));
+            document.getElementById(`f-${lang.replace('/', '')}`).classList.add('active');
+            renderGrid();
+        }
+
+        function handleEnrollTrigger() {
+            if(!sessionUser) { switchCardLayout('LOGIN'); } else { switchCardLayout('COURSES'); }
+        }
+
+        /* MANAGES AUTOMATED RUNTIME FIELD HIDING LOGIC CONFIGURATIONS
+           The field allocated for login/signup completely hides when authenticated!
+        */
+        function applyAuthStateUI() {
+            const guestElements = document.querySelectorAll('.guest-only');
+            const authElements = document.querySelectorAll('.auth-only');
+            
+            if(sessionUser) {
+                // Instantly hide navigation nodes and reset panel fields variables data allocations
+                guestElements.forEach(e => e.style.display = 'none');
+                authElements.forEach(e => e.style.display = 'block');
+                
+                // Clear active fields fields input variables structures maps
+                document.getElementById('loginUser').value = '';
+                document.getElementById('loginPass').value = '';
+                document.getElementById('regName').value = '';
+                document.getElementById('regUser').value = '';
+                document.getElementById('regPass').value = '';
+
+                // Invoke automatic table data rendering arrays maps updates
+                autoRefreshTableComponents();
+            } else {
+                guestElements.forEach(e => e.style.display = 'block');
+                authElements.forEach(e => e.style.display = 'none');
+            }
+        }
+
+        function fireLogin() {
+            const u = document.getElementById('loginUser').value;
+            const p = document.getElementById('loginPass').value;
+            if(!u || !p) { alert("Please complete input fields strings!"); return; }
+            
+            sessionUser = u; // Setup dummy authentication track string flag
+            applyAuthStateUI();
+            switchCardLayout('HOME');
+        }
+
+        function fireSignup() {
+            const n = document.getElementById('regName').value;
+            const u = document.getElementById('regUser').value;
+            const p = document.getElementById('regPass').value;
+            if(!n || !u || !p) { alert("Please complete signup configuration metrics fields!"); return; }
+            
+            sessionUser = u;
+            applyAuthStateUI();
+            switchCardLayout('HOME');
+        }
+
+        function executeSessionLogout() {
+            sessionUser = null;
+            applyAuthStateUI();
+            switchCardLayout('HOME');
+        }
+
+        /* DIALOG DISPLAY CONTROLS OPERATIONS MAPPING ENGINE */
+        function openCheckout(course) {
+            if(!sessionUser) { alert("Please login first!"); switchCardLayout('LOGIN'); return; }
+            document.getElementById('dialogCourseName').innerText = course.name;
+            document.getElementById('dialogDetails').innerText = `Syllabus: ${course.hours} Hours | Mode: ${course.mode}`;
+            document.getElementById('checkoutSystemOverlay').style.display = 'flex';
+            
+            document.getElementById('submitRegBtn').onclick = () => submitRegistration(course);
+        }
+
+        function closeOverlay() { document.getElementById('checkoutSystemOverlay').style.display = 'none'; }
+
+        /* INTERACTION REGISTRATION EVENT PIPELINE STRATEGY
+           Adds information directly into storage and fires auto refresh.
+        */
+        function submitRegistration(course) {
+            const gateway = document.getElementById('gatewaySelector').value;
+            
+            // Push datasets inside dynamic local storage arrays arrays mapping
+            userRegisteredCoursesDB.push({ name: course.name, mode: course.mode });
+            userPaymentsHistoryDB.push({ name: course.name, price: course.price, gateway: gateway });
+
+            alert("Registration transaction verified successfully!");
+            closeOverlay();
+            
+            // Fire real-time background layout recalculation script components automatically
+            autoRefreshTableComponents();
+        }
+
+        /* AUTO REFRESH LOGIC FOR JTABLE EQUIVALENTS */
+        function autoRefreshTableComponents() {
+            // 1. Rebuilding "My Courses Offered" dataset layouts views maps
+            const courseMount = document.getElementById('myCoursesTableRowsMount');
+            courseMount.innerHTML = '';
+            userRegisteredCoursesDB.forEach((c, i) => {
+                courseMount.innerHTML += `<tr><td>${i+1}</td><td>${c.name}</td><td>${c.mode}</td></tr>`;
+            });
+
+            // 2. Rebuilding "Payment logs history tracker tables" datasets layouts views maps
+            const paymentMount = document.getElementById('paymentHistoryTableRowsMount');
+            paymentMount.innerHTML = '';
+            userPaymentsHistoryDB.forEach(p => {
+                paymentMount.innerHTML += `<tr><td>${p.name}</td><td style="color:var(--accent-green); font-weight:700;">${p.price}</td><td>${p.gateway}</td></tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
