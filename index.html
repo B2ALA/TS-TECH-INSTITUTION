@@ -1,377 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Human Bug Wire | Java Swing Web Terminal Translation</title>
-    <style>
-        /* SWING THEME PALETTE COLOR SCHEMES */
-        :root {
-            --bg-canvas: #060913;
-            --bg-window: #0b1120;
-            --bg-field: #1e293b;
-            --primary: #2563eb;
-            --primary-glow: rgba(37, 99, 235, 0.35);
-            --accent-green: #10b981;
-            --text-main: #f8fafc;
-            --text-muted: #64748b;
-            --border-color: #1e293b;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background-color: var(--bg-canvas); color: var(--text-main); display: flex; min-height: 100vh; overflow: hidden; }
-
-        /* SIDEBAR NAVIGATION RAIL (JPanel BorderLayout.WEST) */
-        #sideNavRail {
-            width: 280px; background: var(--bg-window); border-right: 1px solid var(--border-color);
-            display: flex; flex-direction: column; padding: 24px; flex-shrink: 0;
-        }
-        .brand-header { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 35px; letter-spacing: 1px; }
-        .brand-header span { color: var(--primary); }
-        .menu-group { display: flex; flex-direction: column; gap: 6px; }
-        
-        .menu-action {
-            font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer;
-            padding: 12px 16px; border-radius: 8px; transition: all 0.2s ease; text-transform: uppercase;
-        }
-        .menu-action:hover, .menu-action.active {
-            background-color: var(--primary); color: #ffffff; box-shadow: 0 4px 12px var(--primary-glow);
-        }
-
-        /* AUTOMATIC AUTH RUNTIME HOOK VISIBILITY SYSTEM */
-        .auth-only { display: none; } /* Shown only when user logged in matches true */
-        .guest-only { display: block; } /* Hidden entirely once login/signup confirms */
-
-        /* CONTENT MONITOR CONTAINER FRAME */
-        #contentFrameContainer { flex-grow: 1; display: flex; flex-direction: column; height: 100vh; }
-        #topSystemBar { height: 70px; background: var(--bg-window); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; }
-        #dateTimeLabel { font-size: 14px; font-family: monospace; color: var(--primary); background: rgba(37, 99, 235, 0.1); padding: 6px 14px; border-radius: 6px; }
-        
-        #mainPanelCardContainer { flex-grow: 1; overflow-y: auto; padding: 40px; }
-        .view-panel-card { display: none; max-width: 1150px; margin: 0 auto; }
-        .view-panel-card.active-panel { display: block; }
-        .view-header-title { font-size: 26px; font-weight: 800; margin-bottom: 25px; }
-
-        /* UNIFIED SWING BUTTON & INPUT COMPONENT DESIGNS */
-        .jbutton { background: var(--primary); color: #ffffff; border: none; padding: 12px 28px; font-size: 14px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
-        .jbutton:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--primary-glow); }
-        
-        .search-controls-bar { display: flex; gap: 15px; margin-bottom: 25px; background: var(--bg-window); padding: 16px; border-radius: 8px; }
-        .search-box-input { background: var(--bg-field); border: 1px solid var(--border-color); color: #ffffff; padding: 10px 14px; border-radius: 6px; width: 280px; }
-        .filter-tabs-row { display: flex; gap: 8px; }
-        .tab-filter-node { background: var(--bg-field); border: 1px solid var(--border-color); color: var(--text-muted); padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 700; }
-        .tab-filter-node.active { background: var(--primary); color: white; }
-
-        .courses-grid-mesh { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-        .course-item-button { background: var(--bg-window); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
-        .course-item-button:hover { border-color: var(--primary); transform: translateY(-2px); }
-
-        .standard-form-frame { max-width: 500px; margin: 0 auto; background: var(--bg-window); padding: 35px; border-radius: 10px; }
-        .form-row-block { margin-bottom: 18px; }
-        .form-row-block label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
-        .form-row-block input, .form-row-block textarea { width: 100%; padding: 11px 14px; background: var(--bg-field); border: 1px solid var(--border-color); border-radius: 6px; color: #ffffff; }
-
-        /* JTABLE VIEWPORT SCROLLER STYLING MAPS */
-        .table-viewport-scroller { background: var(--bg-window); border-radius: 8px; overflow: hidden; margin-top: 15px; border: 1px solid var(--border-color); }
-        .jtable-replacement { width: 100%; border-collapse: collapse; text-align: left; }
-        .jtable-replacement th { background: rgba(255,255,255,0.02); padding: 16px; font-weight: 700; color: var(--text-muted); font-size: 12px; text-transform: uppercase; }
-        .jtable-replacement td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-
-        /* JOPTIONPANE DIALOG OVERLAY MASK CONTAINER */
-        .modal-dialog-blur-mask { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 3000; }
-        .modal-dialog-frame { background: var(--bg-window); padding: 30px; border-radius: 12px; width: 400px; border: 1px solid var(--border-color); }
-        .modal-select-element { width: 100%; padding: 10px; background: var(--bg-field); border: 1px solid var(--border-color); border-radius: 6px; color: #ffffff; margin-top: 6px; }
-        .modal-action-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
-    </style>
+    <title>HBW</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- LEFT SIDEBAR MAPPED PANELS LINKING -->
-    <div id="sideNavRail">
-        <div class="brand-header">HUMAN <span>BUG WIRE</span></div>
-        <div class="menu-group">
-            <div class="menu-action active" id="nav-HOME" onclick="switchCardLayout('HOME')">Home</div>
-            <div class="menu-action" id="nav-COURSES" onclick="switchCardLayout('COURSES')">Courses Offered</div>
-            <div class="menu-action" id="nav-CONTACT" onclick="switchCardLayout('CONTACT')">Contact Us</div>
-            
-            <!-- Guest Panel Action Hooks -->
-            <div class="menu-action guest-only" id="nav-LOGIN" onclick="switchCardLayout('LOGIN')">Login</div>
-            <div class="menu-action guest-only" id="nav-SIGNUP" onclick="switchCardLayout('SIGNUP')">Signup</div>
-            
-            <!-- Authenticated Dashboard Menus (Hidden by default, triggered via session auth state updates) -->
-            <div class="menu-action auth-only" id="nav-MYCOURSES" onclick="switchCardLayout('MYCOURSES')">My Courses</div>
-            <div class="menu-action auth-only" id="nav-PAYMENT" onclick="switchCardLayout('PAYMENT')">Payment History</div>
-            <div class="menu-action auth-only" style="color: #ef4444;" onclick="executeSessionLogout()">Logout</div>
-        </div>
+<nav>
+
+    <h1>HUMAN BUG WIRE</h1>
+
+    <div>
+        <button onclick="showSection('login')">Login</button>
+        <button onclick="showSection('signup')">Signup</button>
+        <button onclick="loadCourses()">Courses</button>
+        <button onclick="loadMyCourses()">My Courses</button>
+        <button onclick="loadPayments()">Payments</button>
     </div>
 
-    <!-- MAIN DISPLAY BOUNDARY FRAME WORKSPACE -->
-    <div id="contentFrameContainer">
-        <div id="topSystemBar"><div id="dateTimeLabel">---</div></div>
-        <div id="mainPanelCardContainer">
-            
-            <!-- HOME MAIN VIEW CARD -->
-            <div id="cardView-HOME" class="view-panel-card active-panel">
-                <h1 style="font-size: 42px; margin-bottom: 10px;">WELCOME TO HUMAN BUG WIRE</h1>
-                <button class="jbutton" onclick="handleEnrollTrigger()">ENROLL NOW</button>
-            </div>
+</nav>
 
-            <!-- COURSES CATALOG GRID MATRIX VIEW -->
-            <div id="cardView-COURSES" class="view-panel-card">
-                <h2 class="view-header-title">Courses Offered</h2>
-                <div class="search-controls-bar">
-                    <input type="text" id="liveSearchQueryField" class="search-box-input" placeholder="Search..." oninput="renderGrid()">
-                    <div class="filter-tabs-row">
-                        <button class="tab-filter-node active" id="f-All" onclick="filterLang('All')">All</button>
-                        <button class="tab-filter-node" id="f-English" onclick="filterLang('English')">English</button>
-                        <button class="tab-filter-node" id="f-Tamil" onclick="filterLang('English/Tamil')">English/Tamil</button>
-                    </div>
-                </div>
-                <div class="courses-grid-mesh" id="coursesGridSystemRoot"></div>
-            </div>
 
-            <!-- CONTACT TILES SUPPORT FIELD -->
-            <div id="cardView-CONTACT" class="view-panel-card">
-                <div class="standard-form-frame">
-                    <h2 class="view-header-title">Contact Support</h2>
-                    <div class="form-row-block"><label>Name</label><input type="text"></div>
-                    <div class="form-row-block"><label>Message</label><textarea rows="3"></textarea></div>
-                    <button class="jbutton" style="width:100%">Submit Ticket</button>
-                </div>
-            </div>
+<!-- LOGIN -->
 
-            <!-- SECURE LOGIN COMPONENT FORM FIELD -->
-            <div id="cardView-LOGIN" class="view-panel-card guest-only">
-                <div class="standard-form-frame">
-                    <h2 class="view-header-title">Secure Login</h2>
-                    <div class="form-row-block"><label>Username</label><input type="text" id="loginUser"></div>
-                    <div class="form-row-block"><label>Password</label><input type="password" id="loginPass"></div>
-                    <button class="jbutton" style="width:100%" onclick="fireLogin()">Sign In</button>
-                </div>
-            </div>
+<section id="login">
 
-            <!-- ACCOUNT SIGNUP COMPONENT FORM FIELD -->
-            <div id="cardView-SIGNUP" class="view-panel-card guest-only">
-                <div class="standard-form-frame">
-                    <h2 class="view-header-title">Registration Desk</h2>
-                    <div class="form-row-block"><label>Full Name</label><input type="text" id="regName"></div>
-                    <div class="form-row-block"><label>Username</label><input type="text" id="regUser"></div>
-                    <div class="form-row-block"><label>Password</label><input type="password" id="regPass"></div>
-                    <button class="jbutton" style="width:100%" onclick="fireSignup()">Register</button>
-                </div>
-            </div>
+    <h2>Login</h2>
 
-            <!-- AUTOMATED REACTIVE REGISTERED COURSES JTABLE REPLACEMENT ROW VIEWPORTS -->
-            <div id="cardView-MYCOURSES" class="view-panel-card auth-only">
-                <h2 class="view-header-title">My Enrolled Dashboard</h2>
-                <div class="table-viewport-scroller">
-                    <table class="jtable-replacement">
-                        <thead><tr><th>S.No</th><th>Course Name</th><th>Instruction Mode</th></tr></thead>
-                        <tbody id="myCoursesTableRowsMount"></tbody>
-                    </table>
-                </div>
-            </div>
+    <input type="text" id="loginUsername" placeholder="Username">
 
-            <!-- AUTOMATED REACTIVE PAYMENTS TRANSACTION JTABLE REPLACEMENT ROW VIEWPORTS -->
-            <div id="cardView-PAYMENT" class="view-panel-card auth-only">
-                <h2 class="view-header-title">Payment Audit Logs</h2>
-                <div class="table-viewport-scroller">
-                    <table class="jtable-replacement">
-                        <thead><tr><th>Course Name</th><th>Amount</th><th>Gateway Mode</th></tr></thead>
-                        <tbody id="paymentHistoryTableRowsMount"></tbody>
-                    </table>
-                </div>
-            </div>
+    <input type="password" id="loginPassword" placeholder="Password">
 
-        </div>
-    </div>
+    <button onclick="login()">Login</button>
 
-    <!-- JOPTIONPANE SUB-DIALOG OVERLAY MODAL BOX LAYER -->
-    <div class="modal-dialog-blur-mask" id="checkoutSystemOverlay">
-        <div class="modal-dialog-frame">
-            <h3 id="dialogCourseName">Registration</h3>
-            <div style="margin: 15px 0; font-size: 14px; color: var(--text-muted);" id="dialogDetails"></div>
-            <label style="font-weight: 700; font-size: 12px; color: var(--text-muted);">PAYMENT MODE:</label>
-            <select id="gatewaySelector" class="modal-select-element">
-                <option value="UPI">UPI</option>
-                <option value="Card">Credit Card</option>
-                <option value="Cash">Cash Sub Desk</option>
-            </select>
-            <div class="modal-action-row">
-                <button class="jbutton" style="background:#334155" onclick="closeOverlay()">CANCEL</button>
-                <button class="jbutton" id="submitRegBtn">OK</button>
-            </div>
-        </div>
-    </div>
+</section>
 
-    <!-- JAVASCRIPT LOGIC CONTROLLER SYSTEM INTERACTION SCHEMAS -->
-    <script>
-        let sessionUser = null; 
-        let selectedLang = "All";
 
-        // Virtual JTable Array Storage maps running locally
-        let userRegisteredCoursesDB = [];
-        let userPaymentsHistoryDB = [];
+<!-- SIGNUP -->
 
-        const localCatalog = {
-            "C Programming": { name: "C Programming", price: "10000", hours: 40, mode: "English/Tamil" },
-            "Power BI": { name: "Power BI", price: "12000", hours: 30, mode: "English" },
-            "Python": { name: "Python", price: "15000", hours: 50, mode: "English/Tamil" },
-            "Embedded Systems": { name: "Embedded Systems", price: "50000", hours: 120, mode: "English/Tamil" }
-        };
+<section id="signup">
 
-        window.addEventListener('DOMContentLoaded', () => {
-            applyAuthStateUI();
-            runClock();
-            renderGrid();
-        });
+    <h2>Signup</h2>
 
-        function runClock() {
-            setInterval(() => {
-                const d = new Date();
-                document.getElementById('dateTimeLabel').innerText = d.toLocaleTimeString();
-            }, 1000);
-        }
+    <input type="text" id="name" placeholder="Name">
 
-        /* MANAGES SWING FRAME CARD LAYOUT ROUTING PANEL SWITCHING */
-        function switchCardLayout(key) {
-            document.querySelectorAll('.view-panel-card').forEach(c => c.classList.remove('active-panel'));
-            document.querySelectorAll('.menu-action').forEach(a => a.classList.remove('active'));
-            
-            const target = document.getElementById(`cardView-${key}`);
-            if(target) target.classList.add('active-panel');
-            
-            const action = document.getElementById(`nav-${key}`);
-            if(action) action.classList.add('active');
-        }
+    <input type="email" id="email" placeholder="Email">
 
-        function renderGrid() {
-            const root = document.getElementById('coursesGridSystemRoot');
-            root.innerHTML = '';
-            const query = document.getElementById('liveSearchQueryField').value.toLowerCase();
+    <input type="text" id="phone" placeholder="Phone">
 
-            Object.values(localCatalog).forEach(c => {
-                if(query && !c.name.toLowerCase().includes(query)) return;
-                if(selectedLang !== "All" && c.mode !== selectedLang) return;
+    <input type="text" id="username" placeholder="Username">
 
-                const card = document.createElement('div');
-                card.className = 'course-item-button';
-                card.innerHTML = `<h4>${c.name}</h4><p style="color:var(--accent-green); margin-top:8px;">${c.price}</p>`;
-                card.onclick = () => openCheckout(c);
-                root.appendChild(card);
-            });
-        }
+    <input type="password" id="password" placeholder="Password">
 
-        function filterLang(lang) {
-            selectedLang = lang;
-            document.querySelectorAll('.tab-filter-node').forEach(t => t.classList.remove('active'));
-            document.getElementById(`f-${lang.replace('/', '')}`).classList.add('active');
-            renderGrid();
-        }
+    <button onclick="signup()">Signup</button>
 
-        function handleEnrollTrigger() {
-            if(!sessionUser) { switchCardLayout('LOGIN'); } else { switchCardLayout('COURSES'); }
-        }
+</section>
 
-        /* MANAGES AUTOMATED RUNTIME FIELD HIDING LOGIC CONFIGURATIONS
-           The field allocated for login/signup completely hides when authenticated!
-        */
-        function applyAuthStateUI() {
-            const guestElements = document.querySelectorAll('.guest-only');
-            const authElements = document.querySelectorAll('.auth-only');
-            
-            if(sessionUser) {
-                // Instantly hide navigation nodes and reset panel fields variables data allocations
-                guestElements.forEach(e => e.style.display = 'none');
-                authElements.forEach(e => e.style.display = 'block');
-                
-                // Clear active fields fields input variables structures maps
-                document.getElementById('loginUser').value = '';
-                document.getElementById('loginPass').value = '';
-                document.getElementById('regName').value = '';
-                document.getElementById('regUser').value = '';
-                document.getElementById('regPass').value = '';
 
-                // Invoke automatic table data rendering arrays maps updates
-                autoRefreshTableComponents();
-            } else {
-                guestElements.forEach(e => e.style.display = 'block');
-                authElements.forEach(e => e.style.display = 'none');
-            }
-        }
+<!-- COURSES -->
 
-        function fireLogin() {
-            const u = document.getElementById('loginUser').value;
-            const p = document.getElementById('loginPass').value;
-            if(!u || !p) { alert("Please complete input fields strings!"); return; }
-            
-            sessionUser = u; // Setup dummy authentication track string flag
-            applyAuthStateUI();
-            switchCardLayout('HOME');
-        }
+<section id="courses">
 
-        function fireSignup() {
-            const n = document.getElementById('regName').value;
-            const u = document.getElementById('regUser').value;
-            const p = document.getElementById('regPass').value;
-            if(!n || !u || !p) { alert("Please complete signup configuration metrics fields!"); return; }
-            
-            sessionUser = u;
-            applyAuthStateUI();
-            switchCardLayout('HOME');
-        }
+    <h2>Courses</h2>
 
-        function executeSessionLogout() {
-            sessionUser = null;
-            applyAuthStateUI();
-            switchCardLayout('HOME');
-        }
+    <div id="courseContainer"></div>
 
-        /* DIALOG DISPLAY CONTROLS OPERATIONS MAPPING ENGINE */
-        function openCheckout(course) {
-            if(!sessionUser) { alert("Please login first!"); switchCardLayout('LOGIN'); return; }
-            document.getElementById('dialogCourseName').innerText = course.name;
-            document.getElementById('dialogDetails').innerText = `Syllabus: ${course.hours} Hours | Mode: ${course.mode}`;
-            document.getElementById('checkoutSystemOverlay').style.display = 'flex';
-            
-            document.getElementById('submitRegBtn').onclick = () => submitRegistration(course);
-        }
+</section>
 
-        function closeOverlay() { document.getElementById('checkoutSystemOverlay').style.display = 'none'; }
 
-        /* INTERACTION REGISTRATION EVENT PIPELINE STRATEGY
-           Adds information directly into storage and fires auto refresh.
-        */
-        function submitRegistration(course) {
-            const gateway = document.getElementById('gatewaySelector').value;
-            
-            // Push datasets inside dynamic local storage arrays arrays mapping
-            userRegisteredCoursesDB.push({ name: course.name, mode: course.mode });
-            userPaymentsHistoryDB.push({ name: course.name, price: course.price, gateway: gateway });
+<!-- MY COURSES -->
 
-            alert("Registration transaction verified successfully!");
-            closeOverlay();
-            
-            // Fire real-time background layout recalculation script components automatically
-            autoRefreshTableComponents();
-        }
+<section id="mycourses">
 
-        /* AUTO REFRESH LOGIC FOR JTABLE EQUIVALENTS */
-        function autoRefreshTableComponents() {
-            // 1. Rebuilding "My Courses Offered" dataset layouts views maps
-            const courseMount = document.getElementById('myCoursesTableRowsMount');
-            courseMount.innerHTML = '';
-            userRegisteredCoursesDB.forEach((c, i) => {
-                courseMount.innerHTML += `<tr><td>${i+1}</td><td>${c.name}</td><td>${c.mode}</td></tr>`;
-            });
+    <h2>My Courses</h2>
 
-            // 2. Rebuilding "Payment logs history tracker tables" datasets layouts views maps
-            const paymentMount = document.getElementById('paymentHistoryTableRowsMount');
-            paymentMount.innerHTML = '';
-            userPaymentsHistoryDB.forEach(p => {
-                paymentMount.innerHTML += `<tr><td>${p.name}</td><td style="color:var(--accent-green); font-weight:700;">${p.price}</td><td>${p.gateway}</td></tr>`;
-            });
-        }
-    </script>
+    <table border="1">
+
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Mode</th>
+            </tr>
+        </thead>
+
+        <tbody id="myCourseBody"></tbody>
+
+    </table>
+
+</section>
+
+
+<!-- PAYMENTS -->
+
+<section id="payments">
+
+    <h2>Payment History</h2>
+
+    <table border="1">
+
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Amount</th>
+                <th>Payment</th>
+            </tr>
+        </thead>
+
+        <tbody id="paymentBody"></tbody>
+
+    </table>
+
+</section>
+
+
+<script src="app.js"></script>
+
 </body>
 </html>
