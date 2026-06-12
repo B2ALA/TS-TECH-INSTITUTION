@@ -1251,3 +1251,236 @@
             </div>
 
         </footer>
+
+            <!-- JAVASCRIPT -->
+
+    <script>
+
+        const pages = document.querySelectorAll(".page");
+
+        const navLinks =
+            document.querySelectorAll(".nav-link");
+
+        function showPage(pageId) {
+
+            pages.forEach(page => {
+
+                page.classList.remove("active");
+
+            });
+
+            const target =
+                document.getElementById(pageId);
+
+            if (target) {
+
+                target.classList.add("active");
+
+            }
+
+        }
+
+        navLinks.forEach((btn, index) => {
+
+            btn.addEventListener("click", () => {
+
+                navLinks.forEach(item => {
+
+                    item.classList.remove("active");
+
+                });
+
+                btn.classList.add("active");
+
+                if (index === 0) {
+
+                    showPage("homePage");
+
+                }
+
+                if (index === 1) {
+
+                    showPage("coursesPage");
+
+                }
+
+                if (index === 2) {
+
+                    showPage("dashboardPage");
+
+                }
+
+                if (index === 3) {
+
+                    showPage("profilePage");
+
+                }
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            });
+
+        });
+
+        /* NOTIFICATIONS */
+
+        const notifBtn =
+            document.getElementById("notifBtn");
+
+        const notifPanel =
+            document.getElementById("notifPanel");
+
+        if (notifBtn) {
+
+            notifBtn.addEventListener("click", () => {
+
+                notifPanel.classList.toggle("open");
+
+            });
+
+        }
+
+        document.addEventListener("click", e => {
+
+            if (
+                notifBtn &&
+                notifPanel &&
+                !notifBtn.contains(e.target) &&
+                !notifPanel.contains(e.target)
+            ) {
+
+                notifPanel.classList.remove("open");
+
+            }
+
+        });
+
+        /* DARK MODE */
+
+        const darkBtn =
+            document.querySelectorAll(".icon-btn")[1];
+
+        darkBtn.addEventListener("click", () => {
+
+            const html =
+                document.documentElement;
+
+            const current =
+                html.getAttribute("data-theme");
+
+            if (current === "dark") {
+
+                html.setAttribute(
+                    "data-theme",
+                    "light"
+                );
+
+            } else {
+
+                html.setAttribute(
+                    "data-theme",
+                    "dark"
+                );
+
+            }
+
+        });
+
+        /* PARTICLES */
+
+        const particles =
+            document.querySelector(".hero-particles");
+
+        if (particles) {
+
+            for (let i = 0; i < 30; i++) {
+
+                const particle =
+                    document.createElement("span");
+
+                particle.className = "particle";
+
+                particle.style.left =
+                    Math.random() * 100 + "%";
+
+                particle.style.top =
+                    Math.random() * 100 + "%";
+
+                particle.style.animationDelay =
+                    Math.random() * 5 + "s";
+
+                particle.style.animationDuration =
+                    4 + Math.random() * 4 + "s";
+
+                particles.appendChild(particle);
+
+            }
+
+        }
+
+        /* FILTER BUTTONS */
+
+        const filterButtons =
+            document.querySelectorAll(".filter-btn");
+
+        filterButtons.forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                filterButtons.forEach(item => {
+
+                    item.classList.remove("active");
+
+                });
+
+                btn.classList.add("active");
+
+            });
+
+        });
+
+        /* ENROLL BUTTON */
+
+        const enrollButtons =
+            document.querySelectorAll(".cc-btn");
+
+        enrollButtons.forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                alert(
+                    "Enrollment feature connected successfully."
+                );
+
+            });
+
+        });
+
+        /* CTA BUTTON */
+
+        const ctaBtn =
+            document.querySelector(".cta-section button");
+
+        if (ctaBtn) {
+
+            ctaBtn.addEventListener("click", () => {
+
+                showPage("coursesPage");
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
