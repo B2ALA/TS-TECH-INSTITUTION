@@ -1745,9 +1745,4 @@ function showToast(msg,type='info'){const c=document.getElementById('toastContai
 </body>
 </html>"""
 
-with open('/mnt/user-data/outputs/lms.html', 'w', encoding='utf-8') as f:
-    f.write(html)
 
-print(f"Written: {len(html)} characters, {html.count(chr(10))} lines")
-PYEOF
-python3 /tmp/build_lms.py
