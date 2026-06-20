@@ -1,25 +1,34 @@
 async function signup() {
 
-  alert("Signup function started");
+  try {
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+    alert("Signup function started");
 
-  console.log(email, password);
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-  const { data, error } =
-    await supabaseClient.auth.signUp({
-      email,
-      password
-    });
+    console.log("Email:", email);
 
-  console.log(data);
-  console.log(error);
+    const { data, error } =
+      await supabaseClient.auth.signUp({
+        email,
+        password
+      });
 
-  if (error) {
-    alert(error.message);
-    return;
+    console.log("Data:", data);
+    console.log("Error:", error);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Verification email sent!");
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("ERROR: " + err.message);
   }
-
-  alert("Verification email sent!");
 }
