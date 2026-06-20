@@ -1,502 +1,541 @@
-cat >> /home/claude/lms_part1.html << 'NAVEOF'
-
-<!-- ══════════════════════════════════════════
-     NAVBAR
-══════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TS Tech Park — Learning Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+/* ---- page-specific styles (layout not covered by shared theme) ---- */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:10px}
+.logo{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.logo-mark{width:38px;height:38px;background:var(--navy-950);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff}
+.logo-text{font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1.15;color:var(--ink)}
+.logo-sub{font-family:var(--font-mono);color:var(--ink-faint);font-size:9px;letter-spacing:.06em;display:block;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;justify-content:center}
+.nav-link{color:var(--ink-soft);background:none;border:none;padding:8px 13px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:6px}
+.nav-link:hover,.nav-link.active{color:var(--blue-ink);background:var(--blue-tint)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.user-av-btn{width:36px;height:36px;border-radius:50%;background:var(--navy-950);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.hamburger{display:none;background:none;border:none;color:var(--ink);font-size:19px;cursor:pointer}
+.verify-banner{background:var(--amber-tint);border-bottom:1px solid var(--border);color:var(--amber);font-size:12.5px;font-weight:600;padding:9px 1.5rem;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}
+.verify-banner button{font-size:11px}
+ 
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(11,18,36,.55);z-index:1100}
+.mob-overlay.open{display:block}
+.mob-menu{position:fixed;top:0;right:-260px;width:250px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:1200;transition:right .25s;overflow-y:auto}
+.mob-menu.open{right:0}
+.mob-hdr{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--border)}
+.mob-link{display:flex;align-items:center;gap:10px;width:100%;padding:13px 16px;background:none;border:none;color:var(--ink-soft);font-size:13.5px;font-weight:600;cursor:pointer;text-align:left}
+.mob-link:hover{color:var(--blue-ink);background:var(--blue-tint)}
+ 
+.page{display:none;padding-top:var(--nav-h);min-height:100vh}
+.page.active{display:block}
+.pg-hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:2rem 0 1.7rem}
+.pg-hdr h2{font-size:1.6rem}
+.pg-hdr p{color:var(--ink-soft);font-size:13.5px;margin-top:4px}
+ 
+/* HERO */
+.hero{background:var(--surface);border-bottom:1px solid var(--border)}
+.hero-inner{padding:4rem 0;display:grid;grid-template-columns:1.1fr .9fr;gap:3.5rem;align-items:center}
+.hero h1{font-size:2.7rem;line-height:1.1;margin-bottom:16px}
+.hero h1 em{color:var(--blue-ink);font-style:normal}
+.hero p.lead{color:var(--ink-soft);font-size:15px;line-height:1.7;max-width:480px;margin-bottom:24px}
+.hero-stats{display:flex;gap:0;margin-top:28px;border-top:1px solid var(--border);padding-top:18px}
+.hstat{padding-right:24px;margin-right:24px;border-right:1px solid var(--border)}
+.hstat:last-child{border-right:none}
+.hstat b{font-family:var(--font-display);font-size:1.5rem;display:block;color:var(--ink)}
+.hstat span{font-size:11px;color:var(--ink-faint)}
+.hero-panel{background:var(--navy-950);border-radius:var(--r-lg);padding:24px;color:#fff}
+.hero-panel .hp-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#9fb1e6;margin-bottom:14px}
+.hp-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.hp-row:last-child{border-bottom:none}
+.hp-ico{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+ 
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.feat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:var(--tr)}
+.feat-card:hover{border-color:var(--blue);box-shadow:var(--shadow)}
+.feat-card i{font-size:18px;color:var(--blue-ink);margin-bottom:12px;display:block}
+.feat-card h3{font-size:14px;margin-bottom:7px}
+.feat-card p{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+ 
+/* COURSES */
+.filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:.9rem 0;position:sticky;top:var(--nav-h);z-index:100}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sb{position:relative;flex:1;min-width:180px}
+.sb input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--border-strong);border-radius:8px;font-size:12.5px;background:var(--surface);color:var(--ink)}
+.sb i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink-faint);font-size:11px}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:1.5rem 0}
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:var(--tr);display:flex;flex-direction:column}
+.cc:hover{border-color:var(--blue);box-shadow:var(--shadow)}
+.cc-banner{padding:18px 18px 16px;display:flex;gap:10px;align-items:flex-start;border-bottom:1px solid var(--border)}
+.cc-banner-body{flex:1;min-width:0}
+.cc-code{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-faint);margin-bottom:8px}
+.cc-cat-name{font-family:var(--font-display);font-weight:700;font-size:1.05rem;text-transform:uppercase;letter-spacing:.01em;line-height:1.2;color:var(--ink)}
+.cc-by{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px;font-weight:600}
+.cc-body{padding:14px 16px;flex:1;display:flex;flex-direction:column}
+.cc-title{font-size:13.5px;font-weight:700;margin-bottom:5px}
+.cc-desc{font-size:12px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px;flex:1}
+.cc-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--ink-faint);margin-bottom:10px}
+.cc-meta i{color:var(--blue-ink);margin-right:3px}
+.cc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.cc-price{font-size:15px;font-weight:800;color:var(--ink)}
+ 
+/* DASHBOARD */
+.dash-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - var(--nav-h))}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:1rem .7rem;position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto}
+.sb-user{display:flex;align-items:center;gap:10px;padding:8px 8px 16px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.sb-av{width:38px;height:38px;border-radius:50%;background:var(--navy-950);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.sb-name{font-weight:700;font-size:12.5px}
+.sb-role{font-size:10.5px;color:var(--ink-faint)}
+.sb-section{margin-bottom:14px}
+.sb-label{font-size:9.5px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.07em;padding:0 8px;margin-bottom:5px}
+.sb-link{display:flex;align-items:center;gap:9px;width:100%;padding:8px 9px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;border:none;background:none;text-align:left}
+.sb-link i{width:16px}
+.sb-link:hover{background:var(--surface-2);color:var(--ink)}
+.sb-link.active{background:var(--blue-tint);color:var(--blue-ink)}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:800}
+.dash-main{padding:1.6rem;overflow-y:auto}
+.dash-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:9px}
+.dash-hdr h2{font-size:1.35rem}
+.dash-hdr p{color:var(--ink-soft);font-size:12.5px;margin-top:2px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.stat-card i{color:var(--blue-ink);font-size:15px;margin-bottom:8px;display:block}
+.stat-val{font-family:var(--font-display);font-size:1.55rem;font-weight:700}
+.stat-lbl{font-size:11px;color:var(--ink-faint);margin-top:2px}
+.dash-g2{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:16px}
+.dash-geq{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:var(--blue)}
+.enr-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.enr-item:last-child{border-bottom:none}
+.enr-ledger{width:5px;height:36px;border-radius:3px;flex-shrink:0}
+.act-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+ 
+/* CERT */
+.cert-card{background:var(--navy-950);border-radius:var(--r-lg);padding:28px;color:#fff;position:relative;overflow:hidden}
+.cert-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(169,116,14,.18));pointer-events:none}
+.cert-org{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:#e8c878}
+.cert-sub{font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:14px}
+.cert-lbl{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.cert-name{font-family:var(--font-display);font-size:1.5rem;margin-bottom:6px;color:#fff}
+.cert-course{font-size:.95rem;font-weight:600;margin-bottom:4px;color:#fff}
+.cert-date{font-family:var(--font-mono);font-size:10.5px;color:rgba(255,255,255,.4);margin-bottom:18px}
+.cert-foot{display:flex;align-items:center;gap:14px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:rgba(255,255,255,.45)}
+.qr-box{width:46px;height:46px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+ 
+/* FORUM */
+.forum-wrap{max-width:760px;margin:0 auto;padding:1.5rem}
+.fp{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:11px}
+.fp-hdr{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.fp-av{width:34px;height:34px;border-radius:50%;background:var(--navy-950);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0}
+.fp-name{font-weight:700;font-size:12.5px}
+.fp-time{color:var(--ink-faint);font-size:10.5px}
+.fp-title{font-size:13.5px;font-weight:700;margin-bottom:6px}
+.fp-text{color:var(--ink-soft);font-size:12.5px;line-height:1.6;margin-bottom:9px}
+.fp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+.tag-pill{padding:2px 9px;border-radius:8px;font-size:9.5px;font-weight:700;background:var(--blue-tint);color:var(--blue-ink)}
+.fp-act{display:flex;align-items:center;gap:4px;padding:5px 9px;border-radius:6px;border:none;background:none;color:var(--ink-faint);font-size:11.5px;cursor:pointer}
+.fp-act:hover{background:var(--surface-2);color:var(--blue-ink)}
+ 
+/* LIVE */
+.live-wrap{max-width:760px;margin:0 auto;padding:1.5rem}
+.live-tabs{display:flex;gap:2px;border-bottom:1.5px solid var(--border);margin-bottom:16px}
+.ltab{padding:8px 16px;border:none;background:none;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1.5px}
+.ltab.active{color:var(--blue-ink);border-bottom-color:var(--blue)}
+.lcc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:15px;display:flex;align-items:center;gap:13px;margin-bottom:10px}
+.lc-live{display:inline-flex;align-items:center;gap:5px;background:var(--red);color:#fff;padding:2px 8px;border-radius:5px;font-size:9px;font-weight:800;margin-bottom:4px}
+.ldot{width:5px;height:5px;background:#fff;border-radius:50%}
+ 
+/* PROFILE */
+.profile-wrap{max-width:920px;margin:0 auto;padding:1.5rem}
+.prof-banner{height:110px;background:var(--navy-950);border-radius:var(--r-lg) var(--r-lg) 0 0}
+.prof-body{padding:0 24px 24px;position:relative;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-lg) var(--r-lg);margin-bottom:16px}
+.prof-av{width:70px;height:70px;border-radius:50%;background:var(--navy-950);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;position:relative;top:-35px;border:4px solid var(--surface)}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.psl-item{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.psl-item:last-child{border-bottom:none}
+.psl-val{font-family:var(--font-display);font-size:1.25rem;font-weight:700}
+ 
+/* AUTH MODAL extras */
+.auth-tabs{display:flex;background:var(--surface-2);border-radius:9px;padding:3px;margin-bottom:16px}
+.auth-tab{flex:1;padding:7px;border:none;background:none;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink-soft)}
+.auth-tab.active{background:var(--surface);color:var(--blue-ink);box-shadow:var(--shadow)}
+.role-sel{display:flex;gap:7px;margin-bottom:14px}
+.role-btn{flex:1;padding:9px;border-radius:8px;border:1px solid var(--border-strong);background:none;cursor:pointer;font-size:11px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;gap:5px}
+.role-btn.active{border-color:var(--blue);background:var(--blue-tint);color:var(--blue-ink)}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--ink-faint);cursor:pointer}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--ink-faint);font-size:11px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+ 
+/* COURSE MODAL */
+.cm-banner{padding:26px 24px;background:var(--navy-950);color:#fff;border-radius:18px 18px 0 0}
+.cm-code{font-family:var(--font-mono);font-size:11px;color:#9fb1e6;margin-bottom:10px}
+.cm-cat-name{font-family:var(--font-display);font-size:1.7rem;font-weight:700;text-transform:uppercase}
+.cm-by{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px;font-weight:700}
+.cm-tabs{display:flex;gap:2px;border-bottom:1.5px solid var(--border);margin-bottom:16px}
+.cm-tab{padding:8px 14px;border:none;background:none;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1.5px}
+.cm-tab.active{color:var(--blue-ink);border-bottom-color:var(--blue)}
+.cm-tab-body{display:none}
+.cm-tab-body.active{display:block}
+.cur-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+.cur-item i{color:var(--blue-ink);width:15px}
+.pay-opts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.pay-opt{display:flex;align-items:center;gap:7px;padding:10px 14px;border:1.5px solid var(--border-strong);border-radius:9px;cursor:pointer;font-size:12.5px;font-weight:600;background:var(--surface)}
+.pay-opt input{accent-color:var(--blue)}
+.pay-opt.sel{border-color:var(--blue);background:var(--blue-tint);color:var(--blue-ink)}
+ 
+/* CHATBOT */
+.chatbot-widget{position:fixed;bottom:24px;right:22px;z-index:1400}
+.chat-panel{position:absolute;bottom:64px;right:0;width:340px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);display:none;flex-direction:column;overflow:hidden;max-height:500px}
+.chat-panel.open{display:flex}
+.chat-hdr{background:var(--navy-950);padding:13px 14px;display:flex;align-items:center;gap:10px;color:#fff}
+.chat-ai-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.chat-ai-name{font-weight:700;font-size:12.5px}
+.chat-ai-status{font-size:10px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:4px}
+.online-dot{width:5px;height:5px;background:#3ddc84;border-radius:50%}
+.chat-ctrl{width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,.1);border:none;color:#fff;cursor:pointer;font-size:11px}
+.chat-lang-sel{padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:10px;cursor:pointer;margin-left:auto}
+.chat-msgs{flex:1;padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;background:var(--surface-2)}
+.cmr{display:flex;gap:7px;max-width:90%}
+.cmr.user{flex-direction:row-reverse;margin-left:auto}
+.msg-av-sm{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.bot-av-sm{background:var(--navy-950);color:#fff}
+.user-av-sm{background:var(--blue);color:#fff}
+.msg-bubble{padding:8px 12px;border-radius:11px;font-size:12px;line-height:1.55}
+.bot-bub{background:var(--surface);border:1px solid var(--border);color:var(--ink);border-radius:11px 11px 11px 3px}
+.user-bub{background:var(--blue);color:#fff;border-radius:11px 11px 3px 11px}
+.chat-sugg{padding:0 10px 8px;display:flex;flex-wrap:wrap;gap:5px;background:var(--surface-2)}
+.sugg-chip{padding:4px 10px;border:1px solid var(--border);border-radius:9px;font-size:10.5px;cursor:pointer;background:var(--surface);color:var(--ink-soft)}
+.sugg-chip:hover{border-color:var(--blue);color:var(--blue-ink)}
+.chat-input-area{padding:10px;border-top:1px solid var(--border);display:flex;gap:7px;background:var(--surface)}
+.chat-input{flex:1;padding:8px 11px;border:1px solid var(--border-strong);border-radius:9px;font-size:12px;background:var(--surface);color:var(--ink);outline:none;resize:none}
+.chat-send{width:34px;height:34px;background:var(--navy-950);border:none;border-radius:9px;color:#fff;cursor:pointer;flex-shrink:0}
+.chatbot-toggle{width:52px;height:52px;border-radius:50%;background:var(--navy-950);border:none;cursor:pointer;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff}
+.warn-msg{background:var(--amber-tint);border:1px solid var(--border);border-radius:9px;padding:8px 11px;font-size:11.5px;color:var(--amber);font-weight:600}
+ 
+.mob-bot-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--surface);border-top:1px solid var(--border)}
+.mbnav-btn{flex:1;padding:9px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;font-size:9.5px;color:var(--ink-faint);cursor:pointer}
+.mbnav-btn i{font-size:17px}
+.mbnav-btn.active{color:var(--blue-ink)}
+footer.site-footer{background:var(--navy-950);color:rgba(255,255,255,.6);padding:2rem 1.5rem;font-size:12px;text-align:center}
+footer.site-footer a{color:#9fb1e6}
+ 
+@media(max-width:1024px){.dash-g2{grid-template-columns:1fr}.feat-grid{grid-template-columns:repeat(2,1fr)}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.hero-inner{grid-template-columns:1fr}.hero h1{font-size:2.1rem}.dash-layout{grid-template-columns:1fr}.sidebar{display:none}.nav-links{display:none}.hamburger{display:block}#guestButtons{display:none!important}.mob-bot-nav{display:flex}body{padding-bottom:60px}.profile-grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}}
+@media(max-width:600px){.feat-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.dash-geq{grid-template-columns:1fr}.courses-grid{grid-template-columns:1fr}.chat-panel{width:calc(100vw - 28px)}}
+</style>
+</head>
+<body>
+ 
 <nav class="navbar">
-  <div class="nav-logo" onclick="showPage('home')">
-    <div class="logo-icon">TS</div>
-    <div class="logo-text">TS Tech Park<span class="logo-sub">A Group of TS Institutions</span></div>
-  </div>
+  <a href="#" class="logo" onclick="showPage('home');return false">
+    <div class="logo-mark">TS</div>
+    <div><div class="logo-text">TS Tech Park</div><span class="logo-sub">Group of TS Institutions</span></div>
+  </a>
   <div class="nav-links" id="navLinks">
-    <button class="nav-btn active" onclick="showPage('home')"><i class="fas fa-home"></i>Home</button>
-    <button class="nav-btn" onclick="showPage('courses')"><i class="fas fa-book-open"></i>Courses</button>
-    <button class="nav-btn" onclick="showPage('dashboard')"><i class="fas fa-chart-bar"></i>Dashboard</button>
-    <button class="nav-btn" onclick="showPage('forum')"><i class="fas fa-comments"></i>Community</button>
-    <button class="nav-btn" onclick="showPage('live')"><i class="fas fa-video"></i>Live</button>
+    <button class="nav-link active" data-pg="home" onclick="showPage('home')"><i class="fas fa-house"></i>Home</button>
+    <button class="nav-link" data-pg="courses" onclick="showPage('courses')"><i class="fas fa-book"></i>Courses</button>
+    <button class="nav-link" data-pg="dashboard" onclick="showPage('dashboard')"><i class="fas fa-table-cells-large"></i>Dashboard</button>
+    <button class="nav-link" data-pg="forum" onclick="showPage('forum')"><i class="fas fa-comments"></i>Community</button>
+    <button class="nav-link" data-pg="live" onclick="showPage('live')"><i class="fas fa-video"></i>Live</button>
   </div>
   <div class="nav-actions">
-    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme"><i class="fas fa-moon" id="themeIcon"></i></button>
-    <div class="dropdown" id="notifDropdown">
-      <button class="icon-btn" onclick="toggleNotif()"><i class="fas fa-bell"></i><span class="badge-num" id="notifCount">4</span></button>
-      <div class="dropdown-menu notif-panel" id="notifPanel"></div>
+    <button class="icon-btn" onclick="toggleTheme()" title="Theme"><i class="fas fa-moon" id="themeIcon"></i></button>
+    <div id="guestButtons" style="display:flex;gap:6px">
+      <button class="btn btn-outline btn-sm" onclick="openAuth('login')">Log in</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuth('signup')">Sign up</button>
     </div>
-    <div id="guestBtns" style="display:flex;gap:6px">
-      <button class="btn btn-ghost btn-sm" onclick="openAuth('login')">Login</button>
-      <button class="btn btn-primary btn-sm" onclick="openAuth('signup')">Sign Up</button>
-    </div>
-    <div class="dropdown" id="userDropdown" style="display:none">
-      <button class="user-avatar" id="userAvatar" onclick="toggleUserDd()">?</button>
-      <div class="dropdown-menu" id="userMenu" style="min-width:200px">
-        <div class="dd-header">
-          <div style="font-weight:700;font-size:13px" id="ddName">User</div>
-          <div style="font-size:11px;color:var(--text2)" id="ddEmail">email</div>
-        </div>
-        <div class="dd-item" onclick="showPage('profile');closeDropdowns()"><i class="fas fa-user-circle"></i>My Profile</div>
-        <div class="dd-item" onclick="showPage('dashboard');closeDropdowns()"><i class="fas fa-th-large"></i>Dashboard</div>
-        <div class="dd-divider"></div>
-        <div class="dd-item" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</div>
-      </div>
-    </div>
+    <button class="user-av-btn" id="userAvBtn" onclick="showPage('profile')" style="display:none"><span id="userAvInit">?</span></button>
     <button class="hamburger" onclick="toggleMob()"><i class="fas fa-bars"></i></button>
   </div>
 </nav>
-
-<!-- MOB OVERLAY -->
+ 
+<div id="verifyBanner" class="verify-banner" style="display:none">
+  <i class="fas fa-circle-exclamation"></i>
+  <span id="verifyBannerText">Please verify your email to unlock all features.</span>
+  <button class="btn btn-ghost btn-sm" onclick="resendVerification()">Resend</button>
+</div>
+ 
 <div class="mob-overlay" id="mobOverlay" onclick="closeMob()"></div>
-<div class="mob-sidebar" id="mobSidebar">
-  <div class="mob-header"><span style="font-weight:700">Menu</span><button onclick="closeMob()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer"><i class="fas fa-times"></i></button></div>
-  <button class="mob-link" onclick="showPage('home');closeMob()"><i class="fas fa-home"></i>Home</button>
-  <button class="mob-link" onclick="showPage('courses');closeMob()"><i class="fas fa-book-open"></i>Courses</button>
-  <button class="mob-link" onclick="showPage('dashboard');closeMob()"><i class="fas fa-chart-bar"></i>Dashboard</button>
+<div class="mob-menu" id="mobMenu">
+  <div class="mob-hdr"><span style="font-weight:700">Menu</span><button onclick="closeMob()" style="background:none;border:none;font-size:17px;cursor:pointer;color:var(--ink-soft)"><i class="fas fa-times"></i></button></div>
+  <button class="mob-link" onclick="showPage('home');closeMob()"><i class="fas fa-house"></i>Home</button>
+  <button class="mob-link" onclick="showPage('courses');closeMob()"><i class="fas fa-book"></i>Courses</button>
+  <button class="mob-link" onclick="showPage('dashboard');closeMob()"><i class="fas fa-table-cells-large"></i>Dashboard</button>
   <button class="mob-link" onclick="showPage('forum');closeMob()"><i class="fas fa-comments"></i>Community</button>
   <button class="mob-link" onclick="showPage('live');closeMob()"><i class="fas fa-video"></i>Live Classes</button>
-  <div style="padding:14px"><button class="btn btn-primary w-full" onclick="openAuth('login');closeMob()">Login to TS Tech Park</button></div>
+  <div style="padding:14px"><button class="btn btn-primary btn-block" onclick="openAuth('login');closeMob()">Log in</button></div>
 </div>
-cat >> /home/claude/lms_part1.html << 'PAGESEOF'
-
-<!-- ══════════════════════════════════════════
-     COURSES PAGE
-══════════════════════════════════════════ -->
-<div id="page-courses" class="page">
-  <div class="page-header"><div class="page-header-inner"><h2>All Courses</h2><p>50+ industry-aligned courses — select your domain and start learning</p></div></div>
-  <div class="filter-strip">
-    <div class="filter-inner">
-      <div class="search-box"><i class="fas fa-search"></i><input type="text" id="courseSearch" placeholder="Search courses…" oninput="filterCourses()"/></div>
-      <select class="f-select" id="catFilter" onchange="filterCourses()">
-        <option value="">All Categories</option>
-        <option>Computer Science / IT</option><option>Embedded Systems &amp; IoT</option>
-        <option>Electronics</option><option>Automotive</option>
-        <option>Data Science &amp; AI</option><option>Web Development</option>
-        <option>Cloud &amp; DevOps</option><option>Cybersecurity</option>
-      </select>
-      <select class="f-select" id="levelFilter" onchange="filterCourses()">
-        <option value="">All Levels</option>
-        <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
-      </select>
-      <button class="f-chip active" id="sortChip" onclick="cycleSort()"><i class="fas fa-sort-amount-down"></i> Popular</button>
+ 
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero"><div class="container hero-inner">
+    <div>
+      <div class="eyebrow">Embedded · AI · IoT · Cloud Training</div>
+      <h1>Build the technical skills <em>employers vet first.</em></h1>
+      <p class="lead">TS Tech Park trains engineers in embedded systems, AI, IoT and software careers — through instructor-built courses, live sessions and verified certificates.</p>
+      <div class="flex gap-2" style="flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" onclick="showPage('courses')">Browse the catalog <i class="fas fa-arrow-right"></i></button>
+        <button class="btn btn-outline btn-lg" onclick="showPage('live')">See live sessions</button>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
     </div>
-  </div>
-  <div class="courses-body">
-    <div class="courses-info" id="coursesInfo"></div>
+    <div class="hero-panel">
+      <div class="hp-eyebrow">Why TS Tech Park</div>
+      <div class="hp-row"><div class="hp-ico"><i class="fas fa-pen-ruler"></i></div><div><div style="font-weight:700;font-size:13px">Instructor-built catalog</div><div style="font-size:11px;color:rgba(255,255,255,.55)">Courses are created and maintained by real instructors — no filler content.</div></div></div>
+      <div class="hp-row"><div class="hp-ico"><i class="fas fa-receipt"></i></div><div><div style="font-weight:700;font-size:13px">Transparent payment ledger</div><div style="font-size:11px;color:rgba(255,255,255,.55)">Every enrollment is recorded with a timestamped receipt in your dashboard.</div></div></div>
+      <div class="hp-row"><div class="hp-ico"><i class="fas fa-stamp"></i></div><div><div style="font-weight:700;font-size:13px">Verified certificates</div><div style="font-size:11px;color:rgba(255,255,255,.55)">Each certificate gets a unique ledger code you can share or verify.</div></div></div>
+      <div class="hp-row"><div class="hp-ico"><i class="fas fa-robot"></i></div><div><div style="font-weight:700;font-size:13px">TechBot, in 4 languages</div><div style="font-size:11px;color:rgba(255,255,255,.55)">Ask about fees, batches or courses in English, Tamil, Hindi or Telugu.</div></div></div>
+    </div>
+  </div></section>
+ 
+  <section class="section"><div class="container">
+    <div class="eyebrow">What you get</div>
+    <h2 style="font-size:1.7rem;margin-bottom:8px">Everything a training program needs</h2>
+    <p class="text-soft" style="max-width:480px;font-size:13.5px">No placeholder modules — every part of this portal is wired to real data your instructors and admins manage.</p>
+    <div class="feat-grid">
+      <div class="feat-card"><i class="fas fa-robot"></i><h3>Multilingual TechBot</h3><p>Rule-based assistant answering in English, Tamil, Hindi and Telugu — fees, batches, certificates and casual conversation.</p></div>
+      <div class="feat-card"><i class="fas fa-play"></i><h3>In-page video lessons</h3><p>Course videos open in a modal on this site — no redirect away from your learning flow.</p></div>
+      <div class="feat-card"><i class="fas fa-certificate"></i><h3>Ledger-coded certificates</h3><p>Every completion issues a uniquely coded certificate tied to your real course record.</p></div>
+      <div class="feat-card"><i class="fas fa-receipt"></i><h3>Full payment history</h3><p>UPI, card or cash — every transaction is logged with date, time and course detail.</p></div>
+      <div class="feat-card"><i class="fas fa-user-shield"></i><h3>Verified accounts</h3><p>New accounts confirm their email before full access, with instructor signups reviewed by admin.</p></div>
+      <div class="feat-card"><i class="fas fa-chalkboard-user"></i><h3>Instructor-run catalog</h3><p>Approved instructors create and publish their own courses, lessons and live sessions.</p></div>
+    </div>
+  </div></section>
+ 
+  <section class="section" style="background:var(--navy-950);color:#fff;text-align:center">
+    <div class="container" style="max-width:520px">
+      <h2 style="color:#fff;font-size:1.6rem;margin-bottom:9px">Ready to start learning?</h2>
+      <p style="color:rgba(255,255,255,.65);margin-bottom:20px;font-size:13.5px">Create a free account and browse the current course catalog.</p>
+      <button class="btn btn-lg" style="background:#fff;color:var(--navy-950)" onclick="openAuth('signup')">Create free account</button>
+    </div>
+  </section>
+</div>
+ 
+<!-- COURSES -->
+<div id="page-courses" class="page">
+  <div class="pg-hdr"><div class="container">
+    <h2>Course catalog</h2>
+    <p>Browse courses published by TS Tech Park instructors.</p>
+  </div></div>
+  <div class="filter-bar"><div class="container filter-row">
+    <div class="sb"><i class="fas fa-search"></i><input type="text" id="courseSearch" placeholder="Search courses…" oninput="filterCourses()"/></div>
+    <select class="input" style="width:auto" id="catFilter" onchange="filterCourses()"><option value="">All categories</option></select>
+    <select class="input" style="width:auto" id="levelFilter" onchange="filterCourses()"><option value="">All levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+    <button class="btn btn-ghost btn-sm" id="instAddCourseBtn" style="display:none" onclick="openCourseEditor()"><i class="fas fa-plus"></i> New course</button>
+  </div></div>
+  <div class="container">
+    <p class="text-faint mt-1" id="coursesRes" style="font-size:12.5px"></p>
     <div class="courses-grid" id="coursesGrid"></div>
   </div>
 </div>
-
-<!-- ══════════════════════════════════════════
-     DASHBOARD PAGE
-══════════════════════════════════════════ -->
+ 
+<!-- DASHBOARD -->
 <div id="page-dashboard" class="page">
   <div class="dash-layout">
     <aside class="sidebar">
-      <div class="sb-profile">
-        <div class="sb-av" id="sbAv">?</div>
-        <div><div class="sb-name" id="sbName">Guest</div><div class="sb-role" id="sbRole">Student</div></div>
+      <div class="sb-user"><div class="sb-av" id="sbAv">?</div><div><div class="sb-name" id="sbName">Guest</div><div class="sb-role" id="sbRole">Student</div></div></div>
+      <div class="sb-section">
+        <div class="sb-label">Main</div>
+        <button class="sb-link active" onclick="switchDash(this,'overview')"><i class="fas fa-table-cells-large"></i>Overview</button>
+        <button class="sb-link" onclick="switchDash(this,'mycourses')"><i class="fas fa-book-open"></i>My courses <span class="sb-badge" id="enrolledBadge">0</span></button>
+        <button class="sb-link" onclick="switchDash(this,'certificates')"><i class="fas fa-certificate"></i>Certificates</button>
+        <button class="sb-link" onclick="switchDash(this,'payments')"><i class="fas fa-receipt"></i>Payment history</button>
       </div>
-      <div class="sb-section-label">Main</div>
-      <button class="sb-item active" onclick="switchDash(this,'overview')"><i class="fas fa-th-large"></i>Overview</button>
-      <button class="sb-item" onclick="switchDash(this,'mycourses')"><i class="fas fa-book-open"></i>My Courses <span class="sb-badge" id="myCoursesBadge">0</span></button>
-      <button class="sb-item" onclick="switchDash(this,'progress')"><i class="fas fa-chart-line"></i>Analytics</button>
-      <button class="sb-item" onclick="switchDash(this,'quizzes')"><i class="fas fa-clipboard-check"></i>Quizzes</button>
-      <button class="sb-item" onclick="switchDash(this,'assignments')"><i class="fas fa-tasks"></i>Assignments <span class="sb-badge">3</span></button>
-      <button class="sb-item" onclick="switchDash(this,'certificates')"><i class="fas fa-certificate"></i>Certificates</button>
-      <div class="sb-section-label">Learning</div>
-      <button class="sb-item" onclick="switchDash(this,'notes')"><i class="fas fa-sticky-note"></i>My Notes</button>
-      <button class="sb-item" onclick="switchDash(this,'wishlist')"><i class="fas fa-heart"></i>Wishlist</button>
-      <button class="sb-item" onclick="switchDash(this,'badges')"><i class="fas fa-trophy"></i>Badges &amp; XP</button>
-      <button class="sb-item" onclick="switchDash(this,'leaderboard')"><i class="fas fa-medal"></i>Leaderboard</button>
-      <button class="sb-item" onclick="switchDash(this,'schedule')"><i class="fas fa-calendar-alt"></i>Schedule</button>
-      <button class="sb-item" onclick="switchDash(this,'placement')"><i class="fas fa-briefcase"></i>Placement <span class="sb-badge sb-badge-gold">New</span></button>
-      <div class="sb-section-label">Account</div>
-      <button class="sb-item" onclick="showPage('profile')"><i class="fas fa-user-circle"></i>Profile</button>
-      <button class="sb-item" onclick="switchDash(this,'payments')"><i class="fas fa-credit-card"></i>Payments</button>
-      <button class="sb-item" onclick="switchDash(this,'settings')"><i class="fas fa-cog"></i>Settings</button>
-      <button class="sb-item" style="color:var(--danger)" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</button>
+      <div class="sb-section" id="instructorNav" style="display:none">
+        <div class="sb-label">Teaching</div>
+        <button class="sb-link" onclick="switchDash(this,'teaching')"><i class="fas fa-chalkboard-user"></i>My courses (teach)</button>
+        <button class="sb-link" onclick="switchDash(this,'teach-live')"><i class="fas fa-tower-broadcast"></i>Live sessions</button>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Account</div>
+        <button class="sb-link" onclick="showPage('profile')"><i class="fas fa-user"></i>My profile</button>
+        <button class="sb-link" onclick="switchDash(this,'settings')"><i class="fas fa-gear"></i>Settings</button>
+        <button class="sb-link" style="color:var(--red)" onclick="doLogout()"><i class="fas fa-arrow-right-from-bracket"></i>Log out</button>
+      </div>
     </aside>
     <main class="dash-main" id="dashMain"></main>
   </div>
 </div>
-
-<!-- ══════════════════════════════════════════
-     COMMUNITY FORUM
-══════════════════════════════════════════ -->
+ 
+<!-- FORUM -->
 <div id="page-forum" class="page">
-  <div class="page-header"><div class="page-header-inner"><h2>Community Forum</h2><p>Ask, share, collaborate with fellow learners</p></div></div>
+  <div class="pg-hdr"><div class="container"><h2>Community forum</h2><p>Ask questions, share projects, and get help from peers.</p></div></div>
   <div class="forum-wrap">
-    <div class="forum-bar">
-      <div class="search-box" style="flex:1;min-width:160px"><i class="fas fa-search"></i><input type="text" placeholder="Search discussions…" oninput="filterForum(this.value)" style="width:100%"/></div>
-      <select class="f-select"><option>All Topics</option><option>Embedded</option><option>AI &amp; ML</option><option>Projects</option><option>Career</option></select>
-      <button class="btn btn-primary btn-sm" onclick="openNewPost()"><i class="fas fa-plus"></i> New Post</button>
-    </div>
-    <div class="tabs">
-      <button class="tab active" onclick="setForumTab(this,'all')">All Posts</button>
-      <button class="tab" onclick="setForumTab(this,'questions')">Questions</button>
-      <button class="tab" onclick="setForumTab(this,'projects')">Projects</button>
-      <button class="tab" onclick="setForumTab(this,'announcements')">Announcements</button>
+    <div class="flex gap-2 mb-2" style="flex-wrap:wrap">
+      <div class="sb" style="flex:1"><i class="fas fa-search"></i><input type="text" placeholder="Search posts…" oninput="filterForum(this.value)"/></div>
+      <button class="btn btn-primary btn-sm" onclick="openNewPost()"><i class="fas fa-plus"></i> New post</button>
     </div>
     <div id="forumPosts"></div>
   </div>
 </div>
-
-<!-- ══════════════════════════════════════════
-     LIVE CLASSES
-══════════════════════════════════════════ -->
+ 
+<!-- LIVE -->
 <div id="page-live" class="page">
-  <div class="page-header"><div class="page-header-inner"><h2>Live Classes</h2><p>Real-time sessions with expert instructors</p></div></div>
+  <div class="pg-hdr"><div class="container"><h2>Live &amp; upcoming sessions</h2><p>Sessions posted by instructors and admin.</p></div></div>
   <div class="live-wrap">
-    <div class="tabs">
-      <button class="tab active" onclick="setLiveTab(this,'live')">🔴 Live Now</button>
-      <button class="tab" onclick="setLiveTab(this,'upcoming')">📅 Upcoming</button>
-      <button class="tab" onclick="setLiveTab(this,'recordings')">🎬 Recordings</button>
+    <div class="live-tabs">
+      <button class="ltab active" onclick="setLiveTab(this,'live')">Live now</button>
+      <button class="ltab" onclick="setLiveTab(this,'upcoming')">Upcoming</button>
+      <button class="ltab" onclick="setLiveTab(this,'past')">Past</button>
     </div>
     <div id="liveContent"></div>
   </div>
 </div>
-
-<!-- ══════════════════════════════════════════
-     PROFILE PAGE
-══════════════════════════════════════════ -->
+ 
+<!-- PROFILE -->
 <div id="page-profile" class="page">
-  <div style="max-width:960px;margin:1.5rem auto;padding:0 1.5rem">
-    <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">
-      <div class="prof-banner">
-        <div class="prof-av-wrap"><div class="prof-av" id="profAv">?</div></div>
-      </div>
-      <div style="padding:44px 22px 22px">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
-          <button class="btn btn-primary btn-sm" onclick="openEditProfile()"><i class="fas fa-edit"></i> Edit Profile</button>
+  <div class="profile-wrap">
+    <div class="prof-banner"></div>
+    <div class="prof-body">
+      <div class="prof-av" id="profAv">?</div>
+      <div class="flex justify-between" style="margin-top:-20px">
+        <div>
+          <h2 id="profName" style="font-size:1.2rem">—</h2>
+          <p id="profTagline" class="text-soft" style="font-size:12.5px">—</p>
         </div>
-        <h2 id="profName" style="font-size:1.3rem;font-weight:800">—</h2>
-        <p id="profTagline" style="color:var(--text2);font-size:12px;margin-top:3px">—</p>
-        <div class="prof-meta-row" id="profMeta"></div>
+        <button class="btn btn-primary btn-sm" onclick="openEditProfile()"><i class="fas fa-pen"></i> Edit</button>
       </div>
+      <div class="flex gap-3 mt-1" id="profMeta" style="font-size:11.5px;color:var(--ink-faint);flex-wrap:wrap"></div>
     </div>
-    <div class="g-1-1" id="profileGrid"></div>
+    <div class="profile-grid">
+      <div class="card card-pad"><div class="card-title">Learning stats</div><div id="profStats"></div></div>
+      <div class="card card-pad"><div class="card-title">Certificates earned</div><div id="profCerts"></div></div>
+      <div class="card card-pad" style="grid-column:1/-1"><div class="card-title">Recent activity</div><div id="profActivity"></div></div>
+    </div>
   </div>
 </div>
-
-<!-- ══════════════════════════════════════════
-     ADMIN PAGE
-══════════════════════════════════════════ -->
-<div id="page-admin" class="page">
-  <div id="adminContent"></div>
+ 
+<footer class="site-footer">
+  TS Tech Park — A Group of TS Institutions · <a href="admin.html">Staff &amp; admin portal</a>
+</footer>
+ 
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal" onclick="handleOverlay(event,'authModal')">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hdr"><h3>Welcome to TS Tech Park</h3><button class="modal-close" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="auth-tabs"><button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Log in</button><button class="auth-tab" id="signupTab" onclick="switchAuth('signup')">Sign up</button></div>
+ 
+      <div id="loginForm">
+        <div class="field"><label>Email</label><input class="input" type="email" id="loginEmail" placeholder="you@example.com"/></div>
+        <div class="field"><label>Password</label><div class="pw-wrap"><input class="input" type="password" id="loginPass" placeholder="Password" style="padding-right:36px"/><button type="button" class="pw-toggle" onclick="togglePw('loginPass',this)"><i class="fas fa-eye"></i></button></div></div>
+        <button class="btn btn-primary btn-block" onclick="doLogin()">Log in</button>
+        <p class="help-text" style="text-align:center;margin-top:10px">Instructor accounts need admin approval before first login.</p>
+      </div>
+ 
+      <div id="signupForm" style="display:none">
+        <div class="role-sel">
+          <button type="button" class="role-btn active" onclick="setRole(this,'Student')"><i class="fas fa-user-graduate"></i> Student</button>
+          <button type="button" class="role-btn" onclick="setRole(this,'Instructor')"><i class="fas fa-chalkboard-user"></i> Instructor</button>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>First name <span class="req">*</span></label><input class="input" id="regFname"/></div>
+          <div class="field"><label>Last name</label><input class="input" id="regLname"/></div>
+        </div>
+        <div class="field"><label>Email <span class="req">*</span></label><input class="input" type="email" id="regEmail"/></div>
+        <div class="field"><label>Phone <span class="req">*</span></label><input class="input" type="tel" id="regPhone" placeholder="+91 98765 43210"/></div>
+        <div class="field"><label>Password <span class="req">*</span></label><div class="pw-wrap"><input class="input" type="password" id="regPass" placeholder="Min 6 characters" style="padding-right:36px"/><button type="button" class="pw-toggle" onclick="togglePw('regPass',this)"><i class="fas fa-eye"></i></button></div></div>
+        <button class="btn btn-primary btn-block" onclick="doSignup()">Create account</button>
+        <p class="help-text" style="text-align:center;margin-top:10px" id="signupNote">We'll send a verification link to your email.</p>
+      </div>
+    </div>
+  </div>
 </div>
-cat >> /home/claude/lms_part1.html << 'CHATEOF'
-
-<!-- ══════════════════════════════════════════
-     CHATBOT
-══════════════════════════════════════════ -->
+ 
+<!-- COURSE MODAL -->
+<div class="modal-overlay" id="courseModal" onclick="handleOverlay(event,'courseModal')">
+  <div class="modal" style="max-width:660px;padding:0;position:relative">
+    <button class="modal-close" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,255,255,.15);color:#fff" onclick="closeModal('courseModal')"><i class="fas fa-times"></i></button>
+    <div id="courseModalBody"></div>
+  </div>
+</div>
+ 
+<!-- VIDEO MODAL -->
+<div class="modal-overlay" id="videoModal" onclick="handleOverlay(event,'videoModal')">
+  <div class="modal" style="max-width:780px;padding:0;position:relative">
+    <button class="modal-close" style="position:absolute;top:12px;right:12px;z-index:5" onclick="closeModal('videoModal');stopVideo()"><i class="fas fa-times"></i></button>
+    <div id="videoModalBody"></div>
+  </div>
+</div>
+ 
+<!-- POST MODAL -->
+<div class="modal-overlay" id="postModal" onclick="handleOverlay(event,'postModal')">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hdr"><h3>New post</h3><button class="modal-close" onclick="closeModal('postModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="field"><label>Title <span class="req">*</span></label><input class="input" id="postTitle"/></div>
+      <div class="field"><label>Category</label><select class="input" id="postCat"><option>Question</option><option>Project</option><option>Career</option><option>General</option></select></div>
+      <div class="field"><label>Content <span class="req">*</span></label><textarea class="input" id="postContent" rows="4"></textarea></div>
+      <div class="field"><label>Tags (comma separated)</label><input class="input" id="postTags"/></div>
+      <button class="btn btn-primary btn-block" onclick="submitPost()">Publish</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-overlay" id="editProfileModal" onclick="handleOverlay(event,'editProfileModal')">
+  <div class="modal" style="max-width:440px"><div class="modal-hdr"><h3>Edit profile</h3><button class="modal-close" onclick="closeModal('editProfileModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="editProfileBody"></div></div>
+</div>
+ 
+<!-- COURSE EDITOR MODAL (instructor/admin) -->
+<div class="modal-overlay" id="courseEditorModal" onclick="handleOverlay(event,'courseEditorModal')">
+  <div class="modal" style="max-width:540px"><div class="modal-hdr"><h3 id="ceTitle">New course</h3><button class="modal-close" onclick="closeModal('courseEditorModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="courseEditorBody"></div></div>
+</div>
+ 
+<!-- LIVE EDITOR MODAL (instructor/admin) -->
+<div class="modal-overlay" id="liveEditorModal" onclick="handleOverlay(event,'liveEditorModal')">
+  <div class="modal" style="max-width:440px"><div class="modal-hdr"><h3>Post a session</h3><button class="modal-close" onclick="closeModal('liveEditorModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="liveEditorBody"></div></div>
+</div>
+ 
+<!-- CHATBOT -->
 <div class="chatbot-widget">
   <div class="chat-panel" id="chatPanel">
-    <div class="chat-header">
-      <div class="chat-bot-av"><i class="fas fa-robot"></i></div>
-      <div>
-        <div class="chat-bot-name">TechBot AI</div>
-        <div class="chat-status"><span class="online-dot"></span>Online · 4 Languages</div>
-      </div>
-      <select class="lang-sel" id="chatLang" onchange="setChatLang(this.value)">
-        <option value="en">EN</option><option value="ta">Tamil</option>
-        <option value="hi">Hindi</option><option value="te">Telugu</option>
+    <div class="chat-hdr">
+      <div class="chat-ai-av"><i class="fas fa-robot"></i></div>
+      <div><div class="chat-ai-name">TechBot</div><div class="chat-ai-status"><span class="online-dot"></span>Rule-based assistant</div></div>
+      <select class="chat-lang-sel" id="chatLang" onchange="setChatLang(this.value)">
+        <option value="en">English</option><option value="ta">தமிழ்</option><option value="hi">हिंदी</option><option value="te">తెలుగు</option>
       </select>
-      <button class="chat-ctrl-btn" onclick="clearChat()" title="Clear chat"><i class="fas fa-trash-alt"></i></button>
-      <button class="chat-ctrl-btn" onclick="toggleChat()" title="Close"><i class="fas fa-times"></i></button>
+      <button class="chat-ctrl" onclick="clearChat()"><i class="fas fa-trash"></i></button>
+      <button class="chat-ctrl" onclick="toggleChat()"><i class="fas fa-times"></i></button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
-    <div class="chat-suggestions" id="chatSugg">
-      <button class="sugg-chip" onclick="sendSugg('What courses do you recommend for automotive jobs?')">Course advice</button>
-      <button class="sugg-chip" onclick="sendSugg('What is CAN Bus?')">CAN Bus?</button>
-      <button class="sugg-chip" onclick="sendSugg('Course fees and EMI options')">Fees & EMI</button>
-      <button class="sugg-chip" onclick="sendSugg('Upcoming batch dates')">Batches</button>
+    <div class="chat-sugg" id="chatSugg">
+      <button class="sugg-chip" onclick="sendSugg('Course fees')">Course fees</button>
+      <button class="sugg-chip" onclick="sendSugg('Upcoming batches')">Batches</button>
+      <button class="sugg-chip" onclick="sendSugg('Tell me a joke')">Tell me a joke</button>
+      <button class="sugg-chip" onclick="sendSugg('Recommend a course')">Recommend a course</button>
     </div>
-    <div class="chat-input-wrap">
-      <textarea class="chat-input" id="chatInput" placeholder="Ask TechBot…" rows="1"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
-        oninput="autoGrow(this)"></textarea>
-      <button class="chat-send-btn" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="Ask TechBot…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+      <button class="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
-  <button class="chat-toggle" onclick="toggleChat()">
-    <i class="fas fa-robot" id="chatToggleIcon"></i>
-    <span class="chat-unread" id="chatUnread" style="display:none">1</span>
-  </button>
+  <button class="chatbot-toggle" onclick="toggleChat()"><i class="fas fa-robot" id="chatIcon"></i></button>
 </div>
-
-<!-- TOAST CONTAINER -->
-<div class="toast-wrap" id="toastWrap"></div>
-
-<!-- MOB BOTTOM NAV -->
-<nav class="mob-bottom-nav">
-  <button class="mbn-btn active" onclick="showPage('home');setMbnActive(this)"><i class="fas fa-home"></i><span>Home</span></button>
-  <button class="mbn-btn" onclick="showPage('courses');setMbnActive(this)"><i class="fas fa-book-open"></i><span>Courses</span></button>
-  <button class="mbn-btn" onclick="showPage('dashboard');setMbnActive(this)"><i class="fas fa-chart-bar"></i><span>Learn</span></button>
-  <button class="mbn-btn" onclick="showPage('forum');setMbnActive(this)"><i class="fas fa-comments"></i><span>Forum</span></button>
-  <button class="mbn-btn" onclick="openAuth('login')"><i class="fas fa-user"></i><span>Me</span></button>
+ 
+<div class="toast-stack" id="toastContainer"></div>
+ 
+<nav class="mob-bot-nav">
+  <button class="mbnav-btn active" onclick="showPage('home');setMbn(this)"><i class="fas fa-house"></i><span>Home</span></button>
+  <button class="mbnav-btn" onclick="showPage('courses');setMbn(this)"><i class="fas fa-book"></i><span>Courses</span></button>
+  <button class="mbnav-btn" onclick="showPage('dashboard');setMbn(this)"><i class="fas fa-table-cells-large"></i><span>Learn</span></button>
+  <button class="mbnav-btn" onclick="showPage('forum');setMbn(this)"><i class="fas fa-comments"></i><span>Forum</span></button>
+  <button class="mbnav-btn" onclick="openAuth('login')"><i class="fas fa-user"></i><span>Me</span></button>
 </nav>
-<script>
-/* ═══════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════ */
-const S = {
-  loggedIn: false, user: null, adminLoggedIn: false,
-  wishlist: new Set(), sortMode: 'popular',
-  enrolledCourses: [], notes: [], forumPosts: [],
-  chatOpen: false, chatLang: 'en', chatWarnings: 0,
-  forumTab: 'all', adminPage: 1, adminFilter: '',
-  adminRoleFilter: '', notifOpen: false, userDdOpen: false,
-  payments: []
-};
-
-/* ═══════════════════════════════════════════════
-   COURSE DATA — banner-based design
-═══════════════════════════════════════════════ */
-const COURSES = [
-  {id:1,title:'Programming in Java',cat:'Computer Science / IT',price:18000,hrs:60,level:'Beginner',color1:'#1a1a2e',color2:'#e94560',badge:'hot',desc:'OOP, collections, generics, multithreading, JDBC and Spring Boot.',rating:4.8,students:2100,videos:[{title:'Java Basics & JVM',yt:'hBh_CC5y8-s'},{title:'OOP Concepts',yt:'pTB0EiLXUC8'},{title:'Collections Framework',yt:'_JLogEX58NI'}],curriculum:['Java Syntax & JVM','OOP Principles','Data Structures','Exception Handling','File I/O','Multithreading','JDBC & Databases','Spring Boot','Project: REST API']},
-  {id:2,title:'Data Structures & Algorithms',cat:'Computer Science / IT',price:15000,hrs:50,level:'Intermediate',color1:'#0c1a2e',color2:'#0891b2',badge:'popular',desc:'Arrays, trees, graphs, sorting, DP — interview and competitive coding prep.',rating:4.9,students:3200,videos:[{title:'Arrays & Big-O',yt:'CBYHwZcbD-s'},{title:'Linked Lists',yt:'WwfhLC16bis'},{title:'Binary Trees',yt:'oSWTXtMglKE'}],curriculum:['Big O Notation','Arrays & Strings','Linked Lists','Stacks & Queues','Trees & Heaps','Graphs BFS/DFS','Dynamic Programming','Sorting Algorithms','Interview Prep']},
-  {id:3,title:'Database Management Systems',cat:'Computer Science / IT',price:12000,hrs:40,level:'Beginner',color1:'#1a0c2e',color2:'#7c3aed',badge:'',desc:'SQL, normalization, indexing, transactions, stored procedures, NoSQL.',rating:4.8,students:2800,videos:[{title:'SQL Fundamentals',yt:'HXV3zeQKqGY'},{title:'Joins & Subqueries',yt:'9yeOJ0ZMUYw'},{title:'Database Design',yt:'ztHopE5Wnpc'}],curriculum:['Relational Model','SQL Basics','Advanced Joins','Normalization','Indexing','Transactions & ACID','Stored Procedures','NoSQL Intro','Project: Library DB']},
-  {id:4,title:'Operating Systems',cat:'Computer Science / IT',price:14000,hrs:45,level:'Intermediate',color1:'#0c2e1a',color2:'#059669',badge:'',desc:'Process management, memory, file systems, synchronisation, Linux internals.',rating:4.7,students:1500,videos:[{title:'OS Introduction',yt:'GjNp0bBrjmU'},{title:'Process Management',yt:'Qkac6cE9C_s'},{title:'Memory Management',yt:'qdkxgR9QlrQ'}],curriculum:['OS Overview','Process & Threads','CPU Scheduling','Memory Management','Virtual Memory','File Systems','Synchronisation','Deadlocks','Linux Internals']},
-  {id:5,title:'Computer Networks',cat:'Computer Science / IT',price:13000,hrs:42,level:'Intermediate',color1:'#2e0c0c',color2:'#dc2626',badge:'',desc:'OSI/TCP-IP, protocols, routing, switching, security, network troubleshooting.',rating:4.6,students:1200,videos:[{title:'Network Fundamentals',yt:'3QhU9jd03a0'},{title:'TCP/IP Deep Dive',yt:'PpsEaqJV_A0'},{title:'Routing Protocols',yt:'Ep-x_6kggKA'}],curriculum:['Network Models','Physical Layer','Data Link','IP & Routing','TCP & UDP','DNS & HTTP','Security','Wireless','Network Config Lab']},
-  {id:6,title:'Machine Learning',cat:'Data Science & AI',price:40000,hrs:80,level:'Intermediate',color1:'#1a0c2e',color2:'#7c3aed',badge:'hot',desc:'Supervised/unsupervised learning, neural nets, evaluation, deployment.',rating:4.9,students:2100,videos:[{title:'ML Introduction',yt:'NWONeJKn6kc'},{title:'Linear Regression',yt:'nk2CQITm_eo'},{title:'Neural Networks',yt:'aircAruvnKk'}],curriculum:['Python for ML','Regression','Classification','Clustering','Decision Trees','Neural Networks','Model Evaluation','Feature Engineering','MLflow Deploy']},
-  {id:7,title:'Artificial Intelligence',cat:'Data Science & AI',price:45000,hrs:90,level:'Advanced',color1:'#2e0c0c',color2:'#dc2626',badge:'new',desc:'AI fundamentals, search, NLP, computer vision, reinforcement learning.',rating:4.8,students:980,videos:[{title:'AI Overview',yt:'a0_lo_GDcFw'},{title:'Search Algorithms',yt:'ySN5Wnu88nE'},{title:'NLP Basics',yt:'CMrHM8a3hqw'}],curriculum:['AI History','Search & Heuristics','Knowledge Representation','Planning','NLP','Computer Vision','Reinforcement Learning','AI Ethics','Capstone Project']},
-  {id:8,title:'Cloud Computing',cat:'Cloud & DevOps',price:25000,hrs:50,level:'Intermediate',color1:'#0c1a2e',color2:'#0891b2',badge:'',desc:'AWS/Azure/GCP, Docker, Kubernetes, serverless, CI/CD, IaC.',rating:4.7,students:1400,videos:[{title:'Cloud Fundamentals',yt:'M988_fsOSWo'},{title:'AWS Core Services',yt:'a9__D53WsGs'},{title:'Docker Basics',yt:'3c-iBn73dDE'}],curriculum:['Cloud Models','AWS Core','Azure','GCP Overview','Docker','Kubernetes','Serverless','Terraform','CI/CD Pipeline']},
-  {id:9,title:'Cybersecurity',cat:'Cybersecurity',price:32000,hrs:65,level:'Intermediate',color1:'#2e0c0c',color2:'#dc2626',badge:'hot',desc:'Penetration testing, OWASP Top 10, network security, forensics, CTF.',rating:4.8,students:900,videos:[{title:'Security Fundamentals',yt:'rcDO8km6R6c'},{title:'Ethical Hacking Intro',yt:'3Kq1MIfTWCE'},{title:'Web App Security',yt:'jmgsgjPn_vs'}],curriculum:['Security Basics','Network Security','Linux for Hackers','Metasploit','Web App Pentesting','OWASP Top 10','Digital Forensics','CTF Walkthrough','Bug Bounty']},
-  {id:10,title:'Web Development',cat:'Web Development',price:20000,hrs:60,level:'Beginner',color1:'#0c1a2e',color2:'#2563eb',badge:'',desc:'HTML5, CSS3, JavaScript, React, Node.js, MongoDB — full stack to deploy.',rating:4.7,students:3500,videos:[{title:'HTML & CSS Crash',yt:'mU6anWqZJcc'},{title:'JavaScript ES6+',yt:'W6NZfCO5SIk'},{title:'React for Beginners',yt:'Ke90Tje7VS0'}],curriculum:['HTML5 & CSS3','JavaScript ES6+','React JS','Node.js & Express','MongoDB','REST APIs','Auth & JWT','Testing','Deploy Vercel']},
-  {id:11,title:'Embedded C Programming',cat:'Embedded Systems & IoT',price:22000,hrs:55,level:'Beginner',color1:'#0c1a2e',color2:'#0891b2',badge:'hot',desc:'Memory-mapped I/O, bit manipulation, pointers, ISR handling, bare-metal C.',rating:4.9,students:1800,videos:[{title:'Embedded C Intro',yt:'vdlzmFTxBCk'},{title:'Bit Manipulation',yt:'lnlbkpnlE58'},{title:'Pointers Deep Dive',yt:'zuegQmMdy8M'}],curriculum:['C Refresher','Memory Layout','Bit Operations','Pointers','Structures & Unions','Interrupt Handling','UART Communication','Timer/Counter','Project: Digital Clock']},
-  {id:12,title:'Microcontrollers 8051/AVR/PIC',cat:'Embedded Systems & IoT',price:28000,hrs:70,level:'Intermediate',color1:'#1a0c2e',color2:'#7c3aed',badge:'',desc:'Architecture, instruction sets, assembly, peripheral interfacing, projects.',rating:4.8,students:1200,videos:[{title:'8051 Architecture',yt:'tlwWqFxijaA'},{title:'AVR ATmega',yt:'G5K_s5v1-Pg'},{title:'PIC Microcontroller',yt:'Y_bGfJFXHUI'}],curriculum:['8051 Architecture','8051 Assembly','AVR ATmega328','PIC Basics','GPIO & Timers','ADC/DAC','Serial Comms','Sensors Interface','Project: Smart Meter']},
-  {id:13,title:'ARM Cortex-M Processors',cat:'Embedded Systems & IoT',price:35000,hrs:80,level:'Advanced',color1:'#2e0c0c',color2:'#dc2626',badge:'',desc:'Cortex-M0/M3/M4, Thumb-2, CMSIS, STM32, embedded design patterns.',rating:4.8,students:850,videos:[{title:'ARM Architecture',yt:'JLtRKHMOBWM'},{title:'STM32 Getting Started',yt:'OoFOnAtxl3E'},{title:'CMSIS & HAL',yt:'3brOOJZJ7H4'}],curriculum:['ARM Cortex-M Core','Thumb-2 ISA','CMSIS & HAL','STM32 Peripherals','DMA & Interrupts','Low Power Modes','Bootloaders','OTA Updates','Project: Motor Controller']},
-  {id:14,title:'RTOS — FreeRTOS & Zephyr',cat:'Embedded Systems & IoT',price:30000,hrs:65,level:'Intermediate',color1:'#0c2e1a',color2:'#059669',badge:'hot',desc:'Tasks, scheduling, semaphores, queues, mutexes, real-time debugging.',rating:4.9,students:1000,videos:[{title:'RTOS Concepts',yt:'F321087yYy4'},{title:'FreeRTOS Tasks',yt:'kP_zHbC_5eM'},{title:'Semaphores & Queues',yt:'5JcMtbA9QEE'}],curriculum:['RTOS Concepts','Task Management','Scheduling Algorithms','Semaphores','Mutexes & Deadlocks','Message Queues','Event Groups','Memory Management','Project: Robot Controller']},
-  {id:15,title:'IoT Development',cat:'Embedded Systems & IoT',price:28000,hrs:60,level:'Intermediate',color1:'#0c1a2e',color2:'#0891b2',badge:'',desc:'ESP32, MQTT, AWS IoT, sensor fusion, edge processing, industrial IoT.',rating:4.7,students:1300,videos:[{title:'IoT Architecture',yt:'h0gWfVCSGQQ'},{title:'ESP32 Programming',yt:'xPlN_Tk3VLQ'},{title:'MQTT Protocol',yt:'EIxdz-2rhLs'}],curriculum:['IoT Architecture','ESP32 & Arduino','MQTT & CoAP','AWS IoT Core','Sensor Fusion','Edge Processing','Industrial IoT','Security','Capstone: Smart Home']},
-  {id:16,title:'Raspberry Pi',cat:'Embedded Systems & IoT',price:15000,hrs:40,level:'Beginner',color1:'#2e0c0c',color2:'#dc2626',badge:'',desc:'Linux on Pi, GPIO, camera, AI inference, home automation, cloud.',rating:4.7,students:2000,videos:[{title:'Pi Initial Setup',yt:'BpJCAafw2qE'},{title:'GPIO with Python',yt:'41IO4Qe5Jzw'},{title:'Pi Camera Module',yt:'EVILkQF8iMQ'}],curriculum:['Pi Setup & Linux','Python GPIO','Sensors Interface','Camera Module','TF Lite Inference','Home Automation','Node-RED','MQTT Client','Project: Security Cam']},
-  {id:17,title:'ESP32 Development',cat:'Embedded Systems & IoT',price:12000,hrs:35,level:'Beginner',color1:'#1a0c2e',color2:'#7c3aed',badge:'new',desc:'Wi-Fi, Bluetooth, dual-core, deep sleep, OTA, IoT cloud integration.',rating:4.8,students:1600,videos:[{title:'ESP32 Introduction',yt:'xPlN_Tk3VLQ'},{title:'WiFi & BLE Stack',yt:'BjX_7GKokCg'},{title:'Deep Sleep Modes',yt:'CbgXr_5T7uc'}],curriculum:['ESP32 Architecture','Arduino & ESP-IDF','Wi-Fi Station/AP','Bluetooth LE','FreeRTOS on ESP32','Deep Sleep','OTA Updates','MQTT Client','Weather Station']},
-  {id:18,title:'VLSI Design',cat:'Electronics',price:50000,hrs:100,level:'Advanced',color1:'#0c1a2e',color2:'#0891b2',badge:'',desc:'RTL design, SystemVerilog, UVM verification, FPGA, timing analysis.',rating:4.7,students:320,videos:[{title:'Digital Design Basics',yt:'M0mx8S05v60'},{title:'Verilog HDL',yt:'PJGvZSlsLKs'},{title:'FPGA Introduction',yt:'lLg1AgA2Xoo'}],curriculum:['Digital Logic','Verilog HDL','SystemVerilog','UVM Verification','FPGA Mapping','Timing Analysis','DFT','Physical Design','Tapeout Simulation']},
-  {id:19,title:'Automotive Embedded Systems',cat:'Automotive',price:60000,hrs:130,level:'Advanced',color1:'#1a0c2e',color2:'#7c3aed',badge:'hot',desc:'AUTOSAR, CAN/LIN/Ethernet, ISO 26262 functional safety, MISRA C.',rating:4.8,students:890,videos:[{title:'CAN Bus Protocol',yt:'9IjTbBTdKrM'},{title:'AUTOSAR Overview',yt:'6jDCBJsQEoA'},{title:'ISO 26262 Intro',yt:'pJfq0y8TDUE'}],curriculum:['AUTOSAR Architecture','CAN FD','LIN Bus','Automotive Ethernet','ISO 26262 ASIL','UDS Diagnostics','MISRA C','ECU Bootloaders','Project: ABS Controller']},
-  {id:20,title:'Edge AI & Deep Learning',cat:'Data Science & AI',price:70000,hrs:100,level:'Advanced',color1:'#2e0c0c',color2:'#dc2626',badge:'new',desc:'TF Lite, ONNX, OpenVINO, NVIDIA Jetson, real-time neural inference.',rating:4.7,students:650,videos:[{title:'Neural Networks',yt:'aircAruvnKk'},{title:'TensorFlow Lite',yt:'d_-3bj1OAIU'},{title:'Jetson Nano Setup',yt:'vbRFVLzpbFU'}],curriculum:['Deep Learning Basics','CNNs & RNNs','Quantisation','TF Lite','ONNX Runtime','OpenVINO','Jetson Nano','TensorRT','Object Detection']},
-  {id:21,title:'Python for Data Science',cat:'Data Science & AI',price:35000,hrs:75,level:'Intermediate',color1:'#0c1a2e',color2:'#2563eb',badge:'',desc:'NumPy, Pandas, Matplotlib, Scikit-learn, feature engineering, deployment.',rating:4.9,students:3800,videos:[{title:'Python Crash Course',yt:'kqtD5dpn9C8'},{title:'Pandas & NumPy',yt:'vmEHCJofslg'},{title:'Scikit-learn ML',yt:'0Lt9w-BxKFQ'}],curriculum:['Python Advanced','NumPy & Pandas','Data Visualisation','Statistical Analysis','Scikit-learn','Feature Engineering','Model Selection','Cross-Validation','Deployment Pipeline']},
-  {id:22,title:'React JS & Modern Frontend',cat:'Web Development',price:18000,hrs:45,level:'Intermediate',color1:'#0c1a2e',color2:'#0891b2',badge:'',desc:'Hooks, Redux Toolkit, TypeScript, React Query, testing, performance.',rating:4.9,students:1800,videos:[{title:'React Fundamentals',yt:'Ke90Tje7VS0'},{title:'Hooks Deep Dive',yt:'9KJxaFHotqI'},{title:'TypeScript + React',yt:'ydkQlJoDSKM'}],curriculum:['React Fundamentals','Hooks','State Management','Redux Toolkit','TypeScript','React Query','Testing','Performance','Deploy Vercel']},
-  {id:23,title:'Digital Electronics',cat:'Electronics',price:10000,hrs:30,level:'Beginner',color1:'#0c2e1a',color2:'#059669',badge:'',desc:'Logic gates, combinational circuits, sequential circuits, FPGAs, simulation.',rating:4.6,students:2200,videos:[{title:'Logic Gates',yt:'M0mx8S05v60'},{title:'Combinational Logic',yt:'hdKOWXSfJSk'},{title:'Sequential Circuits',yt:'HQ_5cTTYFtA'}],curriculum:['Number Systems','Logic Gates','Boolean Algebra','Combinational Circuits','Flip-Flops','Counters','ADC/DAC','State Machines','Simulation Lab']},
-];
-
-/* ═══════════════════════════════════════════════
-   QUIZ BANK
-═══════════════════════════════════════════════ */
-const QB = {
-  'Embedded Systems':[
-    {q:'What does RTOS stand for?',o:['Real-Time Operating System','Remote Terminal OS','Rapid Task OS','Real-Time Object System'],a:0},
-    {q:'Which automotive protocol uses differential signaling?',o:['UART','SPI','CAN Bus','I2C'],a:2},
-    {q:'ARM Cortex-M series is designed for?',o:['Application processors','Real-time microcontrollers','High-performance servers','Graphics processing'],a:1},
-    {q:'Maximum data rate of CAN FD?',o:['1 Mbps','4 Mbps','8 Mbps','10 Mbps'],a:2},
-    {q:'FreeRTOS function to suspend a task?',o:['vTaskDelete','vTaskSuspend','vTaskDelay','taskYIELD'],a:1},
-    {q:'ISO 26262 is a standard for?',o:['Software quality','Functional safety of E/E systems','Network security','Embedded debugging'],a:1},
-    {q:'AUTOSAR stands for?',o:['Auto System Architecture','AUTomotive Open System ARchitecture','Automated Software Runtime','Auto Source Archive'],a:1},
-    {q:'LIN bus maximum speed?',o:['1 Mbps','100 kbps','20 kbps','500 kbps'],a:2},
-    {q:'MISRA C is a coding standard for?',o:['Web Development','Automotive Embedded','Database Systems','Operating Systems'],a:1},
-    {q:'FreeRTOS ISR-safe semaphore API?',o:['vTaskDelay','xSemaphoreGive','xSemaphoreGiveFromISR','vTaskDelete'],a:2},
-    {q:'CAN bus error detection uses?',o:['Parity Check','CRC','Checksum','Hamming Code'],a:1},
-    {q:'RTOS kernel tick is used for?',o:['Memory allocation','Task scheduling timing','I/O operations','Interrupt handling'],a:1},
-  ],
-  'Computer Science':[
-    {q:'Which data structure uses LIFO order?',o:['Queue','Stack','Linked List','Tree'],a:1},
-    {q:'Time complexity of binary search?',o:['O(n)','O(n²)','O(log n)','O(n log n)'],a:2},
-    {q:'SQL stands for?',o:['Structured Query Language','Sequential Query Logic','Simple Query Language','Standard Query Logic'],a:0},
-    {q:'Encapsulation in OOP means?',o:['Inheriting from parent','Hiding internal details','Creating instances','Overloading methods'],a:1},
-    {q:'HTTP method to update a resource?',o:['GET','POST','PUT','DELETE'],a:2},
-    {q:'Merge Sort average case complexity?',o:['O(n)','O(n log n)','O(n²)','O(log n)'],a:1},
-    {q:'Primary key must be?',o:['Nullable','Unique and Not Null','Duplicate allowed','Optional'],a:1},
-    {q:'TCP is what type of protocol?',o:['Connectionless','Unreliable','Connection-oriented','Stateless'],a:2},
-    {q:'DNS stands for?',o:['Data Network System','Domain Name System','Digital Network Service','Direct Network Server'],a:1},
-    {q:'Deadlock condition NOT required?',o:['Mutual Exclusion','Hold and Wait','No Preemption','Circular Wait'],a:3},
-    {q:'Virtual memory allows processes to use?',o:['Less RAM','More than physical RAM','Faster CPU','Slower disk'],a:1},
-    {q:'Process in "Blocked" state is waiting for?',o:['CPU time','I/O or event','Memory','Another process'],a:1},
-  ],
-  'AI & Data Science':[
-    {q:'Random Forest is used for?',o:['Clustering','Dimensionality reduction','Classification & Regression','Feature scaling'],a:2},
-    {q:'Overfitting means the model?',o:['Learns the training data too well including noise','Underfits the patterns','Has high bias','Performs well on all data'],a:0},
-    {q:'Sigmoid activation outputs?',o:['−∞ to +∞','0 to 1','−1 to 1','0 to ∞'],a:1},
-    {q:'CNN stands for?',o:['Convolutional Neural Network','Cyclic Neural Network','Complex Number Net','Central Node Net'],a:0},
-    {q:'Pandas is used for?',o:['Numeric computing','Data manipulation','Visualisation','Deep learning'],a:1},
-    {q:'Gradient descent minimises?',o:['Accuracy','Loss function','Precision','Recall'],a:1},
-    {q:'Dropout layer reduces?',o:['Training speed','Overfitting','Model size','Number of layers'],a:1},
-    {q:'K-Means is a _____ algorithm?',o:['Supervised','Reinforcement','Unsupervised','Semi-supervised'],a:2},
-    {q:'LSTM is designed to handle?',o:['Images','Sequential/time-series data','Tabular data','Graph data'],a:1},
-    {q:'Precision = TP / (TP + ___)?',o:['TN','FP','FN','None'],a:1},
-    {q:'Transfer learning reuses?',o:['Training data','Pretrained model weights','Hardware','Labels'],a:1},
-    {q:'BERT is primarily used for?',o:['Image recognition','Natural Language Processing','Audio','Robotics'],a:1},
-  ],
-  'Electronics':[
-    {q:'Unit of electrical resistance?',o:['Volt','Ampere','Ohm','Watt'],a:2},
-    {q:'A flip-flop stores how many bits?',o:['4','8','1','2'],a:2},
-    {q:'ADC converts?',o:['Analog to Digital','Digital to Analog','AC to DC','DC to AC'],a:0},
-    {q:'Universal logic gate?',o:['AND','OR','NAND','XOR'],a:2},
-    {q:'VLSI stands for?',o:['Very Large Scale Integration','Variable Logic Signal Interface','Virtual Layer System','Voltage Level Signal'],a:0},
-    {q:'PWM stands for?',o:['Pulse Width Modulation','Power Wave Management','Phase Wave Multiplexer','Pulse Wave Monitor'],a:0},
-    {q:'Function of a capacitor?',o:['Amplifies current','Stores electrical charge','Reduces voltage','Converts AC to DC'],a:1},
-    {q:'Binary 1010 in decimal?',o:['8','10','12','14'],a:1},
-    {q:'Verilog is used for?',o:['Web development','Hardware description','OS programming','Database design'],a:1},
-    {q:'Op-Amp in open loop acts as?',o:['Linear amplifier','Comparator','Oscillator','Filter'],a:1},
-    {q:'Shannon theorem: sampling at least?',o:['Signal frequency','Half signal frequency','Twice signal frequency','Any rate'],a:2},
-    {q:'A D flip-flop has how many inputs?',o:['1','2','3','4'],a:0},
-  ],
-};
-
-/* ═══════════════════════════════════════════════
-   CHATBOT KNOWLEDGE BASE
-═══════════════════════════════════════════════ */
-const CHATBOT = {
-  en: {
-    greetings: {
-      'hi': 'Hello! 👋 How can I help you today?',
-      'hello': 'Hello! 👋 How can I help you today?',
-      'hey': 'Hey there! 👋 What can I help you with?',
-      'good morning': 'Good morning! ☀️ Hope you have a great day. How can I help?',
-      'good afternoon': 'Good afternoon! 🙂 How can I assist you?',
-      'good evening': 'Good evening! 🌙 How can I help you today?',
-      'good night': 'Good night! 🌙 Sleep well. Come back to learn more tomorrow!',
-      'how are you': "I'm doing great, thank you! 😊 How are you doing?",
-      'what is your name': 'I am <strong>TechBot</strong>, the AI assistant of TS Tech Park! 🤖',
-      'who are you': 'I am <strong>TechBot</strong>, an AI assistant here to help you with courses, technical queries, and career guidance.',
-      'thank you': "You're very welcome! 😊 Keep learning!",
-      'thanks': "You're welcome! 🙂 Anything else I can help with?",
-      'bye': 'Goodbye! 👋 Have a nice day. Keep learning!',
-      'goodbye': 'Goodbye! 👋 See you soon!',
-      'what can you do': 'I can help with: 🎓 Course info & fees, 📅 Batch schedules, 💡 Technical concepts (Embedded, AI, IoT), 🏆 Career guidance, and much more! Ask me anything.',
-      'tell me a joke': 'Why did the computer go to the doctor? 💻 Because it had a <strong>virus</strong>! 😄',
-      'i am bored': 'Let me make it interesting! 😄 Would you like to:<br>• Take a quick quiz?<br>• Learn about CAN Bus or RTOS?<br>• Explore career paths in tech?',
-      'i am sad': "I'm sorry to hear that 😢 Remember, every line of code you write brings you closer to your goals. You've got this! 💪",
-      'what is the time': 'I don\'t have real-time access, but you can check your device clock! ⌚',
-      'what is today\'s date': 'Please check your device calendar for the current date! 📅',
-      'can you speak tamil': 'Yes! I can communicate in Tamil 🇮🇳 Just select "Tamil" from the language menu.',
-      'can you speak telugu': 'Yes! I can communicate in Telugu 🙂 Select "Telugu" from the language menu.',
-      'can you speak hindi': 'Yes! I can communicate in Hindi 🇮🇳 Select "Hindi" from the language menu.',
-    },
-    faq: {
-      'can bus': '<strong>CAN (Controller Area Network)</strong> is a robust serial protocol by Bosch for automotive ECU communication.<br><br>• <b>Multi-master broadcast</b> — any node can initiate<br>• <b>CAN FD</b>: up to 8 Mbps data phase<br>• <b>Differential signaling</b> for noise immunity<br>• <b>CRC error detection</b> built-in<br><br>Covered in detail in our <strong>Automotive Embedded Systems</strong> course 🚗',
-      'rtos': '<strong>RTOS (Real-Time Operating System)</strong> guarantees task execution within strict time deadlines.<br><br>• <b>Preemptive priority scheduling</b><br>• Primitives: <b>mutexes, semaphores, queues</b><br>• Popular: <b>FreeRTOS, Zephyr, VxWorks</b><br><br>Master it in our <strong>RTOS</strong> course with hands-on STM32 labs! ⏱️',
-      'autosar': '<strong>AUTOSAR</strong> (AUTomotive Open System ARchitecture) standardises automotive ECU software.<br><br>• <b>Classic AUTOSAR</b>: Safety-critical ECUs (airbag, ABS)<br>• <b>Adaptive AUTOSAR</b>: ADAS, V2X<br>• Layers: <b>BSW → RTE → SWC</b><br><br>Covered in our <strong>Automotive Embedded</strong> course 🚘',
-      'iso 26262': '<strong>ISO 26262</strong> is the functional safety standard for automotive E/E systems.<br><br>• <b>ASIL levels A–D</b> (D = highest, e.g. airbags, EPS)<br>• <b>HARA</b>: Hazard Analysis & Risk Assessment<br>• Requires safety plans, traceability, testing<br><br>Part of our <strong>Automotive Embedded</strong> curriculum 🛡️',
-      'fee': '<strong>Course Fees at TS Tech Park:</strong><br><br>• Digital Electronics: ₹10,000<br>• Java / Python: ₹12,000–₹18,000<br>• Web Dev / Cloud: ₹18,000–₹28,000<br>• ML / AI / Data Science: ₹35,000–₹70,000<br>• Embedded / RTOS: ₹22,000–₹35,000<br>• Automotive Embedded: ₹60,000<br><br>💳 EMI available | 🏦 UPI, Card, Net Banking, Cash',
-      'batch': '<strong>Upcoming Batches (2026):</strong><br><br>📅 <b>Automotive Embedded</b> — July 1<br>📅 <b>Edge AI & Deep Learning</b> — July 8<br>📅 <b>RTOS / FreeRTOS</b> — July 15<br>📅 <b>Python for Data Science</b> — July 5<br>📅 <b>Embedded C</b> — July 10<br><br>🎁 Early bird: <b>15% discount</b> on registrations before June 20!',
-      'certificate': '<strong>TS Tech Park Certificates:</strong><br><br>✅ <b>QR-verified</b> & blockchain-backed<br>✅ Recognised by <b>200+ hiring partners</b><br>✅ Shareable to <b>LinkedIn</b> directly<br>✅ Issued within <b>24 hours</b> of course completion<br>✅ PDF download available',
-      'career': '<strong>Tech Career Paths & Salaries:</strong><br><br>🔌 <b>Embedded</b>: ₹3–30 LPA (Bosch, KPIT, Aptiv)<br>🧠 <b>AI/ML</b>: ₹6–35 LPA (Google, Qualcomm)<br>🌐 <b>Full Stack</b>: ₹4–25 LPA<br>⚡ <b>VLSI/Semiconductor</b>: ₹5–40 LPA (Intel, Qualcomm)<br>☁️ <b>Cloud/DevOps</b>: ₹6–30 LPA<br><br>Our <strong>placement rate: 98%</strong>! 🏆',
-      'placement': '<strong>Placement at TS Tech Park:</strong><br><br>✅ <b>98% placement rate</b><br>✅ <b>200+ hiring partners</b><br>✅ Average package: <b>₹6–8 LPA</b><br>✅ Highest: <b>₹32 LPA</b> (Qualcomm, 2025)<br><br>Services included: Resume prep, mock interviews, LinkedIn optimisation, direct referrals 🎯',
-      'contact': '<strong>Contact TS Tech Park:</strong><br><br>📧 info@tstechpark.com<br>📞 +91 98765 43210<br>🏢 No. 42, Tech Park Road, Guindy, Chennai – 600032<br>⏰ Mon–Sat: 9 AM – 7 PM<br>💬 WhatsApp support available!',
-      'recommend': '<strong>Our Top Picks for You:</strong><br><br>🚗 <b>Automotive Embedded</b> — ₹60,000 · 98% placement<br>🧠 <b>Edge AI</b> — ₹70,000 · cutting-edge skill<br>⏱️ <b>RTOS</b> — ₹30,000 · highest industry demand<br>🐍 <b>Python DS</b> — ₹35,000 · most enrolled course<br><br>All include certificate + placement support!',
-      'study plan': '<strong>Personalised Study Roadmap:</strong><br><br>Month 1–2: Choose domain + learn fundamentals (C/Python)<br>Month 2–4: Core technical deep dive<br>Month 4–5: Hands-on projects + capstone<br>Month 5–6: Resume prep + placement practice<br><br>Share your background and I\'ll refine this plan! 📋',
-    },
-    warn1: '⚠️ Please keep our conversation respectful and educational. I\'m here to help you learn!',
-    warn2: '⚠️ Second warning: This assistant is for educational support only. Please maintain respectful communication.',
-    warn3: '🚫 Conversation flagged for inappropriate content. Please contact support@tstechpark.com for assistance.',
-    fallback: 'Great question! Could you be more specific? For example:<br>• "Explain RTOS task scheduling"<br>• "Best course for automotive jobs"<br>• "What is the fee for Embedded C?"<br>• "Upcoming batch dates"<br><br>I\'m here 24/7 to help! 🤖',
-  },
-  ta: {
-    greetings: {
-      'வணக்கம்': 'வணக்கம்! 👋 உங்களுக்கு எப்படி உதவலாம்?',
-      'ஹாய்': 'ஹாய்! 👋 நான் TechBot. என்ன உதவி செய்யலாம்?',
-      'காலை வணக்கம்': 'காலை வணக்கம்! ☀️ உங்கள் நாள் இனிதாக அமையட்டும்!',
-      'மாலை வணக்கம்': 'மாலை வணக்கம்! 🌙 எப்படி உதவலாம்?',
-      'எப்படி இருக்கிறீர்கள்': 'நான் நன்றாக இருக்கிறேன்! 😊 நீங்கள் எப்படி இருக்கிறீர்கள்?',
-      'உங்கள் பெயர் என்ன': 'நான் <strong>TechBot</strong> — TS Tech Park AI ஆசிரியர்! 🤖',
-      'நன்றி': 'உங்களுக்கு மிக்க நன்றி! 😊 தொடர்ந்து கற்கவும்!',
-      'மீண்டும் சந்திப்போம்': 'சரி! மீண்டும் சந்திப்போம். நல்ல நாளாக இருக்கட்டும்! 👋',
-      'நீங்கள் என்ன செய்ய முடியும்': 'கேள்விகளுக்கு பதில் அளிக்கவும், பாடக்கட்டணம், batch தேதிகள், தொழில்நுட்ப விளக்கங்கள் வழங்கவும் முடியும்!',
-    },
-    faq: {
-      'கட்டணம்': '<strong>TS Tech Park பாடக் கட்டணம்:</strong><br><br>• Digital Electronics: ₹10,000<br>• Java/Python: ₹12,000–18,000<br>• ML/AI: ₹35,000–70,000<br>• Embedded/RTOS: ₹22,000–35,000<br>• Automotive: ₹60,000<br><br>💳 EMI கிடைக்கும் | UPI, Card, Cash ஏற்றுக்கொள்ளப்படும்',
-      'batch': '<strong>அடுத்த batch:</strong><br><br>📅 Automotive Embedded — July 1, 2026<br>📅 Edge AI — July 8, 2026<br>📅 RTOS — July 15, 2026<br><br>🎁 Early bird: 15% தள்ளுபடி!',
-      'can bus': '<strong>CAN Bus</strong> என்பது Bosch உருவாக்கிய automotive ECU தொடர்பாடல் நெறிமுறை.<br>• CAN FD: 8 Mbps வரை<br>• Differential signaling<br>• Multi-master protocol<br><br>நமது <strong>Automotive Embedded</strong> பாடத்தில் கற்கலாம் 🚗',
-      'career': '🔌 Embedded: ₹3–30 LPA<br>🧠 AI/ML: ₹6–35 LPA<br>🌐 Full Stack: ₹4–25 LPA<br><br><strong>98% placement rate!</strong> 🏆',
-    },
-    warn1: '⚠️ மரியாதையான உரையாடலை பேணவும். கல்வி உதவிக்காக மட்டுமே நான் இங்கே இருக்கிறேன்.',
-    warn2: '⚠️ இரண்டாம் எச்சரிக்கை. தகுந்த மொழியை பயன்படுத்தவும்.',
-    warn3: '🚫 தகாத உள்ளடக்கம் கண்டறியப்பட்டது. Support ஐ தொடர்பு கொள்ளவும்.',
-    fallback: 'சரியான கேள்வி! இன்னும் விரிவாக கேட்கலாமா? உதாரணம்:<br>• "RTOS என்றால் என்ன?"<br>• "Embedded C கட்டணம் எவ்வளவு?"<br>நான் 24/7 கிடைக்கிறேன்! 🤖',
-  },
-  hi: {
-    greetings: {
-      'नमस्ते': 'नमस्ते! 👋 मैं आपकी कैसे सहायता कर सकता हूँ?',
-      'हाय': 'हाय! 👋 मैं TechBot हूँ। क्या सहायता चाहिए?',
-      'सुप्रभात': 'सुप्रभात! ☀️ आपका दिन शुभ हो। कैसे मदद करूँ?',
-      'शुभरात्रि': 'शुभरात्रि! 🌙 कल और सीखें!',
-      'आप कैसे हैं': 'मैं ठीक हूँ, धन्यवाद! 😊 आप कैसे हैं?',
-      'आपका नाम क्या है': 'मैं <strong>TechBot</strong> हूँ — TS Tech Park का AI सहायक! 🤖',
-      'धन्यवाद': 'आपका स्वागत है! 😊 पढ़ते रहें!',
-      'अलविदा': 'अलविदा! 👋 आपका दिन शुभ हो!',
-      'आप क्या कर सकते हैं': 'मैं कोर्स जानकारी, फीस, बैच शेड्यूल, तकनीकी अवधारणाएं और करियर गाइडेंस में मदद कर सकता हूँ!',
-    },
-    faq: {
-      'फीस': '<strong>TS Tech Park कोर्स फीस:</strong><br><br>• Digital Electronics: ₹10,000<br>• Java/Python: ₹12,000–18,000<br>• ML/AI: ₹35,000–70,000<br>• Embedded/RTOS: ₹22,000–35,000<br>• Automotive: ₹60,000<br><br>💳 EMI उपलब्ध',
-      'batch': '📅 Automotive Embedded — 1 July 2026<br>📅 Edge AI — 8 July 2026<br>📅 RTOS — 15 July 2026<br><br>🎁 Early bird: 15% छूट!',
-      'career': '🔌 Embedded: ₹3–30 LPA<br>🧠 AI/ML: ₹6–35 LPA<br><strong>98% placement rate!</strong> 🏆',
-    },
-    warn1: '⚠️ कृपया सम्मानजनक बातचीत बनाए रखें। मैं केवल शैक्षिक सहायता के लिए हूँ।',
-    warn2: '⚠️ दूसरी चेतावनी: उचित भाषा का उपयोग करें।',
-    warn3: '🚫 अनुचित सामग्री पाई गई। Support से संपर्क करें।',
-    fallback: 'अच्छा प्रश्न! थोड़ा विस्तार से बताएं? जैसे:<br>• "RTOS क्या है?"<br>• "Embedded C कोर्स की फीस?"<br>मैं 24/7 उपलब्ध हूँ! 🤖',
-  },
-  te: {
-    greetings: {
-      'నమస్కారం': 'నమస్కారం! 👋 నేను మీకు ఎలా సహాయం చేయగలను?',
-      'హాయ్': 'హాయ్! 👋 నేను TechBot. ఏమి సహాయం కావాలి?',
-      'శుభోదయం': 'శుభోదయం! ☀️ మీ రోజు ఆనందంగా ఉండాలి!',
-      'శుభరాత్రి': 'శుభరాత్రి! 🌙 రేపు మళ్ళీ నేర్చుకోండి!',
-      'మీరు ఎలా ఉన్నారు': 'నేను బాగున్నాను! 😊 మీరు ఎలా ఉన్నారు?',
-      'మీ పేరు ఏమిటి': 'నేను <strong>TechBot</strong> — TS Tech Park AI సహాయకుడిని! 🤖',
-      'ధన్యవాదాలు': 'స్వాగతం! 😊 నేర్చుకోవడం కొనసాగించండి!',
-      'వీడ్కోలు': 'వీడ్కోలు! 👋 మీ రోజు శుభంగా గడవాలి!',
-      'మీరు ఏమి చేయగలరు': 'కోర్సు వివరాలు, ఫీజులు, బ్యాచ్ తేదీలు, సాంకేతిక అంశాలు మరియు కెరీర్ గైడెన్స్‌లో సహాయం చేయగలను!',
-    },
-    faq: {
-      'ఫీజు': '<strong>TS Tech Park కోర్సు ఫీజులు:</strong><br><br>• Digital Electronics: ₹10,000<br>• Java/Python: ₹12,000–18,000<br>• ML/AI: ₹35,000–70,000<br>• Embedded: ₹22,000–35,000<br>• Automotive: ₹60,000',
-      'batch': '📅 Automotive Embedded — July 1, 2026<br>📅 Edge AI — July 8, 2026<br>📅 RTOS — July 15, 2026<br>🎁 Early bird: 15% discount!',
-      'career': '🔌 Embedded: ₹3–30 LPA<br>🧠 AI/ML: ₹6–35 LPA<br><strong>98% placement rate!</strong>',
-    },
-    warn1: '⚠️ దయచేసి గౌరవప్రదమైన సంభాషణ నిర్వహించండి.',
-    warn2: '⚠️ రెండవ హెచ్చరిక: సముచిత భాష ఉపయోగించండి.',
-    warn3: '🚫 అనుచితమైన కంటెంట్ గుర్తించబడింది. Support ని సంప్రదించండి.',
-    fallback: 'మంచి ప్రశ్న! మరింత నిర్దిష్టంగా అడగగలరా? నేను 24/7 అందుబాటులో ఉన్నాను! 🤖',
-  },
-};
-
-const BAD_WORDS = ['stupid','idiot','fool','dumb','hate you','kill','shut up','fuck','shit','bastard','bitch','die','suck','moron','crap','useless','ugly'];
-
-/* ═══════════════════════════════════════════════
-   SEEDED FORUM POSTS
-═══════════════════════════════════════════════ */
-const SEED_POSTS = [
-  {id:1001,user:'Priya M.',av:'PM',color:'#7c3aed',time:'2 hrs ago',cat:'Question',catBg:'rgba(220,38,38,.1)',catColor:'#dc2626',title:'CAN bus vs LIN bus — when to choose which?',text:'Working on a dashboard ECU project. Confused about when to use CAN vs LIN for body ECUs. Any practical advice?',likes:23,replies:8,tags:['CAN','LIN','Automotive'],type:'questions'},
-  {id:1002,user:'Arjun V.',av:'AV',color:'#0891b2',time:'4 hrs ago',cat:'Project',catBg:'rgba(5,150,105,.1)',catColor:'#059669',title:'Lane detection with Edge AI on Jetson Nano — 30fps!',text:'Implemented YOLO v8 + TensorRT on Jetson Nano achieving 30fps real-time lane detection. Happy to share the repo and weights!',likes:87,replies:24,tags:['Edge AI','Jetson','YOLO','TensorRT'],type:'projects'},
-  {id:1003,user:'Deepa K.',av:'DK',color:'#dc2626',time:'6 hrs ago',cat:'Question',catBg:'rgba(245,158,11,.1)',catColor:'#d97706',title:'Best resources to start with MISRA C for beginners?',text:'Starting an automotive internship next month. They expect MISRA C knowledge. Where should I start?',likes:14,replies:12,tags:['MISRA-C','Automotive','C'],type:'questions'},
-  {id:1004,user:'TS Tech Park',av:'TS',color:'#2563eb',time:'1 day ago',cat:'Announcement',catBg:'rgba(37,99,235,.1)',catColor:'#2563eb',title:'New Batch Starting July 1, 2026 — Automotive Embedded Systems',text:'Applications now open for our flagship Automotive Embedded batch. Limited seats available. Early bird discount of 15% valid until June 20!',likes:142,replies:35,tags:['Announcement','Batch','July2026'],type:'announcements'},
-  {id:1005,user:'Karthik V.',av:'KV',color:'#059669',time:'2 days ago',cat:'Project',catBg:'rgba(5,150,105,.1)',catColor:'#059669',title:'Smart home automation with ESP32 + AWS IoT Core',text:'Built a 12-sensor ESP32 system with FreeRTOS tasks, publishing to AWS IoT via MQTT. Average consumption: 2.1W. Code on GitHub!',likes:64,replies:18,tags:['ESP32','AWS','IoT','FreeRTOS'],type:'projects'},
-];
-
-const LIVE_SESSIONS = {
-  live:[{title:'Edge AI: Neural Network Quantisation',instructor:'Dr. Vijay R.',time:'LIVE NOW',attendees:142,color:'rgba(220,38,38,.1)',icon:'🧠'}],
-  upcoming:[
-    {title:'Automotive CAN FD Protocol — Advanced',instructor:'Mr. Suresh K.',time:'Tomorrow 10:00 AM',attendees:89,color:'rgba(37,99,235,.1)',icon:'🚗'},
-    {title:'Python for Embedded Engineers',instructor:'Ms. Priya N.',time:'Tomorrow 3:00 PM',attendees:203,color:'rgba(5,150,105,.1)',icon:'🐍'},
-    {title:'RTOS Deep Dive: FreeRTOS Tasks & Scheduling',instructor:'Mr. Karthik V.',time:'Thu, Jun 18 — 11:00 AM',attendees:67,color:'rgba(245,158,11,.1)',icon:'⏱️'},
-    {title:'React + Node.js Full Stack Project',instructor:'Ms. Sneha L.',time:'Fri, Jun 19 — 4:00 PM',attendees:112,color:'rgba(6,182,212,.1)',icon:'🌐'},
-  ],
-  recordings:[
-    {title:'AUTOSAR Architecture Introduction',instructor:'Dr. Vijay R.',time:'Jun 5, 2026',icon:'🎬',duration:'2h 14m',color:'rgba(124,58,237,.1)'},
-    {title:'Python ML: Scikit-learn Deep Dive',instructor:'Ms. Priya N.',time:'Jun 3, 2026',icon:'🐍',duration:'1h 48m',color:'rgba(37,99,235,.1)'},
-    {title:'Docker & Kubernetes for Beginners',instructor:'Mr. Karthik V.',time:'Jun 1, 2026',icon:'☁️',duration:'3h 02m',color:'rgba(6,182,212,.1)'},
-    {title:'Embedded C: Pointers & Memory Layout',instructor:'Mr. Suresh K.',time:'May 28, 2026',icon:'⚙️',duration:'2h 30m',color:'rgba(5,150,105,.1)'},
-  ],
-};
-
-/* ═══════════════════════════════════════════════
-   ADMIN DATA
-═══════════════════════════════════════════════ */
-const ADMIN_CREDS = { username: 'admin', password: 'admin@TS2026' };
-const ADMIN_INSTRUCTOR_OTP = '847261'; // Demo OTP
-
-const MOCK_USERS = [
-  {id:1,name:'Dr. Vijay R.',email:'vijay@tstechpark.com',role:'Instructor',courses:5,status:'active',joined:'Aug 2024',phone:'+91 98001 11001'},
-  {id:2,name:'Mr. Suresh K.',email:'suresh@tstechpark.com',role:'Instructor',courses:3,status:'active',joined:'Sep 2024',phone:'+91 98001 11002'},
-  {id:3,name:'Arjun V.',email:'arjun@example.com',role:'Student',courses:3,status:'active',joined:'Mar 2025',phone:'+91 90001 21001'},
-  {id:4,name:'Deepa K.',email:'deepa@example.com',role:'Student',courses:1,status:'pending',joined:'Jun 2025',phone:'+91 90001 21002'},
-  {id:5,name:'Karthik R.',email:'karthik@example.com',role:'Student',courses:5,status:'active',joined:'Jan 2025',phone:'+91 90001 21003'},
-  {id:6,name:'Sneha L.',email:'sneha@example.com',role:'Student',courses:2,status:'suspended',joined:'Apr 2025',phone:'+91 90001 21004'},
-  {id:7,name:'Ms. Priya N.',email:'priya@tstechpark.com',role:'Instructor',courses:4,status:'active',joined:'Oct 2024',phone:'+91 98001 11003'},
-  {id:8,name:'Ravi S.',email:'ravi@example.com',role:'Student',courses:2,status:'active',joined:'Feb 2025',phone:'+91 90001 21005'},
-];
+ 
+<script src="config.js"></script>
+<script src="chatbot.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
