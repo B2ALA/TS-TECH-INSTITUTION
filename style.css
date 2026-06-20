@@ -1,1 +1,156 @@
+/* ============================================================
+   TS TECH PARK — SHARED THEME
+   Design tokens: institutional ledger/catalog motif.
+   Display face: Fraunces (serif, academic gravitas)
+   Body/UI face: Inter
+   Data/code face: JetBrains Mono (catalog codes, certificate IDs)
+   ============================================================ */
+:root{
+  --navy-950:#0b1224;
+  --navy-900:#101b33;
+  --navy-800:#16264a;
+  --bg:#f3f5fa;
+  --surface:#ffffff;
+  --surface-2:#f8f9fc;
+  --ink:#0f1b33;
+  --ink-soft:#54607a;
+  --ink-faint:#8893a8;
+  --border:#dfe3ec;
+  --border-strong:#c7ccdb;
+  --blue:#1e4fd8;
+  --blue-ink:#1640b3;
+  --blue-tint:#e8edfc;
+  --teal:#0d8c84;
+  --teal-tint:#e3f5f2;
+  --brass:#a9740e;
+  --brass-tint:#fbf1dc;
+  --red:#c5304a;
+  --red-tint:#fbe7eb;
+  --amber:#b9790a;
+  --amber-tint:#fcefdd;
+  --r:12px; --r-sm:8px; --r-lg:18px;
+  --shadow:0 1px 2px rgba(15,27,51,.06), 0 8px 24px rgba(15,27,51,.06);
+  --shadow-lg:0 24px 64px rgba(15,27,51,.18);
+  --nav-h:64px;
+  --tr:all .16s ease;
+  --font-display:'Fraunces',serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+[data-theme="dark"]{
+  --bg:#0b1224;
+  --surface:#101b33;
+  --surface-2:#16264a;
+  --ink:#eef1f8;
+  --ink-soft:#aab4cb;
+  --ink-faint:#6e7894;
+  --border:#243353;
+  --border-strong:#324468;
+  --blue-tint:#1a2750;
+  --teal-tint:#10302d;
+  --brass-tint:#2c2310;
+  --red-tint:#371823;
+  --amber-tint:#2c2210;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg:0 24px 64px rgba(0,0,0,.55);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+a{color:var(--blue);text-decoration:none}
+button,input,select,textarea{font-family:var(--font-body)}
+.mono{font-family:var(--font-mono)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
+/* ---------- Layout shells ---------- */
+.container{max-width:1180px;margin:0 auto;padding:0 1.5rem}
+.section{padding:3.5rem 0}
+.section-tight{padding:2rem 0}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-ink);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:18px;height:1px;background:var(--blue)}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:13.5px;border-radius:var(--r-sm);border:1px solid transparent;cursor:pointer;transition:var(--tr);padding:10px 18px;white-space:nowrap}
+.btn-lg{padding:13px 26px;font-size:14.5px}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-primary{background:var(--navy-950);color:#fff}
+.btn-primary:hover{background:var(--blue-ink)}
+[data-theme="dark"] .btn-primary{background:var(--blue);color:#fff}
+.btn-outline{background:transparent;border-color:var(--border-strong);color:var(--ink)}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue-ink)}
+.btn-ghost{background:var(--surface-2);color:var(--ink-soft);border-color:var(--border)}
+.btn-ghost:hover{color:var(--ink)}
+.btn-danger{background:var(--red-tint);color:var(--red);border-color:transparent}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.icon-btn{width:36px;height:36px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--border);color:var(--ink-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--tr)}
+.icon-btn:hover{color:var(--blue-ink);border-color:var(--blue)}
+
+/* ---------- Cards / surfaces ---------- */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.card-pad{padding:20px}
+.card-title{font-family:var(--font-body);font-weight:700;font-size:13.5px;color:var(--ink);display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title a{font-size:12px;font-weight:600}
+
+/* ---------- Forms ---------- */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:5px}
+.field .req{color:var(--red)}
+.input,select.input,textarea.input{width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:13.5px;outline:none;transition:border-color .15s}
+.input:focus{border-color:var(--blue)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.help-text{font-size:11.5px;color:var(--ink-faint);margin-top:4px}
+
+/* ---------- Pills / badges ---------- */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.pill-blue{background:var(--blue-tint);color:var(--blue-ink)}
+.pill-teal{background:var(--teal-tint);color:var(--teal)}
+.pill-brass{background:var(--brass-tint);color:var(--brass)}
+.pill-red{background:var(--red-tint);color:var(--red)}
+.pill-amber{background:var(--amber-tint);color:var(--amber)}
+.pill-gray{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--border)}
+
+/* ---------- Empty state ---------- */
+.empty{text-align:center;padding:3rem 1.5rem;color:var(--ink-faint)}
+.empty i{font-size:2rem;opacity:.4;margin-bottom:12px;display:block}
+.empty p{margin-bottom:14px;color:var(--ink-soft)}
+
+/* ---------- Tables ---------- */
+.table{width:100%;border-collapse:collapse;font-size:13px}
+.table th{text-align:left;padding:10px 12px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);border-bottom:1px solid var(--border);background:var(--surface-2)}
+.table td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table tr:hover td{background:var(--surface-2)}
+
+/* ---------- Toasts ---------- */
+.toast-stack{position:fixed;bottom:20px;left:20px;z-index:4000;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);box-shadow:var(--shadow-lg);padding:11px 15px;font-size:13px;font-weight:500;min-width:240px;max-width:320px;transform:translateY(14px);opacity:0;transition:all .25s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success i{color:var(--teal)}
+.toast.error i{color:var(--red)}
+.toast.info i{color:var(--blue)}
+.toast.warning i{color:var(--amber)}
+
+/* ---------- Modal ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(11,18,36,.6);backdrop-filter:blur(3px);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);width:100%;max-width:620px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .18s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-hdr h3{font-size:1.05rem}
+.modal-body{padding:20px 22px}
+.modal-close{width:30px;height:30px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);color:var(--ink-soft);cursor:pointer}
+
+/* ---------- Catalog signature motif ---------- */
+/* Course/certificate codes rendered like institutional ledger entries */
+.cat-code{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-faint)}
+.ledger-bar{width:4px;border-radius:3px;flex-shrink:0}
+
+/* ---------- Misc ---------- */
+.flex{display:flex}.flex-col{display:flex;flex-direction:column}
+.gap-1{gap:6px}.gap-2{gap:10px}.gap-3{gap:16px}
+.items-center{align-items:center}.justify-between{justify-content:space-between}
+.text-soft{color:var(--ink-soft)}.text-faint{color:var(--ink-faint)}
+.mt-1{margin-top:8px}.mt-2{margin-top:16px}.mb-1{margin-bottom:8px}.mb-2{margin-bottom:16px}
