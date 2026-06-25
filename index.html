@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>TS Tech Park — Learning Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar">
+  <a href="#" class="logo" onclick="showPage('home');return false">
+    <div class="logo-mark">TS</div>
+    <div class="logo-text">TS Tech Park<span class="logo-sub">A Group of TS Institutions</span></div>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <button class="nav-link active" data-page="home" onclick="showPage('home')"><i class="fas fa-home"></i>Home</button>
+    <button class="nav-link" data-page="courses" onclick="showPage('courses')"><i class="fas fa-book"></i>Courses</button>
+    <button class="nav-link" data-page="dashboard" onclick="showPage('dashboard')"><i class="fas fa-th-large"></i>Dashboard</button>
+    <button class="nav-link" data-page="forum" onclick="showPage('forum')"><i class="fas fa-comments"></i>Community</button>
+    <button class="nav-link" data-page="live" onclick="showPage('live')"><i class="fas fa-video"></i>Live</button>
+  </div>
+  <div class="nav-actions">
+    <button class="icon-btn" onclick="toggleTheme()" title="Theme"><i class="fas fa-moon" id="themeIcon"></i></button>
+    <div style="position:relative">
+      <button class="icon-btn" id="notifBtn" onclick="toggleNotif()"><i class="fas fa-bell"></i><span class="notif-badge" id="notifBadge" style="display:none">0</span></button>
+      <div class="notif-panel" id="notifPanel"></div>
+    </div>
+    <div id="guestButtons" style="display:flex;gap:6px">
+      <button class="btn-sm btn-outline" onclick="openAuth('login')">Login</button>
+      <button class="btn-sm btn-primary" onclick="openAuth('signup')">Sign Up</button>
+    </div>
+    <button class="user-av-btn" id="userAvBtn" onclick="showPage('profile')" style="display:none"><span id="userAvInit">?</span></button>
+    <button class="hamburger" onclick="toggleMob()"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+
+<div class="mob-overlay" id="mobOverlay" onclick="closeMob()"></div>
+<div class="mob-menu" id="mobMenu">
+  <div class="mob-hdr"><span style="font-weight:700">Menu</span><button onclick="closeMob()" class="modal-close"><i class="fas fa-times"></i></button></div>
+  <button class="mob-link" onclick="showPage('home');closeMob()"><i class="fas fa-home"></i>Home</button>
+  <button class="mob-link" onclick="showPage('courses');closeMob()"><i class="fas fa-book"></i>Courses</button>
+  <button class="mob-link" onclick="showPage('dashboard');closeMob()"><i class="fas fa-th-large"></i>Dashboard</button>
+  <button class="mob-link" onclick="showPage('forum');closeMob()"><i class="fas fa-comments"></i>Community</button>
+  <button class="mob-link" onclick="showPage('live');closeMob()"><i class="fas fa-video"></i>Live Classes</button>
+  <div style="padding:12px" id="mobAuthArea"><button class="btn-full btn-accent" onclick="openAuth('login');closeMob()">Login</button></div>
+</div>
+
+<!-- ============ HOME ============ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge"><span class="bp"></span>India's Embedded, AI & IT Learning Platform</div>
+        <h1>Master <span class="hl">Future-Ready</span><br>Tech Skills</h1>
+        <p>Industry-aligned courses in Embedded Systems, AI, IoT, Cloud and Web Development — taught by working engineers at TS Tech Park.</p>
+        <div class="hero-btns">
+          <button class="btn-hero bh-main" onclick="showPage('courses')"><i class="fas fa-rocket"></i> Explore Courses</button>
+          <button class="btn-hero bh-ghost" onclick="showPage('live')"><i class="fas fa-play-circle"></i> Watch a Live Class</button>
+        </div>
+        <div class="hero-stats" id="heroStats">
+          <div class="hs-i"><span class="hs-n" id="hsCourses">—</span><span class="hs-l">Courses</span></div>
+          <div class="hs-div"></div>
+          <div class="hs-i"><span class="hs-n" id="hsStudents">—</span><span class="hs-l">Students</span></div>
+          <div class="hs-div"></div>
+          <div class="hs-i"><span class="hs-n">98%</span><span class="hs-l">Placement</span></div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="fc f1" style="display:flex;align-items:center;gap:11px">
+          <div class="fci" style="background:linear-gradient(135deg,#00e5ff,#0088aa)"><i class="fas fa-robot"></i></div>
+          <div><div class="fcn">TechBot AI Tutor</div><div class="fcs">Ask me anything — 4 languages</div></div>
+        </div>
+        <div class="fc f2" style="display:flex;flex-direction:column;gap:6px">
+          <div class="cpb cpbot">Ask me in Tamil, Hindi, Telugu or English!</div>
+          <div class="cpb cpuser">What is RTOS?</div>
+          <div class="cpb cpbot">RTOS stands for Real-Time Operating System...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="section-inner">
+      <div class="s-lbl">Why TS Tech Park</div>
+      <h2 class="s-title">Everything You Need to Excel</h2>
+      <p class="s-sub">A complete learning ecosystem built for modern tech careers in India and beyond.</p>
+      <div class="feat-grid">
+        <div class="feat-card"><div class="feat-ico" style="background:rgba(0,229,255,.12)"><i class="fas fa-robot" style="color:var(--accent)"></i></div><h3>AI Chatbot — 4 Languages</h3><p>TechBot answers in English, Tamil, Hindi & Telugu, 24/7.</p></div>
+        <div class="feat-card"><div class="feat-ico" style="background:rgba(124,77,255,.12)"><i class="fas fa-play-circle" style="color:var(--accent2)"></i></div><h3>In-Page Video Player</h3><p>Course videos play right here — no redirects to other sites.</p></div>
+        <div class="feat-card"><div class="feat-ico" style="background:rgba(0,230,118,.12)"><i class="fas fa-certificate" style="color:var(--green)"></i></div><h3>Verified Certificates</h3><p>QR-verified certificates, shareable to LinkedIn.</p></div>
+        <div class="feat-card"><div class="feat-ico" style="background:rgba(255,214,0,.12)"><i class="fas fa-trophy" style="color:var(--gold)"></i></div><h3>Gamified Learning</h3><p>Earn XP, badges, and climb the leaderboard as you learn.</p></div>
+        <div class="feat-card"><div class="feat-ico" style="background:rgba(255,61,113,.12)"><i class="fas fa-tasks" style="color:var(--accentr)"></i></div><h3>Real Assignments</h3><p>Practical, instructor-graded assignments per course.</p></div>
+        <div class="feat-card"><div class="feat-ico" style="background:rgba(0,229,255,.12)"><i class="fas fa-chart-line" style="color:var(--accent)"></i></div><h3>Progress Analytics</h3><p>Track quiz scores, hours learned and skill growth.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-sect">
+    <div class="cta-inner">
+      <h2>Ready to Start Your Tech Journey?</h2>
+      <p>Create a free account and browse every course.</p>
+      <button class="btn-hero bh-main" onclick="openAuth('signup')">Get Started <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </section>
+</div>
+
+<!-- ============ COURSES ============ -->
+<div id="page-courses" class="page">
+  <div class="pg-hdr"><div class="pg-hdr-inner"><h2>Explore All Courses</h2><p>Search and enroll in instructor-published courses</p></div></div>
+  <div class="filter-bar">
+    <div class="filter-inner">
+      <div class="sb"><i class="fas fa-search sbi"></i><input type="text" id="courseSearch" placeholder="Search courses…" oninput="filterCourses()" /></div>
+      <select class="fsel" id="catFilter" onchange="filterCourses()"><option value="">All Categories</option></select>
+      <select class="fsel" id="levelFilter" onchange="filterCourses()">
+        <option value="">All Levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+      </select>
+      <button class="fbtn active" id="sortBtn" onclick="toggleSort()"><i class="fas fa-sort"></i> Newest</button>
+    </div>
+  </div>
+  <div class="courses-wrap">
+    <div class="courses-res" id="coursesRes">Loading courses…</div>
+    <div class="courses-grid" id="coursesGrid"></div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="page-dashboard" class="page">
+  <div class="dash-layout">
+    <aside class="sidebar">
+      <div class="sb-user"><div class="sb-av" id="sbAv">?</div><div><div class="sb-name" id="sbName">Guest</div><div class="sb-role" id="sbRole">Student</div></div></div>
+      <div class="sb-section">
+        <div class="sb-label">Main</div>
+        <button class="sb-link active" onclick="switchDash(this,'overview')"><i class="fas fa-th-large"></i>Overview</button>
+        <button class="sb-link" onclick="switchDash(this,'mycourses')"><i class="fas fa-book-open"></i>My Courses</button>
+        <button class="sb-link" onclick="switchDash(this,'quizzes')"><i class="fas fa-clipboard-check"></i>Quizzes</button>
+        <button class="sb-link" onclick="switchDash(this,'certificates')"><i class="fas fa-certificate"></i>Certificates</button>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Learning</div>
+        <button class="sb-link" onclick="switchDash(this,'gamification')"><i class="fas fa-trophy"></i>Badges & XP</button>
+        <button class="sb-link" onclick="switchDash(this,'leaderboard')"><i class="fas fa-ranking-star"></i>Leaderboard</button>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Account</div>
+        <button class="sb-link" onclick="switchDash(this,'payments')"><i class="fas fa-credit-card"></i>Payments</button>
+        <button class="sb-link" onclick="switchDash(this,'settings')"><i class="fas fa-cog"></i>Settings</button>
+        <button class="sb-link" style="color:var(--accentr)" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</button>
+      </div>
+    </aside>
+    <main class="dash-main" id="dashMain"></main>
+  </div>
+</div>
+
+<!-- ============ FORUM ============ -->
+<div id="page-forum" class="page">
+  <div class="pg-hdr"><div class="pg-hdr-inner"><h2>Community Forum</h2><p>Ask questions, share knowledge</p></div></div>
+  <div class="forum-wrap">
+    <div class="forum-toolbar">
+      <div class="sb" style="flex:1;min-width:160px"><i class="fas fa-search sbi"></i><input type="text" placeholder="Search…" oninput="renderForum(this.value)" /></div>
+      <button class="btn-sm btn-primary" onclick="openNewPost()"><i class="fas fa-plus"></i> Post</button>
+    </div>
+    <div id="forumPosts"></div>
+  </div>
+</div>
+
+<!-- ============ LIVE ============ -->
+<div id="page-live" class="page">
+  <div class="pg-hdr"><div class="pg-hdr-inner"><h2>Live & Upcoming Classes</h2><p>Real-time sessions with expert instructors</p></div></div>
+  <div class="live-wrap">
+    <div class="live-tabs">
+      <button class="ltab active" onclick="setLiveTab(this,'live')">Live Now</button>
+      <button class="ltab" onclick="setLiveTab(this,'upcoming')">Upcoming</button>
+      <button class="ltab" onclick="setLiveTab(this,'recorded')">Recordings</button>
+    </div>
+    <div id="liveContent"></div>
+  </div>
+</div>
+
+<!-- ============ PROFILE ============ -->
+<div id="page-profile" class="page">
+  <div class="profile-wrap">
+    <div class="dash-card" style="padding:0;overflow:hidden;margin-bottom:14px">
+      <div class="prof-banner"></div>
+      <div class="prof-body">
+        <div class="prof-av" id="profAv">?</div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn-sm btn-primary" onclick="switchDash(null,'settings');showPage('dashboard')"><i class="fas fa-edit"></i> Edit</button></div>
+        <h2 id="profName" style="font-size:1.2rem;font-weight:800">—</h2>
+        <p id="profTagline" style="color:var(--text2);font-size:12px;margin-top:2px">—</p>
+        <div class="prof-meta"><span id="profEmail"><i class="fas fa-envelope"></i> —</span><span id="profJoined"><i class="fas fa-calendar"></i> —</span></div>
+      </div>
+    </div>
+    <div class="profile-grid">
+      <div class="dash-card"><div class="dc-title">Learning Stats</div><div id="profStats"></div></div>
+      <div class="dash-card"><div class="dc-title">Certificates</div><div id="profCerts"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AUTH MODAL ============ -->
+<div class="modal-overlay" id="authModal" onclick="handleOverlay(event,'authModal')">
+  <div class="modal auth-modal">
+    <div class="modal-hdr"><h3>Welcome to TS Tech Park</h3><button class="modal-close" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTab" onclick="switchAuth('login')">Login</button>
+        <button class="auth-tab" id="signupTab" onclick="switchAuth('signup')">Sign Up</button>
+      </div>
+
+      <div id="loginForm">
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="loginEmail" placeholder="you@example.com" /></div>
+        <div class="form-group"><label class="form-label">Password</label>
+          <div class="pw-wrap"><input class="form-input" type="password" id="loginPass" placeholder="Password" /><button type="button" class="pw-toggle" onclick="togglePw('loginPass',this)"><i class="fas fa-eye"></i></button></div>
+        </div>
+        <div class="forgot-link"><a href="#" onclick="doForgotPassword();return false">Forgot password?</a></div>
+        <div id="loginMsg" class="auth-msg"></div>
+        <button class="btn-full btn-accent" id="loginBtn" onclick="doLogin()">Login</button>
+      </div>
+
+      <div id="signupForm" style="display:none">
+        <div class="role-sel">
+          <button class="role-btn active" data-role="student" onclick="setRole(this)"><i class="fas fa-user-graduate"></i>Student</button>
+          <button class="role-btn" data-role="instructor" onclick="setRole(this)"><i class="fas fa-chalkboard-teacher"></i>Instructor</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name <span class="req">*</span></label><input class="form-input" type="text" id="regFname" /></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" id="regLname" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email <span class="req">*</span></label><input class="form-input" type="email" id="regEmail" /></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" id="regPhone" /></div>
+        <div class="form-group"><label class="form-label">City</label><input class="form-input" type="text" id="regCity" /></div>
+        <div class="form-group"><label class="form-label">Password <span class="req">*</span></label>
+          <div class="pw-wrap"><input class="form-input" type="password" id="regPass" placeholder="Min 6 chars" oninput="chkPw(this.value)" /><button type="button" class="pw-toggle" onclick="togglePw('regPass',this)"><i class="fas fa-eye"></i></button></div>
+          <div class="pw-str" id="pwStr"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Confirm Password <span class="req">*</span></label><input class="form-input" type="password" id="regPass2" /></div>
+        <div id="signupMsg" class="auth-msg"></div>
+        <button class="btn-full btn-accent" id="signupBtn" onclick="doSignup()">Create Account</button>
+        <p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.6">By signing up you'll receive a verification email from Supabase. Instructor accounts also need admin approval before publishing courses.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COURSE MODAL ============ -->
+<div class="modal-overlay" id="courseModal" onclick="handleOverlay(event,'courseModal')">
+  <div class="modal" style="max-width:660px;padding:0"><button class="modal-close float-close" onclick="closeModal('courseModal')"><i class="fas fa-times"></i></button>
+    <div id="courseModalBody"></div>
+  </div>
+</div>
+
+<!-- ============ VIDEO MODAL ============ -->
+<div class="modal-overlay" id="videoModal" onclick="handleOverlay(event,'videoModal')">
+  <div class="vid-modal-inner">
+    <button class="modal-close" onclick="closeModal('videoModal');stopVideo()" style="position:absolute;top:10px;right:10px;z-index:10"><i class="fas fa-times"></i></button>
+    <div id="videoModalBody"></div>
+  </div>
+</div>
+
+<!-- ============ NEW POST MODAL ============ -->
+<div class="modal-overlay" id="postModal" onclick="handleOverlay(event,'postModal')">
+  <div class="modal" style="max-width:490px">
+    <div class="modal-hdr"><h3>Create New Post</h3><button class="modal-close" onclick="closeModal('postModal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Title <span class="req">*</span></label><input class="form-input" id="postTitle" /></div>
+      <div class="form-group"><label class="form-label">Category</label><select class="form-input" id="postCat"><option>Embedded Systems</option><option>AI & ML</option><option>Projects</option><option>Career</option><option>General</option></select></div>
+      <div class="form-group"><label class="form-label">Content <span class="req">*</span></label><textarea class="form-input" id="postContent" rows="4"></textarea></div>
+      <button class="btn-full btn-accent" onclick="submitPost()">Publish Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CHATBOT ============ -->
+<div class="chatbot-widget">
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-hdr">
+      <div class="chat-ai-av"><i class="fas fa-robot"></i></div>
+      <div><div class="chat-ai-name">TechBot AI</div><div class="chat-ai-status"><span class="online-dot"></span>Online · Multilingual</div></div>
+      <select class="chat-lang-sel" id="chatLang" onchange="setChatLang(this.value)">
+        <option value="en">English</option><option value="ta">தமிழ்</option><option value="hi">हिंदी</option><option value="te">తెలుగు</option>
+      </select>
+      <button class="chat-ctrl" onclick="clearChat()"><i class="fas fa-trash"></i></button>
+      <button class="chat-ctrl" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="Ask TechBot…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}" oninput="autoResizeChat(this)"></textarea>
+      <button class="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+  <button class="chatbot-toggle" onclick="toggleChat()"><i class="fas fa-robot" id="chatIcon"></i></button>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<nav class="mob-bot-nav">
+  <button class="mbnav-btn active" onclick="showPage('home');setMbn(this)"><i class="fas fa-home"></i><span>Home</span></button>
+  <button class="mbnav-btn" onclick="showPage('courses');setMbn(this)"><i class="fas fa-book"></i><span>Courses</span></button>
+  <button class="mbnav-btn" onclick="showPage('dashboard');setMbn(this)"><i class="fas fa-th-large"></i><span>Learn</span></button>
+  <button class="mbnav-btn" onclick="showPage('forum');setMbn(this)"><i class="fas fa-comments"></i><span>Forum</span></button>
+  <button class="mbnav-btn" onclick="showPage('profile');setMbn(this)"><i class="fas fa-user"></i><span>Me</span></button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/supabaseClient.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
