@@ -1,43 +1,33 @@
-const supabaseAdmin = require('../config/supabaseAdmin');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+require('dotenv').config();
 
-/**
- * Verifies the Supabase access token sent by the frontend in the
- * Authorization header: "Bearer <token>". Attaches req.user and req.profile.
- */
-async function requireAuth(req, res, next) {
-  try {
-    const authHeader = req.headers.authorization || '';
-    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-    if (!token) return res.status(401).json({ error: 'Missing auth token' });
+const authMiddleware = async (req, res, next) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: "Access denied. Security authentication token missing." });
+        }
 
-    const { data: userData, error } = await supabaseAdmin.auth.getUser(token);
-    if (error || !userData?.user) return res.status(401).json({ error: 'Invalid or expired token' });
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Fetch active platform profile context from database mapping logic
+        const userProfile = await User.findById(decoded.id);
+        if (!userProfile) {
+            return res.status(404).json({ error: "Authenticated profile instance does not exist." });
+        }
 
-    const { data: profile, error: profErr } = await supabaseAdmin
-      .from('profiles')
-      .select('*')
-      .eq('id', userData.user.id)
-      .single();
-    if (profErr || !profile) return res.status(401).json({ error: 'Profile not found' });
-    if (profile.is_blocked) return res.status(403).json({ error: 'Account suspended. Contact support.' });
+        if (userProfile.status === 'blocked') {
+            return res.status(403).json({ error: "This terminal profile has been locked by administration control." });
+        }
 
-    req.user = userData.user;
-    req.profile = profile;
-    next();
-  } catch (err) {
-    console.error('requireAuth error:', err);
-    res.status(500).json({ error: 'Auth check failed' });
-  }
-}
-
-/** Restricts a route to a given list of roles, e.g. requireRole('admin') */
-function requireRole(...roles) {
-  return (req, res, next) => {
-    if (!req.profile || !roles.includes(req.profile.role)) {
-      return res.status(403).json({ error: 'Insufficient permissions' });
+        // Attach verified user contexts to request pipeline
+        req.user = userProfile;
+        next();
+    } catch (err) {
+        return res.status(401).json({ error: "Session validation failed. Token is expired or invalid." });
     }
-    next();
-  };
-}
+};
 
-module.exports = { requireAuth, requireRole };
+module.exports = authMiddleware;
