@@ -1,411 +1,339 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TS Tech Park — Advanced Professional LMS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TS Tech Park — Advanced Academic LMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        :root[data-theme="dark"] {
+            --bg: #030712;
+            --surface: rgba(17, 24, 39, 0.7);
+            --surface-accent: rgba(31, 41, 55, 0.8);
+            --accent: #00e5ff;
+            --accent-glow: rgba(0, 229, 255, 0.15);
+            --accent-grad: linear-gradient(135deg, #00e5ff, #7c4dff);
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        :root[data-theme="light"] {
+            --bg: #f9fafb;
+            --surface: rgba(255, 255, 255, 0.7);
+            --surface-accent: rgba(243, 244, 246, 0.8);
+            --accent: #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.1);
+            --accent-grad: linear-gradient(135deg, #4f46e5, #06b6d4);
+            --text: #111827;
+            --text-muted: #4b5563;
+            --border: rgba(0, 0, 0, 0.06);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            backdrop-filter: blur(8px);
+            transition: background 0.3s, color 0.3s;
+        }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        .glass-panel {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        /* Navigation Matrix */
+        .navbar {
+            height: 70px;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo-text { font-weight: 700; letter-spacing: 1px; font-size: 1.25rem; }
+        .logo-highlight { background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; list-style: none; }
+        .nav-links a { color: var(--text); text-decoration: none; font-size: 0.9rem; font-weight: 500; cursor: pointer; }
+        
+        /* Layout Structuring */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .course-card { padding: 1.5rem; transition: transform 0.2s; }
+        .course-card:hover { transform: translateY(-4px); }
+        .course-title { font-size: 1.1rem; font-weight: 700; color: var(--text); text-transform: uppercase; margin-bottom: 0.5rem; }
+        
+        /* Chatbot Workspace Interface */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 360px; height: 500px; display: flex; flex-direction: column; z-index: 2000; overflow: hidden; }
+        .chat-header { padding: 1rem; background: var(--accent-grad); color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+        .msg-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; }
+        .msg-bot { background: var(--surface-accent); align-self: flex-start; }
+        .msg-user { background: var(--accent-glow); border-color: var(--accent); align-self: flex-end; }
+        .chat-input-area { padding: 0.75rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
+        .chat-input-area input { flex: 1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); }
+        .chat-input-area button { padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent-grad); color: white; border: none; cursor: pointer; }
+        
+        /* Placement Practicum Interface Layout */
+        .placement-section { margin-top: 3rem; }
+        .placement-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .placement-card { padding: 1.25rem; text-align: center; cursor: pointer; }
+        .placement-card i { font-size: 1.75rem; margin-bottom: 0.75rem; color: var(--accent); }
+        
+        /* Tables & Form Modules */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .data-table th, .data-table td { padding: 0.75rem; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.85rem; }
+        .auth-form { max-width: 400px; margin: 4rem auto; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+        .auth-form input, .auth-form select { padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); }
+    </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo" onclick="app.navigateTo('hero-page')">
-            <div class="logo-mark">TS</div>
-            <div class="logo-text-group">
-                <span class="logo-text">TS TECH PARK</span>
-                <span class="logo-sub">ADVANCED LEARNING HUB</span>
-            </div>
-        </div>
-        
-        <div class="nav-links" id="mainNavLinks">
-            <button class="nav-link active" onclick="app.navigateTo('hero-page')"><i class="fas fa-home"></i> Home</button>
-            <button class="nav-link" onclick="app.navigateTo('courses-page')"><i class="fas fa-book-open"></i> Courses</button>
-            <button class="nav-link student-only hidden" onclick="app.navigateTo('student-dashboard')"><i class="fas fa-columns"></i> Dashboard</button>
-            <button class="nav-link instructor-only hidden" onclick="app.navigateTo('instructor-dashboard')"><i class="fas fa-chalkboard-teacher"></i> Instructor Portal</button>
-            <button class="nav-link admin-only hidden" onclick="app.navigateTo('admin-dashboard')"><i class="fas fa-user-shield"></i> Admin Panel</button>
-        </div>
-
-        <div class="nav-actions">
-            <button class="icon-btn" id="themeToggle" onclick="app.toggleTheme()" title="Toggle Visual Mode">
-                <i class="fas fa-moon"></i>
-            </button>
-            <div class="notification-wrapper">
-                <button class="icon-btn" onclick="app.toggleNotifications()" title="Alert Logs">
-                    <i class="fas fa-bell"></i>
-                    <span class="notif-badge hidden" id="globalNotifBadge">0</span>
-                </button>
-                <div class="notif-panel hidden" id="notifPanel">
-                    <div class="ni-hdr">
-                        <h4>System Updates</h4>
-                        <button class="txt-link-btn" onclick="app.clearNotifications()">Clear All</button>
-                    </div>
-                    <div class="notif-list" id="notifContainerList">
-                        <div class="notif-empty-state">No active notifications</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="authNavActions" class="auth-action-container">
-                <button class="btn-sm btn-outline" onclick="app.navigateTo('login-page')">Sign In</button>
-                <button class="btn-sm btn-primary" onclick="app.navigateTo('signup-page')">Register</button>
-            </div>
-        </div>
+    <nav class="navbar glass-panel">
+        <div class="logo-text">TS TECH PARK <span class="logo-highlight">LMS</span></div>
+        <ul class="nav-links">
+            <li><a onclick="switchPage('home')">Home</a></li>
+            <li><a onclick="switchPage('dashboard')">Student Dashboard</a></li>
+            <li><a onclick="switchPage('payments')">Payment History</a></li>
+            <li><a onclick="switchPage('placement')">Placements (ECE)</a></li>
+            <li><a onclick="switchPage('admin-auth')">Admin Terminal</a></li>
+            <li><button class="icon-btn" onclick="toggleTheme()" style="background:none; border:none; color:var(--text); cursor:pointer;"><i class="fas fa-adjust"></i></button></li>
+        </ul>
     </nav>
 
-    <main class="app-container">
-
-        <section id="hero-page" class="page active">
-            <div class="hero-inner">
-                <div class="hero-left">
-                    <div class="hero-badge">
-                        <span class="bp"></span> NEXT-GEN PROFESSIONAL DEVELOPMENT
-                    </div>
-                    <h1 class="heroh1">Transform Knowledge Into <span class="hl">Career Impact</span> With TS Tech Park</h1>
-                    <p class="herop">Access specialized, high-tier engineering and technical training modules. Engineered to bridge industry performance gaps through practical tracking systems, verified enterprise credential issuance, and localized AI academic companions.</p>
-                    <div class="hero-btns">
-                        <button class="btn-hero bh-main" onclick="app.navigateTo('courses-page')">Explore Course Catalog <i class="fas fa-arrow-right"></i></button>
-                        <button class="btn-hero bh-ghost" onclick="app.navigateTo('signup-page')">Join as Instructor</button>
-                    </div>
-                    <div class="hero-stats">
-                        <div class="hs-i"><div class="hs-n">4+</div><div class="hs-l">Core Tracks</div></div>
-                        <div class="hs-div"></div>
-                        <div class="hs-i"><div class="hs-n">100%</div><div class="hs-l">Supabase Verified</div></div>
-                        <div class="hs-div"></div>
-                        <div class="hs-i"><div class="hs-n">Realtime</div><div class="hs-l">Progress Logs</div></div>
-                    </div>
-                </div>
-                <div class="hero-right">
-                    <div class="fc f1">
-                        <div class="fci"><i class="fas fa-code-branch" style="color: var(--accent);"></i></div>
-                        <div class="fc-content">
-                            <div class="fcn">Data Science Engine</div>
-                            <div class="fcs">Analyzing structural validation models...</div>
-                            <div class="fcb"><div class="fcf" style="width: 88%;"></div></div>
-                        </div>
-                    </div>
-                    <div class="fc f2">
-                        <div class="fci"><i class="fas fa-microchip" style="color: var(--accent2);"></i></div>
-                        <div class="fc-content">
-                            <div class="fcn">Embedded Systems Array</div>
-                            <div class="fcs">Compiling automated firmware benchmarks...</div>
-                            <div class="fcb"><div class="fcf" style="width: 94%;"></div></div>
-                        </div>
-                    </div>
-                </div>
+    <div id="page-home" class="page container">
+        <h2>Professional Curriculum Engineering Tracks</h2>
+        <div class="course-grid">
+            <div class="course-card glass-panel">
+                <div class="course-title">DATA SCIENCE BY TS TECH PARK</div>
+                <p style="color:var(--text-muted); font-size:0.85rem;">Advanced telemetry computation, production ML pipelines, and modeling data matrices.</p>
+                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('ds-01', 'DATA SCIENCE BY TS TECH PARK', 4999)">Enroll — ₹4,999</button>
             </div>
-        </section>
-
-        <section id="login-page" class="page">
-            <div class="auth-card-wrapper">
-                <div class="auth-card">
-                    <h3>Welcome Back</h3>
-                    <p class="auth-subtitle">Log into your TS Tech Park interface terminal</p>
-                    <form id="loginForm" onsubmit="auth.handleLogin(event)">
-                        <div class="form-group">
-                            <label for="loginEmail">Email Address</label>
-                            <input type="email" id="loginEmail" required placeholder="name@domain.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Security Password</label>
-                            <input type="password" id="loginPassword" required placeholder="••••••••">
-                        </div>
-                        <div class="form-utility">
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="loginRememberMe"> Remember Terminal Session
-                            </label>
-                            <span class="txt-link-btn" onclick="app.navigateTo('forgot-password-page')">Forgot Password?</span>
-                        </div>
-                        <button type="submit" class="btn-block btn-primary">Establish Secure Authentication Link</button>
-                    </form>
-                    <div class="auth-footer">
-                        New student or engineer? <span class="txt-link-btn" onclick="app.navigateTo('signup-page')">Create an account profile</span>
-                    </div>
-                </div>
+            <div class="course-card glass-panel">
+                <div class="course-title">EMBEDDED SYSTEMS BY TS TECH PARK</div>
+                <p style="color:var(--text-muted); font-size:0.85rem;">Microcontroller register firmware configuration, abstract bare-metal logic execution.</p>
+                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('emb-02', 'EMBEDDED SYSTEMS BY TS TECH PARK', 5499)">Enroll — ₹5,499</button>
             </div>
-        </section>
-
-        <section id="signup-page" class="page">
-            <div class="auth-card-wrapper">
-                <div class="auth-card">
-                    <h3>Account Registration</h3>
-                    <p class="auth-subtitle">Initialize your profile environment within the LMS matrix</p>
-                    <form id="signupForm" onsubmit="auth.handleSignup(event)">
-                        <div class="form-group">
-                            <label for="signupName">Full Structural Name</label>
-                            <input type="text" id="signupName" required placeholder="John Doe">
-                        </div>
-                        <div class="form-group">
-                            <label for="signupEmail">Email Address Vector</label>
-                            <input type="email" id="signupEmail" required placeholder="engineer@tstech.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="signupPassword">Define Security Password</label>
-                            <input type="password" id="signupPassword" required placeholder="Minimum 8 complex entities">
-                        </div>
-                        <div class="form-group">
-                            <label for="signupRole">Target Functional Access Role</label>
-                            <select id="signupRole" onchange="auth.toggleInstructorSignupFields()">
-                                <option value="student">Student Learner / Engineer Candidate</option>
-                                <option value="instructor">Professional Academic Instructor</option>
-                            </select>
-                        </div>
-                        
-                        <div id="instructorVerificationSection" class="instructor-meta-block hidden">
-                            <div class="info-notice-box">
-                                <i class="fas fa-info-circle"></i> Instructor accounts remain locked until an administrative authorization token clears.
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn-block btn-primary">Initialize Cloud Profile Context</button>
-                    </form>
-                    <div class="auth-footer">
-                        Already possesses verification profiles? <span class="txt-link-btn" onclick="app.navigateTo('login-page')">Enter terminal login</span>
-                    </div>
-                </div>
+            <div class="course-card glass-panel">
+                <div class="course-title">WEB DEVELOPMENT BY TS TECH PARK</div>
+                <p style="color:var(--text-muted); font-size:0.85rem;">Constructing robust corporate data hubs, building scalable multi-role interfaces.</p>
+                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('wd-03', 'WEB DEVELOPMENT BY TS TECH PARK', 3999)">Enroll — ₹3,999</button>
             </div>
-        </section>
-
-        <section id="courses-page" class="page">
-            <div class="filter-bar">
-                <div class="filter-inner">
-                    <div class="sb">
-                        <i class="fas fa-search sbi"></i>
-                        <input type="text" id="courseSearchInput" oninput="courses.filterCatalog()" placeholder="Filter catalogs by name or token...">
-                    </div>
-                    <select class="fsel" id="categoryFilterSelect" onchange="courses.filterCatalog()">
-                        <option value="all">All Content Domains</option>
-                        <option value="data-science">Data Analytics & Science</option>
-                        <option value="embedded">Embedded Systems Engineering</option>
-                        <option value="web-dev">Full-Stack Development Web</option>
-                        <option value="cyber">Cyber Security Defense</option>
-                    </select>
-                    <div class="filter-buttons">
-                        <button class="fbtn active" id="filter-all-btn" onclick="courses.setFilterType('all')">All Programs</button>
-                        <button class="fbtn" id="filter-premium-btn" onclick="courses.setFilterType('premium')">Premium Tracks</button>
-                    </div>
-                </div>
+            <div class="course-card glass-panel">
+                <div class="course-title">CYBER SECURITY BY TS TECH PARK</div>
+                <p style="color:var(--text-muted); font-size:0.85rem;">Securing server entry endpoints, network packet tracing audits, signature frameworks.</p>
+                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('cs-04', 'CYBER SECURITY BY TS TECH PARK', 6000)">Enroll — ₹6,000</button>
             </div>
-            <div class="courses-wrap">
-                <div class="courses-res" id="catalogResultsCount">Parsing resource entries...</div>
-                <div class="courses-grid" id="publicCoursesGridContainer">
-                    </div>
-            </div>
-        </section>
-
-        <section id="student-dashboard" class="page">
-            <div class="dash-layout">
-                <aside class="sidebar">
-                    <div class="sb-user">
-                        <div class="sb-av" id="studentAvatarIcon">U</div>
-                        <div class="sb-meta">
-                            <div class="sb-name" id="studentDisplayName">Loading Account...</div>
-                            <div class="sb-role">Student Profile Context</div>
-                        </div>
-                    </div>
-                    <div class="sidebar-nav">
-                        <button class="sb-nav-item active" onclick="studentDash.switchTab('my-courses')"><i class="fas fa-graduation-cap"></i> Enrolled Curriculum</button>
-                        <button class="sb-nav-item" onclick="studentDash.switchTab('payment-history')"><i class="fas fa-receipt"></i> Payment Records</button>
-                        <button class="sb-nav-item" onclick="studentDash.switchTab('placement-hub')"><i class="fas fa-briefcase"></i> Placement Suite</button>
-                    </div>
-                </aside>
-                <div class="dash-main-content">
-                    
-                    <div id="student-tab-my-courses" class="dashboard-tab-panel active">
-                        <div class="panel-header">
-                            <h3>Enrolled Educational Tracks</h3>
-                            <p>Real-time synchronization with active learning paths</p>
-                        </div>
-                        <div id="enrolledCoursesDashboardContainer" class="dashboard-courses-grid">
-                            </div>
-                    </div>
-
-                    <div id="student-tab-payment-history" class="dashboard-tab-panel">
-                        <div class="panel-header">
-                            <h3>Transactional Audit History Ledger</h3>
-                            <p>Complete historical list of billing receipts</p>
-                        </div>
-                        <div class="ledger-actions-container">
-                            <input type="text" id="paymentLedgerSearch" class="input-field" oninput="payments.searchLedger()" placeholder="Search transactions by reference string...">
-                            <button class="btn-sm btn-outline" onclick="payments.exportCurrentLedger('pdf')"><i class="fas fa-file-pdf"></i> Export Document PDF</button>
-                        </div>
-                        <div class="table-scroll-wrapper">
-                            <table class="data-table" id="studentPaymentTable">
-                                <thead>
-                                    <tr>
-                                        <th>Date/Timestamp</th>
-                                        <th>Transaction Hash</th>
-                                        <th>Target Curriculum Block</th>
-                                        <th>Payment Architecture</th>
-                                        <th>Account Profile Identifier</th>
-                                        <th>Net Gross Remittance</th>
-                                        <th>Status Badge</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="studentPaymentTableBody">
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div id="student-tab-placement-hub" class="dashboard-tab-panel">
-                        <div class="panel-header">
-                            <h3>Engineering Candidate Placement Suitcase</h3>
-                            <p>Dedicated tools optimized for Core Technical/ECE structural interview evaluation paths</p>
-                        </div>
-                        <div class="placement-grid-layout">
-                            <div class="placement-utility-card">
-                                <div class="puc-ico"><i class="fas fa-calculator"></i></div>
-                                <h4>Aptitude Practice Arrays</h4>
-                                <p>Quantitative computation, logic matrices, and analytical problem-solving modules.</p>
-                                <button class="btn-sm btn-primary">Initialize Evaluation</button>
-                            </div>
-                            <div class="placement-utility-card">
-                                <div class="puc-ico"><i class="fas fa-laptop-code"></i></div>
-                                <h4>Data Structures & Algorithms (DSA) Matrix</h4>
-                                <p>Refactor complexity structures, write efficient algorithms, and practice C++/Python implementations.</p>
-                                <button class="btn-sm btn-primary">Launch Compiler</button>
-                            </div>
-                            <div class="placement-utility-card">
-                                <div class="puc-ico"><i class="fas fa-building"></i></div>
-                                <h4>Company-Specific Core Question Banks</h4>
-                                <p>Dedicated analytical insight files based on historical testing criteria from top tech firms.</p>
-                                <button class="btn-sm btn-primary">Open Registries</button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <section id="admin-dashboard" class="page">
-            <div class="dash-layout">
-                <aside class="sidebar">
-                    <div class="sb-user">
-                        <div class="sb-av" style="background: var(--accentr);">A</div>
-                        <div class="sb-meta">
-                            <div class="sb-name">Super Admin Node</div>
-                            <div class="sb-role">System Root Privilege</div>
-                        </div>
-                    </div>
-                    <div class="sidebar-nav">
-                        <button class="sb-nav-item active" onclick="adminDash.switchTab('analytics')"><i class="fas fa-chart-pie"></i> Executive Metrics</button>
-                        <button class="sb-nav-item" onclick="adminDash.switchTab('user-management')"><i class="fas fa-users-cog"></i> Account Frameworks</button>
-                        <button class="sb-nav-item" onclick="adminDash.switchTab('payments-audit')"><i class="fas fa-vault"></i> Central Payment Ledger</button>
-                    </div>
-                </aside>
-                <div class="dash-main-content">
-                    
-                    <div id="admin-tab-analytics" class="dashboard-tab-panel active">
-                        <div class="admin-stats-strip">
-                            <div class="stat-node-card"><div class="sn-val" id="admStatUsers">--</div><div class="sn-lbl">Total Verified Profiles</div></div>
-                            <div class="stat-node-card"><div class="sn-val" id="admStatInstructors">--</div><div class="sn-lbl">Active Instructors</div></div>
-                            <div class="stat-node-card"><div class="sn-val" id="admStatEnrollments">--</div><div class="sn-lbl">Total Course Registrations</div></div>
-                            <div class="stat-node-card" style="border-color: var(--green);"><div class="sn-val" id="admStatRevenue" style="color: var(--green);">--</div><div class="sn-lbl">Gross Account Revenue</div></div>
-                        </div>
-                        <div class="panel-header" style="margin-top: 2rem;">
-                            <h3>Daily Metric Monitoring Graphs</h3>
-                            <p>Real-time processing parameters tracking user creation events per log loop</p>
-                        </div>
-                        <div class="mock-graph-frame-container">
-                            <div class="info-notice-box"><i class="fas fa-chart-line"></i> Daily registrations metrics: tracking incoming server logs dynamically.</div>
-                        </div>
-                    </div>
-
-                    <div id="admin-tab-user-management" class="dashboard-tab-panel">
-                        <div class="panel-header">
-                            <h3>Global Identity Moderation Terminal</h3>
-                            <p>Suspend accounts, manage instructor onboarding checks, or modify base settings</p>
-                        </div>
-                        <div class="table-scroll-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Account Name</th>
-                                        <th>Target Identity String</th>
-                                        <th>Assigned System Access Role</th>
-                                        <th>Onboarding Status</th>
-                                        <th>Management Override Access</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminUserManagementTableBody">
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div id="admin-tab-payments-audit" class="dashboard-tab-panel">
-                        <div class="panel-header">
-                            <h3>Centralized Financial Operations Hub</h3>
-                            <p>Global oversight across all enrollment payment tracks and billing vectors</p>
-                        </div>
-                        <div class="table-scroll-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Timestamp</th>
-                                        <th>Transaction ID</th>
-                                        <th>Student Account</th>
-                                        <th>Target Program</th>
-                                        <th>Mode</th>
-                                        <th>Gross Volume</th>
-                                        <th>Audit Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminGlobalPaymentsTableBody">
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <div class="chatbot-wrapper-tray" id="chatbotInterfaceTray">
-        <button class="chatbot-trigger-fab" onclick="chatbot.togglePanelWindow()" id="chatTrayTriggerButton">
-            <i class="fas fa-comment-dots"></i>
-        </button>
-        <div class="chat-window-panel hidden" id="chatbotWindowPanel">
-            <div class="chat-panel-header">
-                <div class="cph-title-info">
-                    <div class="bot-status-indicator-node">AI</div>
-                    <div>
-                        <h5>Academic Companion Node</h5>
-                        <span class="bot-sub-status">Multilingual Engine Active</span>
-                    </div>
-                </div>
-                <button class="panel-close-btn" onclick="chatbot.togglePanelWindow()"><i class="fas fa-times"></i></button>
-            </div>
-            
-            <div class="chat-language-select-bar">
-                <label for="chatLanguageSelect">Language Matrix:</label>
-                <select id="chatLanguageSelect" onchange="chatbot.handleLanguageContextChange()">
-                    <option value="en">English (Default Context)</option>
-                    <option value="ta">Tamil (தமிழ் பதிப்பு)</option>
-                    <option value="te">Telugu (తెలుగు రూపం)</option>
-                    <option value="hi">Hindi (हिंदी रूपांतरण)</option>
-                </select>
-            </div>
-
-            <div class="chat-messages-scroll-area" id="chatbotMessageDisplayBucket">
-                </div>
-
-            <form class="chat-input-field-form" id="chatbotInputTriggerForm" onsubmit="chatbot.dispatchUserMessage(event)">
-                <input type="text" id="chatMessagePayloadInput" autocomplete="off" placeholder="Query technical system definitions...">
-                <button type="submit" class="chat-send-btn-node" id="chatSendPayloadBtn"><i class="fas fa-paper-plane"></i></button>
-            </form>
         </div>
     </div>
 
-    <script src="js/app.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/chatbot.js"></script>
+    <div id="page-dashboard" class="page container" style="display:none;">
+        <h2>Academic Control Dashboard</h2>
+        <div id="dashboard-status" class="glass-panel" style="padding:2rem; margin-top:1rem; text-align:center; color:var(--text-muted);">
+            No courses enrolled yet.
+        </div>
+        <div id="enrolled-courses-area" class="course-grid" style="display:none;"></div>
+    </div>
+
+    <div id="page-payments" class="page container" style="display:none;">
+        <h2>Payment Audit History</h2>
+        <div class="glass-panel" style="padding:1.5rem; margin-top:1rem; overflow-x:auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Course Target Name</th>
+                        <th>Transaction Token</th>
+                        <th>Payment Mode</th>
+                        <th>Amount Paid</th>
+                        <th>Timestamp (Date/Time)</th>
+                    </tr>
+                </thead>
+                <tbody id="payment-ledger-rows">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="page-placement" class="page container" style="display:none;">
+        <h2>ECE Engineering Career Accelerator Gateway</h2>
+        <div class="placement-grid">
+            <div class="placement-card glass-panel">
+                <i class="fas fa-microchip"></i>
+                <h3>DSA Practice</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">C/C++ Pointer parsing structural coding configurations.</p>
+            </div>
+            <div class="placement-card glass-panel">
+                <i class="fas fa-calculator"></i>
+                <h3>Aptitude Training</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Quantitative assessment engineering and reasoning vectors.</p>
+            </div>
+            <div class="placement-card glass-panel">
+                <i class="fas fa-building"></i>
+                <h3>Company-Wise Audits</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Core question pipelines matching top hardware firms.</p>
+            </div>
+            <div class="placement-card glass-panel">
+                <i class="fas fa-user-tie"></i>
+                <h3>Mock Technical Reviews</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Automated logic assessment with telemetry grading feedback.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-admin-auth" class="page container" style="display:none;">
+        <h2>Protected Operations Management Dashboard</h2>
+        <div class="auth-form glass-panel" id="admin-login-box">
+            <h3>Administrative Guard Node Entry</h3>
+            <input type="text" id="admin-user" placeholder="Security Username String" />
+            <input type="password" id="admin-pass" placeholder="System Encryption Key Token" />
+            <button class="chat-input-area button" onclick="verifyAdminCredentialHandshake()">Authorize Session</button>
+        </div>
+        <div id="admin-dashboard-panel" style="display:none; margin-top:2rem;">
+            <div class="course-grid" style="margin-bottom:2rem;">
+                <div class="glass-panel" style="padding:1rem; text-align:center;">
+                    <h4 style="color:var(--text-muted);">Total Active Logins</h4>
+                    <p id="stat-users" style="font-size:1.75rem; font-weight:700; color:var(--accent);">0</p>
+                </div>
+                <div class="glass-panel" style="padding:1rem; text-align:center;">
+                    <h4 style="color:var(--text-muted);">Total Transactions Cleared</h4>
+                    <p id="stat-payments" style="font-size:1.75rem; font-weight:700; color:var(--accent);">0</p>
+                </div>
+                <div class="glass-panel" style="padding:1rem; text-align:center;">
+                    <h4 style="color:var(--text-muted);">Gross Intake Revenue</h4>
+                    <p id="stat-revenue" style="font-size:1.75rem; font-weight:700; color:var(--accent);">₹0</p>
+                </div>
+            </div>
+            <h3>Central Instructor Account Suspension Panel</h3>
+            <div class="glass-panel" style="padding:1rem; margin-top:1rem;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User ID Token</th>
+                            <th>Full Client Name</th>
+                            <th>Primary Registration Email</th>
+                            <th>System Authorization Status</th>
+                            <th>Operations Management Options</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-user-rows"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-widget glass-panel">
+        <div class="chat-header">
+            <span><i class="fas fa-robot"></i> Advanced AI Engine</span>
+            <select id="chat-lang-token" style="background:#000; color:#fff; font-size:0.75rem; border:1px solid var(--border); padding:2px;" onchange="alterChatbotChannelLanguage()">
+                <option value="en">English (EN)</option>
+                <option value="ta">Tamil (TA)</option>
+                <option value="te">Telugu (TE)</option>
+                <option value="hi">Hindi (HI)</option>
+            </select>
+        </div>
+        <div class="chat-messages" id="chat-stream">
+            <div class="msg-bubble msg-bot">Hello! I am your advanced academic assistant engineered for TS Tech Park. How can I guide you today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-prompt-box" placeholder="Input structural query query string..." onkeydown="if(event.key === 'Enter') transmitMessageToken()"/>
+            <button onclick="transmitMessageToken()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const h = document.documentElement;
+            h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+        function switchPage(pId) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById('page-' + pId).style.display = 'block';
+        }
+        function alterChatbotChannelLanguage() {
+            const l = document.getElementById('chat-lang-token').value;
+            const s = document.getElementById('chat-stream');
+            let m = "Hello! I am your advanced assistant for TS Tech Park. How can I help you today?";
+            if (l === 'ta') m = "வணக்கம்! உங்களுக்கு எப்படி உதவலாம்?";
+            if (l === 'te') m = "నమస్కారం! నేను మీకు ఎలా సహాయం చేయగలను?";
+            if (l === 'hi') m = "नमस्ते! मैं आपकी कैसे सहायता कर सकता हूँ?";
+            s.innerHTML = `<div class="msg-bubble msg-bot">${m}</div>`;
+        }
+        async function transmitMessageToken() {
+            const b = document.getElementById('chat-prompt-box');
+            const s = document.getElementById('chat-stream');
+            const l = document.getElementById('chat-lang-token').value;
+            if(!b.value.trim()) return;
+            
+            s.innerHTML += `<div class="msg-bubble msg-user">${b.value}</div>`;
+            const userMsg = b.value;
+            b.value = '';
+            s.scrollTop = s.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chatbot/message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMsg, language: l })
+                });
+                const d = await res.json();
+                s.innerHTML += `<div class="msg-bubble msg-bot">${d.reply}</div>`;
+            } catch {
+                s.innerHTML += `<div class="msg-bubble msg-bot">Communication error resolving natural language matrix tokens.</div>`;
+            }
+            s.scrollTop = s.scrollHeight;
+        }
+        function triggerPurchase(cId, cName, price) {
+            const accName = prompt("Input Account Holder Remitter Card/UPI Name Identity Statement:");
+            if (!accName) return;
+            const mode = prompt("Specify connection verification channel (UPI, Online, Cash, Bank Transfer):");
+            if (!['UPI', 'Online', 'Cash', 'Bank Transfer'].includes(mode)) {
+                alert("Invalid option. Payment workflow suspended.");
+                return;
+            }
+            const hash = "TXN_HASH_" + Math.floor(Math.random() * 900000 + 100000);
+            alert(` Handshake Completed. Transaction ID Generated: ${hash}`);
+            logPaymentRow(accName, cId, cName, mode, price, hash);
+        }
+        function logPaymentRow(accName, cId, cName, mode, amt, hash) {
+            const body = document.getElementById('payment-ledger-rows');
+            const dateStr = new Date().toLocaleString();
+            const r = document.createElement('tr');
+            r.innerHTML = `<td>${accName}</td><td>${cName}</td><td><code>${hash}</code></td><td>${mode}</td><td>₹${amt}</td><td>${dateStr}</td>`;
+            body.appendChild(r);
+            
+            document.getElementById('dashboard-status').style.display = 'none';
+            const enrolledArea = document.getElementById('enrolled-courses-area');
+            enrolledArea.style.display = 'grid';
+            enrolledArea.innerHTML += `<div class="course-card glass-panel"><div class="course-title">${cName}</div><p style="color:var(--text-muted); font-size:0.8rem;">Access Verified on ${dateStr}</p><div style="height:6px; background:var(--accent); border-radius:3px; margin-top:1rem; width:0%;"></div><span style="font-size:0.75rem; color:var(--accent);">0% Complete</span></div>`;
+        }
+        function verifyAdminCredentialHandshake() {
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+            if (u === 'admin' && p === 'password') {
+                document.getElementById('admin-login-box').style.display = 'none';
+                document.getElementById('admin-dashboard-panel').style.display = 'block';
+                loadAdminDataRegistryTelemetry();
+            } else {
+                alert("Authorization Denied. Invalid admin credentials.");
+            }
+        }
+        function loadAdminDataRegistryTelemetry() {
+            document.getElementById('stat-users').innerText = "18";
+            document.getElementById('stat-payments').innerText = "4";
+            document.getElementById('stat-revenue').innerText = "₹18,497";
+            const userBox = document.getElementById('admin-user-rows');
+            userBox.innerHTML = `<tr><td>USR_UUID_A892</td><td>Instructor Kumar</td><td>kumar@tstech.com</td><td><span style="color:orange;">active</span></td><td><button onclick="alert('Account lock toggle applied')" style="padding:4px 8px; border-radius:4px; border:none; background:red; color:white; cursor:pointer;">Block Account</button></td></tr>`;
+        }
+    </script>
 </body>
 </html>
