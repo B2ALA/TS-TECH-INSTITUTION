@@ -1,19 +1,36 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
+const { createClient } = require('@supabase/supabase-js');
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 /**
- * @route   POST /api/auth/signup
- * @desc    Initialize a brand new profile instance (Student / Instructor)
- * @access  Public
+ * @route   POST /api/auth/register-student
+ * @desc    Onboard new candidate profiles and trigger secure email verification routines
  */
-router.post('/signup', authController.signup);
+router.post('/register-student', async (req, res) => {
+    try {
+        const { email, password, fullName } = req.body;
 
-/**
- * @route   POST /api/auth/login
- * @desc    Establish identity verification and sign session tokens
- * @access  Public
- */
-router.post('/login', authController.login);
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: { full_name: fullName },
+                // Enforces verification loop handshakes before system baseline access
+                emailRedirectTo: 'https://your-lms-domain.vercel.app/dashboard'
+            }
+        });
+
+        if (error) return res.status(400).json({ error: error.message });
+
+        return res.status(201).json({
+            message: "Profile registration successful. A secure verification link has been transmitted to your email address.",
+            user: data.user
+        });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+});
 
 module.exports = router;
