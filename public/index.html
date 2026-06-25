@@ -1,339 +1,315 @@
+title: public/index.html
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>TS Tech Park — Advanced Academic LMS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    <style>
-        :root[data-theme="dark"] {
-            --bg: #030712;
-            --surface: rgba(17, 24, 39, 0.7);
-            --surface-accent: rgba(31, 41, 55, 0.8);
-            --accent: #00e5ff;
-            --accent-glow: rgba(0, 229, 255, 0.15);
-            --accent-grad: linear-gradient(135deg, #00e5ff, #7c4dff);
-            --text: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border: rgba(255, 255, 255, 0.08);
-            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        :root[data-theme="light"] {
-            --bg: #f9fafb;
-            --surface: rgba(255, 255, 255, 0.7);
-            --surface-accent: rgba(243, 244, 246, 0.8);
-            --accent: #4f46e5;
-            --accent-glow: rgba(79, 70, 229, 0.1);
-            --accent-grad: linear-gradient(135deg, #4f46e5, #06b6d4);
-            --text: #111827;
-            --text-muted: #4b5563;
-            --border: rgba(0, 0, 0, 0.06);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            backdrop-filter: blur(8px);
-            transition: background 0.3s, color 0.3s;
-        }
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
-        .glass-panel {
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-        /* Navigation Matrix */
-        .navbar {
-            height: 70px;
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .logo-text { font-weight: 700; letter-spacing: 1px; font-size: 1.25rem; }
-        .logo-highlight { background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-links { display: flex; gap: 1.5rem; align-items: center; list-style: none; }
-        .nav-links a { color: var(--text); text-decoration: none; font-size: 0.9rem; font-weight: 500; cursor: pointer; }
-        
-        /* Layout Structuring */
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-        .course-card { padding: 1.5rem; transition: transform 0.2s; }
-        .course-card:hover { transform: translateY(-4px); }
-        .course-title { font-size: 1.1rem; font-weight: 700; color: var(--text); text-transform: uppercase; margin-bottom: 0.5rem; }
-        
-        /* Chatbot Workspace Interface */
-        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 360px; height: 500px; display: flex; flex-direction: column; z-index: 2000; overflow: hidden; }
-        .chat-header { padding: 1rem; background: var(--accent-grad); color: #fff; display: flex; justify-content: space-between; align-items: center; }
-        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
-        .msg-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.85rem; line-height: 1.4; }
-        .msg-bot { background: var(--surface-accent); align-self: flex-start; }
-        .msg-user { background: var(--accent-glow); border-color: var(--accent); align-self: flex-end; }
-        .chat-input-area { padding: 0.75rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
-        .chat-input-area input { flex: 1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); }
-        .chat-input-area button { padding: 0.5rem 1rem; border-radius: 6px; background: var(--accent-grad); color: white; border: none; cursor: pointer; }
-        
-        /* Placement Practicum Interface Layout */
-        .placement-section { margin-top: 3rem; }
-        .placement-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .placement-card { padding: 1.25rem; text-align: center; cursor: pointer; }
-        .placement-card i { font-size: 1.75rem; margin-bottom: 0.75rem; color: var(--accent); }
-        
-        /* Tables & Form Modules */
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        .data-table th, .data-table td { padding: 0.75rem; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.85rem; }
-        .auth-form { max-width: 400px; margin: 4rem auto; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
-        .auth-form input, .auth-form select { padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TS TECH PARK — Industrial Enterprise LMS Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #030712;
+      --surface: rgba(17, 24, 39, 0.75);
+      --card: rgba(31, 41, 55, 0.6);
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #00f0ff;
+      --secondary: #9d4edd;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --success: #10b981;
+      --danger: #ef4444;
+      --glow: rgba(0, 240, 255, 0.15);
+    }
+    [data-theme="light"] {
+      --bg: #f9fafb;
+      --surface: rgba(255, 255, 255, 0.85);
+      --card: #ffffff;
+      --border: rgba(0, 0, 0, 0.06);
+      --primary: #0284c7;
+      --secondary: #6d28d9;
+      --text: #111827;
+      --text-muted: #6b7280;
+      --glow: rgba(2, 132, 199, 0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1, h2, h3, h4, .logo { font-family: 'Space Grotesk', sans-serif; }
+    
+    .glass-nav {
+      position: fixed; top: 0; width: 100%; height: 70px;
+      background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;
+      align-items: center; padding: 0 2rem; z-index: 1000;
+    }
+    .logo { font-size: 20px; font-weight: 700; color: var(--text); cursor: pointer; text-decoration: none; }
+    .logo span { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    .nav-tabs { display: flex; gap: 0.5rem; list-style: none; }
+    .nav-tabs button {
+      background: transparent; border: none; color: var(--text-muted); padding: 0.5rem 1rem;
+      font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; transition: all 0.2s;
+    }
+    .nav-tabs button.active, .nav-tabs button:hover { color: var(--primary); background: var(--glow); }
+
+    .main-container { max-width: 1300px; margin: 95px auto 4rem; padding: 0 1.5rem; }
+    .view-view { display: none; }
+    .view-view.active { display: block; animation: viewFadeIn 0.35s ease; }
+    @keyframes viewFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero-panel { padding: 3.5rem 2rem; background: radial-gradient(circle at top right, var(--glow), transparent); border: 1px solid var(--border); border-radius: 16px; text-align: center; margin-bottom: 2rem; }
+    .hero-panel h1 { font-size: 2.25rem; margin-bottom: 0.75rem; }
+    .hero-panel h1 span { color: var(--primary); }
+    .hero-panel p { color: var(--text-muted); font-size: 14px; max-width: 650px; margin: 0 auto; line-height: 1.6; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .lms-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; transition: all 0.25s; }
+    .lms-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 8px 24px var(--glow); }
+    .lms-card-header { padding: 1.5rem; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; height: 140px; font-size: 3rem; color: var(--primary); }
+    .lms-card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+    .lms-card-title { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.5px; }
+    .lms-card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+    .lms-card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border); margin-top: auto; }
+
+    .btn { padding: 0.6rem 1.2rem; font-size: 12px; font-weight: 600; text-transform: uppercase; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: var(--primary); color: #000; }
+    .btn-primary:hover { background: #00d8ff; box-shadow: 0 0 12px var(--primary); }
+    .btn-secondary { background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+
+    .classroom-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; }
+    .video-frame { background: #000; border-radius: 14px; border: 1px solid var(--border); aspect-ratio: 16/9; overflow: hidden; position: relative; }
+    .video-frame iframe { width: 100%; height: 100%; border: none; }
+    .meta-box { background: var(--card); border: 1px solid var(--border); padding: 1.25rem; border-radius: 14px; }
+
+    .interactive-quiz-container { background: var(--card); border: 1px solid var(--border); padding: 2rem; border-radius: 14px; margin-top: 1.5rem; }
+    .option-row { padding: 0.75rem 1rem; background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; transition: all 0.2s; }
+    .option-row:hover { border-color: var(--primary); background: var(--glow); }
+    .option-row.selected { border-color: var(--primary); background: rgba(0, 240, 255, 0.1); }
+
+    .form-wrapper { max-width: 440px; margin: 4rem auto; padding: 2.5rem; background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.2); }
+    .form-item { margin-bottom: 1.25rem; }
+    .form-item label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .form-input { width: 100%; padding: 0.75rem 1rem; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 13px; outline: none; transition: all 0.2s; }
+    .form-input:focus { border-color: var(--primary); }
+
+    .table-holder { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-top: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    th { background: rgba(255,255,255,0.02); padding: 1rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; border-bottom: 1px solid var(--border); }
+    td { padding: 1rem; border-bottom: 1px solid var(--border); }
+
+    .analytics-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-node { background: var(--card); border: 1px solid var(--border); padding: 1.25rem; border-radius: 12px; text-align: center; }
+    .stat-value { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
+    .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .chat-drawer { position: fixed; bottom: 6.5rem; right: 2rem; width: 380px; height: 500px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); z-index: 2000; display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(16px); }
+    .chat-drawer.open { display: flex; }
+    .chat-top { padding: 1rem; background: rgba(0,0,0,0.15); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .chat-top select { background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text); padding: 0.25rem; border-radius: 4px; font-size: 11px; outline: none; }
+    .chat-body-stream { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 13px; line-height: 1.4; }
+    .chat-bubble.bot { background: rgba(255,255,255,0.05); align-self: flex-start; border-bottom-left-radius: 2px; }
+    .chat-bubble.user { background: var(--primary); color: #000; font-weight: 500; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .chat-bottom-form { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; background: rgba(0,0,0,0.1); }
+    .chat-bottom-form input { flex: 1; background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 0.6rem 1rem; border-radius: 8px; color: var(--text); font-size: 13px; outline: none; }
+    .chat-icon-action { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 0 0.25rem; }
+    .chat-icon-action:hover { color: var(--primary); }
+    .chat-fab { position: fixed; bottom: 2rem; right: 2rem; width: 56px; height: 56px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.25); z-index: 2000; }
+
+    #toast-wrap { position: fixed; top: 85px; right: 2rem; z-index: 3000; display: flex; flex-direction: column; gap: 0.5rem; }
+    .toast-msg { padding: 0.75rem 1.25rem; background: #0f172a; border-left: 4px solid var(--primary); border-radius: 4px; font-size: 13px; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 0.5rem; }
+    .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+  </style>
 </head>
 <body>
 
-    <nav class="navbar glass-panel">
-        <div class="logo-text">TS TECH PARK <span class="logo-highlight">LMS</span></div>
-        <ul class="nav-links">
-            <li><a onclick="switchPage('home')">Home</a></li>
-            <li><a onclick="switchPage('dashboard')">Student Dashboard</a></li>
-            <li><a onclick="switchPage('payments')">Payment History</a></li>
-            <li><a onclick="switchPage('placement')">Placements (ECE)</a></li>
-            <li><a onclick="switchPage('admin-auth')">Admin Terminal</a></li>
-            <li><button class="icon-btn" onclick="toggleTheme()" style="background:none; border:none; color:var(--text); cursor:pointer;"><i class="fas fa-adjust"></i></button></li>
-        </ul>
-    </nav>
-
-    <div id="page-home" class="page container">
-        <h2>Professional Curriculum Engineering Tracks</h2>
-        <div class="course-grid">
-            <div class="course-card glass-panel">
-                <div class="course-title">DATA SCIENCE BY TS TECH PARK</div>
-                <p style="color:var(--text-muted); font-size:0.85rem;">Advanced telemetry computation, production ML pipelines, and modeling data matrices.</p>
-                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('ds-01', 'DATA SCIENCE BY TS TECH PARK', 4999)">Enroll — ₹4,999</button>
-            </div>
-            <div class="course-card glass-panel">
-                <div class="course-title">EMBEDDED SYSTEMS BY TS TECH PARK</div>
-                <p style="color:var(--text-muted); font-size:0.85rem;">Microcontroller register firmware configuration, abstract bare-metal logic execution.</p>
-                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('emb-02', 'EMBEDDED SYSTEMS BY TS TECH PARK', 5499)">Enroll — ₹5,499</button>
-            </div>
-            <div class="course-card glass-panel">
-                <div class="course-title">WEB DEVELOPMENT BY TS TECH PARK</div>
-                <p style="color:var(--text-muted); font-size:0.85rem;">Constructing robust corporate data hubs, building scalable multi-role interfaces.</p>
-                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('wd-03', 'WEB DEVELOPMENT BY TS TECH PARK', 3999)">Enroll — ₹3,999</button>
-            </div>
-            <div class="course-card glass-panel">
-                <div class="course-title">CYBER SECURITY BY TS TECH PARK</div>
-                <p style="color:var(--text-muted); font-size:0.85rem;">Securing server entry endpoints, network packet tracing audits, signature frameworks.</p>
-                <button class="chat-input-area button" style="margin-top:1rem;" onclick="triggerPurchase('cs-04', 'CYBER SECURITY BY TS TECH PARK', 6000)">Enroll — ₹6,000</button>
-            </div>
-        </div>
+  <nav class="glass-nav">
+    <a class="logo" onclick="toggleRoute('catalog')">TS TECH PARK <span>LMS</span></a>
+    <ul class="nav-tabs">
+      <li><button id="tab-catalog" class="active" onclick="toggleRoute('catalog')"><i class="fa-solid fa-graduation-cap"></i> Curriculum Catalog</button></li>
+      <li><button id="tab-classroom" onclick="toggleRoute('classroom')"><i class="fa-solid fa-chalkboard-user"></i> Workspace</button></li>
+      <li><button id="tab-dashboard" onclick="toggleRoute('dashboard')"><i class="fa-solid fa-user-gear"></i> Student Hub</button></li>
+      <li><button id="tab-instructor" onclick="toggleRoute('instructor')"><i class="fa-solid fa-pen-to-square"></i> Instructor Studio</button></li>
+      <li><button id="tab-admin" onclick="toggleRoute('admin')"><i class="fa-solid fa-lock-keyhole"></i> Operational Core</button></li>
+    </ul>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="chat-icon-action" onclick="switchTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
+      <button class="btn btn-secondary" style="padding: 0.4rem 1rem;" onclick="triggerAccountVerification()">Verify Node</button>
     </div>
+  </nav>
 
-    <div id="page-dashboard" class="page container" style="display:none;">
-        <h2>Academic Control Dashboard</h2>
-        <div id="dashboard-status" class="glass-panel" style="padding:2rem; margin-top:1rem; text-align:center; color:var(--text-muted);">
-            No courses enrolled yet.
+  <div id="toast-wrap"></div>
+
+  <main class="main-container">
+
+    <section id="view-catalog" class="view-view active">
+      <div class="hero-panel">
+        <h1>Enterprise Architecture <span>BY TS TECH PARK</span></h1>
+        <p>Industrial training curriculum modules directly aligned to ECE/CSE corporate placement matrices. Predefined generic filler courses have been stripped away to reveal empty dynamic session configurations.</p>
+      </div>
+      <div class="card-grid" id="catalog-card-container">
         </div>
-        <div id="enrolled-courses-area" class="course-grid" style="display:none;"></div>
+    </section>
+
+    <section id="view-classroom" class="view-view">
+      <h2 style="margin-bottom: 1rem;" id="active-classroom-header">Classroom Workspace Terminal</h2>
+      <div class="classroom-layout">
+        <div>
+          <div class="video-frame" id="live-viewport-box">
+            <div style="color: var(--text-muted); padding: 5rem; text-align: center;">
+              <i class="fa-solid fa-play" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+              <p>Select a dynamic learning track from the curriculum catalog to deploy embedded streaming media contexts directly without restrictions.</p>
+            </div>
+          </div>
+          <div class="meta-box" style="margin-top: 1rem;">
+            <h3>Course Lesson Blocks Progress Tracking</h3>
+            <div class="progress-bar"><div class="progress-fill" id="classroom-progress-indicator"></div></div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 0.5rem;">
+              <span id="lesson-status-string">0 / 3 Modules Explored</span>
+              <span id="percentage-string">0% Complete</span>
+            </div>
+          </div>
+          
+          <div class="interactive-quiz-container" id="quiz-block-element">
+            <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-stopwatch"></i> Core Skill Diagnostic Assessment Module</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 1rem;" id="quiz-question-text">Select your target curriculum track to mount evaluation question matrices.</p>
+            <div id="quiz-options-wrapper"></div>
+            <button class="btn btn-primary" style="margin-top: 1rem;" onclick="processQuizEvaluationHandshake()">Submit Answer Token</button>
+          </div>
+        </div>
+        
+        <div class="meta-box">
+          <h4 style="margin-bottom: 0.75rem;"><i class="fa-solid fa-box-archive"></i> Downloadable Assets</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem;">Corporate training repositories, laboratory manuals, and compilation checklists.</p>
+          <button class="btn btn-secondary" style="width: 100%; text-align: left; margin-bottom: 0.5rem;" onclick="triggerFileDownload('Syllabus_Manifesto.pdf')"><i class="fa-solid fa-file-pdf"></i> Core Reference Manifesto.pdf</button>
+          <button class="btn btn-secondary" style="width: 100%; text-align: left; margin-bottom: 1.5rem;" onclick="triggerFileDownload('Lab_Sandbox.zip')"><i class="fa-solid fa-file-zipper"></i> Lab_Code_Sandbox.zip</button>
+          
+          <h4 style="margin-bottom: 0.5rem;"><i class="fa-solid fa-headset"></i> Instructor Access Channels</h4>
+          <button class="btn btn-primary" style="width: 100%; font-size: 11px;" onclick="window.open('https://meet.google.com')"><i class="fa-solid fa-video"></i> Sync Live Class (Google Meet / Zoom)</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-dashboard" class="view-view">
+      <h2 style="margin-bottom: 1.5rem;">Student Dashboard Core</h2>
+      <div class="analytics-summary">
+        <div class="stat-node"><div class="stat-value" id="user-courses-count">0</div><div class="stat-label">Enrolled Modules</div></div>
+        <div class="stat-node"><div class="stat-value" id="user-attendance-rate">0%</div><div class="stat-label">Validated Attendance</div></div>
+        <div class="stat-node"><div class="stat-value" id="user-quiz-grade">N/A</div><div class="stat-label">Average Assessment Grade</div></div>
+        <div class="stat-node"><div class="stat-value" id="user-cert-status">0</div><div class="stat-label">Active Certifications</div></div>
+      </div>
+      <div id="dashboard-dynamic-wrapper">
+        </div>
+      
+      <div id="certificate-showcase-box" style="margin-top: 2rem; display: none;" class="meta-box">
+        <h3>Generated Dynamic Certification</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 1rem;">Verified cryptographic qualification certificates compiled in compliance with organizational directives.</p>
+        <div style="border: 2px dashed var(--primary); padding: 2rem; text-align: center; border-radius: 8px;" id="cert-canvas-stub"></div>
+      </div>
+    </section>
+
+    <section id="view-instructor" class="view-view">
+      <h2 style="margin-bottom: 0.5rem;">Instructor Content Management Dashboard</h2>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 2rem;">Configure custom templates, register streaming media manifests, and evaluate student progress tracks.</p>
+      
+      <div class="card-grid">
+        <div class="meta-box">
+          <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-folder-plus"></i> Launch New Course Blueprint</h3>
+          <div class="form-item"><label>Course Title Template Structure</label><input type="text" id="ins-title" class="form-input" value="EMBEDDED AUTOMOTIVE BY TS TECH PARK"></div>
+          <div class="form-item"><label>Curriculum Category Tag</label><input type="text" id="ins-cat" class="form-input" value="Core Engineering Infrastructure Track"></div>
+          <div class="form-item"><label>YouTube Stream Media Key Token</label><input type="text" id="ins-yt" class="form-input" value="nzj7Wg46wLQ"></div>
+          <button class="btn btn-primary" style="width: 100%;" onclick="executeInstructorPublishTask()">Publish Course Blueprint</button>
+        </div>
+        <div class="meta-box">
+          <h3>Active Performance Analytics Logs</h3>
+          <p style="color: var(--text-muted); font-size: 12px; line-height: 1.6; margin-top: 0.5rem; margin-bottom: 1.5rem;">Review deployment metrics across assignments, student quiz grading records, and data repositories.</p>
+          <button class="btn btn-secondary" style="width: 100%; margin-bottom: 0.5rem;" onclick="launchNotificationToast('Assignment grading metrics uploaded.')">Grade Submitted Exercises</button>
+          <button class="btn btn-secondary" style="width: 100%;" onclick="launchNotificationToast('System data repository backup requested.')">Sync File Backup Registries</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-admin" class="view-view">
+      <div id="admin-gate-overlay" class="form-wrapper">
+        <h3 style="text-align: center; margin-bottom: 0.5rem;"><i class="fa-solid fa-user-shield" style="color: var(--primary);"></i> Encrypted Gate Authentication</h3>
+        <p style="text-align: center; color: var(--text-muted); font-size: 11px; text-transform: uppercase; margin-bottom: 1.5rem;">Access granted to administrative key holders only</p>
+        <div class="form-item"><label>System Root Username</label><input type="email" id="adm-user" class="form-input" value="admin@tstechpark.com"></div>
+        <div class="form-item" style="margin-bottom: 1.5rem;"><label>System Access Key Token</label><input type="password" id="adm-pass" class="form-input" value="TSTechParkAdminSecure2026Password"></div>
+        <button class="btn btn-primary" style="width: 100%;" onclick="verifyAdminAccessHandshake()">Authorize Session</button>
+      </div>
+
+      <div id="admin-management-workspace" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <div>
+            <h2>Central Operations Controller Dashboard</h2>
+            <p style="color: var(--text-muted); font-size: 13px;">Manage payment records, view transaction ledgers, and adjust user privilege flags.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="invalidateAdminSessionTokens()">Terminate Session</button>
+        </div>
+
+        <div class="analytics-summary">
+          <div class="stat-node"><div class="stat-value">142</div><div class="stat-label">Base Users</div></div>
+          <div class="stat-node"><div class="stat-value" id="admin-templates-counter">0</div><div class="stat-label">Active Modules</div></div>
+          <div class="stat-node"><div class="stat-value" id="admin-audited-payments">0</div><div class="stat-label">Cleared Ledgers</div></div>
+          <div class="stat-node"><div class="stat-value" id="admin-total-intake">₹0</div><div class="stat-label">Gross Revenue Summary</div></div>
+        </div>
+
+        <h3 style="margin-top: 2rem;">Global Payment Ledger Registries</h3>
+        <div class="table-holder">
+          <table>
+            <thead>
+              <tr>
+                <th>Payment ID Token</th>
+                <th>User Account Context</th>
+                <th>Remitter Account Context</th>
+                <th>Course Blueprint Mapping</th>
+                <th>Payment Pathway</th>
+                <th>Net Amount</th>
+                <th>Timestamp</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-payment-rows-target">
+              <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No transactions currently logged in session memory banks.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="chat-fab" onclick="toggleChatWindowDrawer()"><i class="fa-solid fa-robot"></i></div>
+  <div class="chat-drawer" id="chat-widget-frame">
+    <div class="chat-top">
+      <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div><span style="font-size: 13px; font-weight: 600;">TS Tech Park AI Bot</span></div>
+      <select id="lang-selector-token" onchange="alterChatbotChannelLanguage()">
+        <option value="en">English (EN)</option>
+        <option value="ta">தமிழ் (Tamil)</option>
+        <option value="te">తెలుగు (Telugu)</option>
+        <option value="hi">हिन्दी (Hindi)</option>
+      </select>
     </div>
-
-    <div id="page-payments" class="page container" style="display:none;">
-        <h2>Payment Audit History</h2>
-        <div class="glass-panel" style="padding:1.5rem; margin-top:1rem; overflow-x:auto;">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Account Name</th>
-                        <th>Course Target Name</th>
-                        <th>Transaction Token</th>
-                        <th>Payment Mode</th>
-                        <th>Amount Paid</th>
-                        <th>Timestamp (Date/Time)</th>
-                    </tr>
-                </thead>
-                <tbody id="payment-ledger-rows">
-                    </tbody>
-            </table>
-        </div>
+    <div class="chat-body-stream" id="chat-messages-scroll-area">
+      <div class="chat-bubble bot">Hello! Welcome to the TS Tech Park Academic Engineering Support Terminal. How can I guide your tracking parameters today?</div>
     </div>
-
-    <div id="page-placement" class="page container" style="display:none;">
-        <h2>ECE Engineering Career Accelerator Gateway</h2>
-        <div class="placement-grid">
-            <div class="placement-card glass-panel">
-                <i class="fas fa-microchip"></i>
-                <h3>DSA Practice</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">C/C++ Pointer parsing structural coding configurations.</p>
-            </div>
-            <div class="placement-card glass-panel">
-                <i class="fas fa-calculator"></i>
-                <h3>Aptitude Training</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Quantitative assessment engineering and reasoning vectors.</p>
-            </div>
-            <div class="placement-card glass-panel">
-                <i class="fas fa-building"></i>
-                <h3>Company-Wise Audits</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Core question pipelines matching top hardware firms.</p>
-            </div>
-            <div class="placement-card glass-panel">
-                <i class="fas fa-user-tie"></i>
-                <h3>Mock Technical Reviews</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Automated logic assessment with telemetry grading feedback.</p>
-            </div>
-        </div>
+    <div class="chat-bottom-form">
+      <input type="text" id="chat-user-input-box" placeholder="Input analytical query parameter string..." onkeypress="evaluateChatKeyStroke(event)">
+      <button class="chat-icon-action" onclick="invokeVoiceCaptureEngine()" title="Voice tracking translator hook"><i class="fa-solid fa-microphone"></i></button>
+      <button class="chat-icon-action" onclick="dispatchUserChatMessage()" style="color: var(--primary);"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
+  </div>
 
-    <div id="page-admin-auth" class="page container" style="display:none;">
-        <h2>Protected Operations Management Dashboard</h2>
-        <div class="auth-form glass-panel" id="admin-login-box">
-            <h3>Administrative Guard Node Entry</h3>
-            <input type="text" id="admin-user" placeholder="Security Username String" />
-            <input type="password" id="admin-pass" placeholder="System Encryption Key Token" />
-            <button class="chat-input-area button" onclick="verifyAdminCredentialHandshake()">Authorize Session</button>
-        </div>
-        <div id="admin-dashboard-panel" style="display:none; margin-top:2rem;">
-            <div class="course-grid" style="margin-bottom:2rem;">
-                <div class="glass-panel" style="padding:1rem; text-align:center;">
-                    <h4 style="color:var(--text-muted);">Total Active Logins</h4>
-                    <p id="stat-users" style="font-size:1.75rem; font-weight:700; color:var(--accent);">0</p>
-                </div>
-                <div class="glass-panel" style="padding:1rem; text-align:center;">
-                    <h4 style="color:var(--text-muted);">Total Transactions Cleared</h4>
-                    <p id="stat-payments" style="font-size:1.75rem; font-weight:700; color:var(--accent);">0</p>
-                </div>
-                <div class="glass-panel" style="padding:1rem; text-align:center;">
-                    <h4 style="color:var(--text-muted);">Gross Intake Revenue</h4>
-                    <p id="stat-revenue" style="font-size:1.75rem; font-weight:700; color:var(--accent);">₹0</p>
-                </div>
-            </div>
-            <h3>Central Instructor Account Suspension Panel</h3>
-            <div class="glass-panel" style="padding:1rem; margin-top:1rem;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>User ID Token</th>
-                            <th>Full Client Name</th>
-                            <th>Primary Registration Email</th>
-                            <th>System Authorization Status</th>
-                            <th>Operations Management Options</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-user-rows"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="chat-widget glass-panel">
-        <div class="chat-header">
-            <span><i class="fas fa-robot"></i> Advanced AI Engine</span>
-            <select id="chat-lang-token" style="background:#000; color:#fff; font-size:0.75rem; border:1px solid var(--border); padding:2px;" onchange="alterChatbotChannelLanguage()">
-                <option value="en">English (EN)</option>
-                <option value="ta">Tamil (TA)</option>
-                <option value="te">Telugu (TE)</option>
-                <option value="hi">Hindi (HI)</option>
-            </select>
-        </div>
-        <div class="chat-messages" id="chat-stream">
-            <div class="msg-bubble msg-bot">Hello! I am your advanced academic assistant engineered for TS Tech Park. How can I guide you today?</div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="chat-prompt-box" placeholder="Input structural query query string..." onkeydown="if(event.key === 'Enter') transmitMessageToken()"/>
-            <button onclick="transmitMessageToken()"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <script>
-        function toggleTheme() {
-            const h = document.documentElement;
-            h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-        function switchPage(pId) {
-            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-            document.getElementById('page-' + pId).style.display = 'block';
-        }
-        function alterChatbotChannelLanguage() {
-            const l = document.getElementById('chat-lang-token').value;
-            const s = document.getElementById('chat-stream');
-            let m = "Hello! I am your advanced assistant for TS Tech Park. How can I help you today?";
-            if (l === 'ta') m = "வணக்கம்! உங்களுக்கு எப்படி உதவலாம்?";
-            if (l === 'te') m = "నమస్కారం! నేను మీకు ఎలా సహాయం చేయగలను?";
-            if (l === 'hi') m = "नमस्ते! मैं आपकी कैसे सहायता कर सकता हूँ?";
-            s.innerHTML = `<div class="msg-bubble msg-bot">${m}</div>`;
-        }
-        async function transmitMessageToken() {
-            const b = document.getElementById('chat-prompt-box');
-            const s = document.getElementById('chat-stream');
-            const l = document.getElementById('chat-lang-token').value;
-            if(!b.value.trim()) return;
-            
-            s.innerHTML += `<div class="msg-bubble msg-user">${b.value}</div>`;
-            const userMsg = b.value;
-            b.value = '';
-            s.scrollTop = s.scrollHeight;
-
-            try {
-                const res = await fetch('/api/chatbot/message', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: userMsg, language: l })
-                });
-                const d = await res.json();
-                s.innerHTML += `<div class="msg-bubble msg-bot">${d.reply}</div>`;
-            } catch {
-                s.innerHTML += `<div class="msg-bubble msg-bot">Communication error resolving natural language matrix tokens.</div>`;
-            }
-            s.scrollTop = s.scrollHeight;
-        }
-        function triggerPurchase(cId, cName, price) {
-            const accName = prompt("Input Account Holder Remitter Card/UPI Name Identity Statement:");
-            if (!accName) return;
-            const mode = prompt("Specify connection verification channel (UPI, Online, Cash, Bank Transfer):");
-            if (!['UPI', 'Online', 'Cash', 'Bank Transfer'].includes(mode)) {
-                alert("Invalid option. Payment workflow suspended.");
-                return;
-            }
-            const hash = "TXN_HASH_" + Math.floor(Math.random() * 900000 + 100000);
-            alert(` Handshake Completed. Transaction ID Generated: ${hash}`);
-            logPaymentRow(accName, cId, cName, mode, price, hash);
-        }
-        function logPaymentRow(accName, cId, cName, mode, amt, hash) {
-            const body = document.getElementById('payment-ledger-rows');
-            const dateStr = new Date().toLocaleString();
-            const r = document.createElement('tr');
-            r.innerHTML = `<td>${accName}</td><td>${cName}</td><td><code>${hash}</code></td><td>${mode}</td><td>₹${amt}</td><td>${dateStr}</td>`;
-            body.appendChild(r);
-            
-            document.getElementById('dashboard-status').style.display = 'none';
-            const enrolledArea = document.getElementById('enrolled-courses-area');
-            enrolledArea.style.display = 'grid';
-            enrolledArea.innerHTML += `<div class="course-card glass-panel"><div class="course-title">${cName}</div><p style="color:var(--text-muted); font-size:0.8rem;">Access Verified on ${dateStr}</p><div style="height:6px; background:var(--accent); border-radius:3px; margin-top:1rem; width:0%;"></div><span style="font-size:0.75rem; color:var(--accent);">0% Complete</span></div>`;
-        }
-        function verifyAdminCredentialHandshake() {
-            const u = document.getElementById('admin-user').value;
-            const p = document.getElementById('admin-pass').value;
-            if (u === 'admin' && p === 'password') {
-                document.getElementById('admin-login-box').style.display = 'none';
-                document.getElementById('admin-dashboard-panel').style.display = 'block';
-                loadAdminDataRegistryTelemetry();
-            } else {
-                alert("Authorization Denied. Invalid admin credentials.");
-            }
-        }
-        function loadAdminDataRegistryTelemetry() {
-            document.getElementById('stat-users').innerText = "18";
-            document.getElementById('stat-payments').innerText = "4";
-            document.getElementById('stat-revenue').innerText = "₹18,497";
-            const userBox = document.getElementById('admin-user-rows');
-            userBox.innerHTML = `<tr><td>USR_UUID_A892</td><td>Instructor Kumar</td><td>kumar@tstech.com</td><td><span style="color:orange;">active</span></td><td><button onclick="alert('Account lock toggle applied')" style="padding:4px 8px; border-radius:4px; border:none; background:red; color:white; cursor:pointer;">Block Account</button></td></tr>`;
-        }
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
