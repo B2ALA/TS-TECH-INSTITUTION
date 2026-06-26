@@ -134,3 +134,4 @@ function addUserMsg(text) {
 }
 
 document.addEventListener('DOMContentLoaded', chatWelcome);
+Chatbot · JS
